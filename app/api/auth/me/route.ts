@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withErrorHandling } from "@/lib/interceptors/withErrorHandling";
 import { requireAuth } from "@/lib/auth/requireAuth";
+import { requireRole } from "@/lib/auth/requireRole";
 import { AuthService } from "@/services/auth.service";
 
 const service = new AuthService();
@@ -25,13 +26,7 @@ export const PATCH = withErrorHandling(async (req: NextRequest) => {
   const body = await req.json();
 
   // Only allow admins to update users
-  if (admin.role !== "admin") {
-    return NextResponse.json(
-      { success: false, data: null, error: "Unauthorized" },
-      { status: 403 },
-    );
-  }
-
+  requireRole(admin, ["ADMIN"]);
   const { userId, updates } = body;
   // TODO: Allow admin to deactivate a user by setting is_active to false
 
