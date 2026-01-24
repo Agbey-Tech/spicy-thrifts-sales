@@ -10,6 +10,14 @@ export interface Category {
   created_at: string;
 }
 
+export interface Profile {
+  id: string;
+  full_name: string;
+  role: UserRole;
+  is_active: boolean;
+  created_at: string;
+}
+
 export interface Product {
   id: string;
   category_id: string;
