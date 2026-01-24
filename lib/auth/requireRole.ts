@@ -1,8 +1,8 @@
 export async function requireRole(
-  user: { role: string },
+  user: { role?: string },
   allowedRoles: string[],
 ) {
-  if (!allowedRoles.includes(user.role)) {
+  if (!user.role || !allowedRoles.includes(user.role)) {
     throw new Error("Forbidden");
   }
 }
