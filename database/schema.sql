@@ -13,6 +13,7 @@ create table profiles (
   id uuid primary key references auth.users(id) on delete cascade,
   full_name text not null,
   role user_role not null default 'SALES',
+  is_active boolean not null default true,
   created_at timestamptz default now()
 );
 
