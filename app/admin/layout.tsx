@@ -1,10 +1,13 @@
-import { AdminSidebar, AdminTopbar } from "@/components/layout/AdminNav";
+"use client";
 
+import { AdminSidebar, AdminTopbar } from "@/components/layout/AdminNav";
+import { useAuth } from "@/hooks/useAuth";
 export default function AdminLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  useAuth();
   return (
     <div className="flex h-screen">
       <AdminSidebar />
