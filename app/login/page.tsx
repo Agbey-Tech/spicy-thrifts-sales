@@ -28,6 +28,7 @@ export default function LoginPage() {
       if (loginError) throw new Error(loginError.message);
 
       const profile = await getProfile();
+      //   TODO: user should be set inside the layout instead of here, so that we when user open other pages before the login page, the user info is still available
       setUser({
         id: profile.id,
         full_name: profile.full_name,
