@@ -2,7 +2,7 @@ import { create } from "zustand";
 
 export type UserProfile = {
   id: string;
-  name: string;
+  full_name: string;
   role: "ADMIN" | "SALES";
   email: string;
 };

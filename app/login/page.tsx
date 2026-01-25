@@ -30,7 +30,7 @@ export default function LoginPage() {
       const profile = await getProfile();
       setUser({
         id: profile.id,
-        name: profile.full_name,
+        full_name: profile.full_name,
         email: profile.email,
         role: profile.role,
       });

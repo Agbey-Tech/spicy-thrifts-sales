@@ -42,6 +42,7 @@ export function AdminSidebar() {
 export function AdminTopbar() {
   const router = useRouter();
   const user = useUserStore((s) => s.user);
+  console.log("User in AdminTopbar:", user);
   const handleLogout = async () => {
     try {
       await logout();
@@ -55,7 +56,7 @@ export function AdminTopbar() {
     <header className="h-16 bg-white border-b flex items-center justify-between px-6">
       <div />
       <div className="flex items-center gap-4">
-        <span className="font-semibold">{user?.name}</span>
+        <span className="font-semibold">{user?.full_name}</span>
         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded text-xs font-bold">
           {user?.role}
         </span>
