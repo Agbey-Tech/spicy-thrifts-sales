@@ -12,10 +12,11 @@ const service = new VariantsService();
 export const PATCH = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
     const user = await requireAuth();
+    const { id } = await params;
     await requireRole(user, ["ADMIN", "SALES"]);
     const body = await req.json();
     const input = validate(updateVariantSchema, body);
-    const updated = await service.updateVariant(params.id, input, user.role);
+    const updated = await service.updateVariant(id, input, user.role);
     return NextResponse.json({ success: true, data: updated, error: null });
   },
 );
