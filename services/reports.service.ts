@@ -28,7 +28,7 @@ export class ReportsService {
     // Query variants with stock_quantity <= threshold, include product info
     const { data, error } = await this.supabase
       .from("product_variants")
-      .select("*,product(name)")
+      .select("*,products(name)")
       .lte("stock_quantity", threshold)
       .order("stock_quantity", { ascending: true });
     if (error) throw new Error(error.message);

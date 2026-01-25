@@ -76,7 +76,7 @@ export class VariantsService {
 
   // 5. Fetch variants for POS
   async listVariants(filters?: Record<string, unknown>) {
-    let query = this.supabase.from("product_variants").select("*,product(*)");
+    let query = this.supabase.from("product_variants").select("*,products(*)");
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         if (value !== undefined && value !== null) {
