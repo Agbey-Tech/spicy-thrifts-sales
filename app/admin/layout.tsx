@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { logout } from "@/lib/api/auth";
 import { useAuth } from "@/hooks/useAuth";
 
-import { AdminSidebar } from "@/components/layout/AdminNav";
+import { AdminSidebar } from "@/components/layout/AdminSidebar";
 import { AdminTopbar } from "@/components/layout/AdminTopbar";
 
 export default function AdminLayout({
