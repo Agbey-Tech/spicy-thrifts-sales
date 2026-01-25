@@ -14,4 +14,5 @@ export const updateProductSchema = z.object({
   description: z.string().optional(),
   base_price: z.number().positive().optional(),
   images: z.array(z.string().url()).optional(),
+  is_unique: z.boolean().optional(),
 });
