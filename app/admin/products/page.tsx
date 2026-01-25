@@ -8,15 +8,10 @@ import {
   updateProduct,
   deleteProduct,
 } from "@/lib/api/products";
+import { uploadImage } from "@/lib/uploads/uploadProfileImage";
 import { getCategories } from "@/lib/api/categories";
 import toast from "react-hot-toast";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-
-// Dummy uploadImage function (replace with real implementation)
-async function uploadImage(file: File): Promise<string | null> {
-  await new Promise((r) => setTimeout(r, 800));
-  return URL.createObjectURL(file);
-}
 
 export default function ProductsPage() {
   const {
