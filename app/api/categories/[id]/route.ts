@@ -13,9 +13,10 @@ export const PATCH = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
     const user = await requireAuth();
     await requireRole(user, ["ADMIN"]);
+    const { id } = await params;
     const body = await req.json();
     const input = validate(updateCategorySchema, body);
-    const updated = await service.updateCategory(params.id, input);
+    const updated = await service.updateCategory(id, input);
     return NextResponse.json({ success: true, data: updated, error: null });
   },
 );
