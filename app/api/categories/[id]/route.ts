@@ -11,7 +11,7 @@ const service = new CategoriesService();
 // PATCH /api/categories/:id - Update category (ADMIN only)
 export const PATCH = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const user = await requireAuth(req);
+    const user = await requireAuth();
     await requireRole(user, ["ADMIN"]);
     const body = await req.json();
     const input = validate(updateCategorySchema, body);

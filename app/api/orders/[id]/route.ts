@@ -9,7 +9,7 @@ const service = new OrdersService();
 // GET /api/orders/:id - Get single order (ADMIN, SALES)
 export const GET = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const user = await requireAuth(req);
+    const user = await requireAuth();
     await requireRole(user, ["ADMIN", "SALES"]);
     const order = await service.getOrder(params.id);
     return NextResponse.json({ success: true, data: order, error: null });

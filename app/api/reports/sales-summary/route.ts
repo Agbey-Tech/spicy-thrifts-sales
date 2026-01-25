@@ -10,7 +10,7 @@ const service = new ReportsService();
 
 // GET /api/reports/sales-summary?from=...&to=...
 export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const from = req.nextUrl.searchParams.get("from");
   const to = req.nextUrl.searchParams.get("to");

@@ -13,7 +13,7 @@ const service = new ProductsService();
 
 // GET /api/products - List all products (ADMIN, SALES)
 export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN", "SALES"]);
   const includeVariants =
     req.nextUrl.searchParams.get("includeVariants") === "true";
@@ -23,7 +23,7 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
 
 // POST /api/products - Create a new product (ADMIN only)
 export const POST = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const body = await req.json();
   const input = validate(createProductSchema, body);

@@ -8,7 +8,7 @@ const service = new ReportsService();
 
 // GET /api/reports/low-stock?threshold=3
 export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const threshold = parseInt(
     req.nextUrl.searchParams.get("threshold") || "3",

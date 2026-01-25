@@ -11,7 +11,7 @@ const service = new ProductsService();
 // PATCH /api/products/:id - Update product (ADMIN only)
 export const PATCH = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const user = await requireAuth(req);
+    const user = await requireAuth();
     await requireRole(user, ["ADMIN"]);
     const body = await req.json();
     const input = validate(updateProductSchema, body);
@@ -23,7 +23,7 @@ export const PATCH = withErrorHandling(
 // DELETE /api/products/:id - Delete product (ADMIN only)
 export const DELETE = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const user = await requireAuth(req);
+    const user = await requireAuth();
     await requireRole(user, ["ADMIN"]);
     const deleted = await service.deleteProduct(params.id);
     return NextResponse.json({ success: true, data: deleted, error: null });

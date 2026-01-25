@@ -13,7 +13,7 @@ const service = new AuthService();
 
 // GET /api/auth - List all users (ADMIN only)
 export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const users = await service.listUsers();
   return NextResponse.json({ success: true, data: users, error: null });
@@ -21,7 +21,7 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
 
 // POST /api/auth - Create a new user (ADMIN only)
 export const POST = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const body = await req.json();
   // You may want to add a createUserSchema for validation
@@ -32,7 +32,7 @@ export const POST = withErrorHandling(async (req: NextRequest) => {
 
 // PATCH /api/auth - Update a user (ADMIN only)
 export const PATCH = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const body = await req.json();
   const { userId, updates } = body;

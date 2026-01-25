@@ -13,7 +13,7 @@ const service = new VariantsService();
 
 // GET /api/variants - List variants (ADMIN, SALES)
 export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN", "SALES"]);
   const filters: Record<string, any> = {};
   const url = req.nextUrl;
@@ -29,7 +29,7 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
 
 // POST /api/variants - Create variant (ADMIN only)
 export const POST = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const body = await req.json();
   const input = validate(createVariantSchema, body);

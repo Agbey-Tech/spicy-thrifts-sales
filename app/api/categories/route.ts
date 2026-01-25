@@ -10,7 +10,7 @@ const service = new CategoriesService();
 
 // GET /api/categories - List all categories (ADMIN, SALES)
 export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN", "SALES"]);
   const categories = await service.listCategories();
   return NextResponse.json({ success: true, data: categories, error: null });
@@ -18,7 +18,7 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
 
 // POST /api/categories - Create a new category (ADMIN only)
 export const POST = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   await requireRole(user, ["ADMIN"]);
   const body = await req.json();
   const input = validate(createCategorySchema, body);

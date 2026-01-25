@@ -11,7 +11,7 @@ const service = new VariantsService();
 // PATCH /api/variants/:id - Update variant (ADMIN, SALES)
 export const PATCH = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
-    const user = await requireAuth(req);
+    const user = await requireAuth();
     await requireRole(user, ["ADMIN", "SALES"]);
     const body = await req.json();
     const input = validate(updateVariantSchema, body);

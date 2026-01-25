@@ -7,7 +7,7 @@ import { AuthService } from "@/services/auth.service";
 const service = new AuthService();
 
 export const GET = withErrorHandling(async (req: NextRequest) => {
-  const user = await requireAuth(req);
+  const user = await requireAuth();
   const profile = await service.getProfile(user.id);
   return NextResponse.json({
     success: true,
@@ -22,7 +22,7 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
 });
 
 export const PATCH = withErrorHandling(async (req: NextRequest) => {
-  const admin = await requireAuth(req);
+  const admin = await requireAuth();
   const body = await req.json();
 
   // Only allow admins to update users
