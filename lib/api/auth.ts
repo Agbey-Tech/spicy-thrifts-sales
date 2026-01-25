@@ -7,11 +7,34 @@ export async function login({
   email: string;
   password: string;
 }) {
-  const res = await fetch("/api/auth", {
+  const res = await fetch("/api/auth/login", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     credentials: "include",
     body: JSON.stringify({ email, password }),
+  });
+  const { success, error } = await res.json();
+  if (!success) throw new Error(error || "Invalid credentials");
+  return true;
+}
+
+export async function signUp({
+  email,
+  password,
+  full_name,
+  role,
+  secret_key,
+}: {
+  email: string;
+  password: string;
+  full_name: string;
+  role: string;
+  secret_key: string;
+}) {
+  const res = await fetch("/api/auth/signup", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email, password, full_name, role, secret_key }),
   });
   const { success, error } = await res.json();
   if (!success) throw new Error(error || "Invalid credentials");
