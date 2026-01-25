@@ -10,14 +10,12 @@ import {
 } from "@/lib/api/products";
 import { getCategories } from "@/lib/api/categories";
 import toast from "react-hot-toast";
-import { Plus, Pencil, Trash2, Image as ImageIcon } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 
 // Dummy uploadImage function (replace with real implementation)
 async function uploadImage(file: File): Promise<string | null> {
-  // Simulate upload delay
   await new Promise((r) => setTimeout(r, 800));
-  // Simulate success
-  return URL.createObjectURL(file); // For demo, use local preview URL
+  return URL.createObjectURL(file);
 }
 
 export default function ProductsPage() {
@@ -26,10 +24,21 @@ export default function ProductsPage() {
     mutate,
     isLoading,
     error,
-  } = useSWR("/api/products", () => getProducts({ includeVariants: true }));
-  const { data: categories } = useSWR("/api/categories", getCategories);
+  } = useSWR("/api/products", () => getProducts({ includeVariants: true }), {
+    revalidateOnFocus: false,
+    revalidateOnReconnect: true,
+    shouldRetryOnError: false,
+  });
+
+  const { data: categories } = useSWR("/api/categories", getCategories, {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  });
+
   const [showModal, setShowModal] = useState(false);
-  const [editProduct, setEditProduct] = useState(null as any);
+  const [editProduct, setEditProduct] = useState<any>(null);
+
+  const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
   const handleSave = async (values: any) => {
     try {
@@ -51,6 +60,7 @@ export default function ProductsPage() {
   const handleDelete = async (productId: string) => {
     if (!window.confirm("Are you sure you want to delete this product?"))
       return;
+
     try {
       await deleteProduct(productId);
       toast.success("Product deleted");
@@ -74,58 +84,79 @@ export default function ProductsPage() {
           <Plus className="w-4 h-4" /> New Product
         </button>
       </div>
+
       <div className="bg-white rounded shadow p-4 overflow-x-auto">
-        {isLoading ? (
+        {/* Initial load only */}
+        {isLoading && !products ? (
           <div>Loading...</div>
-        ) : error ? (
-          <div className="text-red-600">{error.message}</div>
         ) : (
-          <table className="w-full text-left min-w-[700px]">
-            <thead>
-              <tr className="border-b">
-                <th className="py-2 px-2">Name</th>
-                <th className="py-2 px-2">Category</th>
-                <th className="py-2 px-2">Active</th>
-                <th className="py-2 px-2">Variant Count</th>
-                <th className="py-2 px-2 w-20">Edit</th>
-                <th className="py-2 px-2 w-20">Delete</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products?.map((prod: any) => (
-                <tr key={prod.id} className="border-b hover:bg-gray-50">
-                  <td className="py-2 px-2">{prod.name}</td>
-                  <td className="py-2 px-2">
-                    {categories?.find((c) => c.id === prod.category_id)?.name ||
-                      "-"}
-                  </td>
-                  <td className="py-2 px-2">{prod.is_active ? "Yes" : "No"}</td>
-                  <td className="py-2 px-2">{prod.variants?.length ?? 0}</td>
-                  <td className="py-2 px-2">
-                    <button
-                      className="p-1 hover:bg-gray-200 rounded"
-                      onClick={() => {
-                        setEditProduct(prod);
-                        setShowModal(true);
-                      }}
-                    >
-                      <Pencil className="w-4 h-4" />
-                    </button>
-                  </td>
-                  <td className="py-2 px-2">
-                    <button
-                      className="p-1 hover:bg-red-100 rounded"
-                      onClick={() => handleDelete(prod.id)}
-                    >
-                      <Trash2 className="w-4 h-4 text-red-600" />
-                    </button>
-                  </td>
+          <>
+            {/* Non-blocking offline / error banner */}
+            {(error || isOffline) && (
+              <div className="mb-3 text-sm text-yellow-600">
+                You’re offline or having network issues. Showing last saved
+                data.
+              </div>
+            )}
+
+            <table className="w-full text-left min-w-[700px]">
+              <thead>
+                <tr className="border-b">
+                  <th className="py-2 px-2">Name</th>
+                  <th className="py-2 px-2">Category</th>
+                  <th className="py-2 px-2">Active</th>
+                  <th className="py-2 px-2">Variant Count</th>
+                  <th className="py-2 px-2 w-20">Edit</th>
+                  <th className="py-2 px-2 w-20">Delete</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {products?.map((prod: any) => (
+                  <tr key={prod.id} className="border-b hover:bg-gray-50">
+                    <td className="py-2 px-2">{prod.name}</td>
+                    <td className="py-2 px-2">
+                      {categories?.find((c) => c.id === prod.category_id)
+                        ?.name || "-"}
+                    </td>
+                    <td className="py-2 px-2">
+                      {prod.is_active ? "Yes" : "No"}
+                    </td>
+                    <td className="py-2 px-2">{prod.variants?.length ?? 0}</td>
+                    <td className="py-2 px-2">
+                      <button
+                        className="p-1 hover:bg-gray-200 rounded"
+                        onClick={() => {
+                          setEditProduct(prod);
+                          setShowModal(true);
+                        }}
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                    </td>
+                    <td className="py-2 px-2">
+                      <button
+                        className="p-1 hover:bg-red-100 rounded"
+                        onClick={() => handleDelete(prod.id)}
+                      >
+                        <Trash2 className="w-4 h-4 text-red-600" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+
+                {!products?.length && (
+                  <tr>
+                    <td colSpan={6} className="text-center py-6 text-gray-500">
+                      No products found
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          </>
         )}
       </div>
+
       {showModal && (
         <ProductModal
           initial={editProduct}
@@ -140,6 +171,10 @@ export default function ProductsPage() {
     </div>
   );
 }
+
+/* ===========================
+   Modal (unchanged logic)
+=========================== */
 
 function ProductModal({
   initial,
@@ -157,24 +192,20 @@ function ProductModal({
   const [description, setDescription] = useState(initial?.description || "");
   const [isUnique, setIsUnique] = useState(initial?.is_unique || false);
   const [images, setImages] = useState<string[]>(initial?.images || []);
-  const [imageFiles, setImageFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = Array.from(e.target.files || []);
-    setImageFiles(files);
-    // Upload all images and get URLs
     setLoading(true);
+
     const urls: string[] = [];
     for (const file of files) {
       const url = await uploadImage(file);
-      if (url) {
-        urls.push(url);
-      } else {
-        toast.error("Failed to upload image");
-      }
+      if (url) urls.push(url);
+      else toast.error("Failed to upload image");
     }
+
     setImages(urls);
     setLoading(false);
   };
@@ -203,11 +234,12 @@ function ProductModal({
     <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
       <form
         onSubmit={handleSubmit}
-        className="bg-white rounded shadow-lg p-8 w-full max-w-lg relative"
+        className="bg-white rounded shadow-lg p-8 w-full max-w-lg"
       >
         <h2 className="text-lg font-bold mb-4">
           {initial ? "Edit Product" : "New Product"}
         </h2>
+
         <div className="mb-4">
           <label className="block mb-1 font-medium">Name</label>
           <input
@@ -218,6 +250,7 @@ function ProductModal({
             disabled={loading}
           />
         </div>
+
         <div className="mb-4">
           <label className="block mb-1 font-medium">Category</label>
           <select
@@ -235,6 +268,7 @@ function ProductModal({
             ))}
           </select>
         </div>
+
         <div className="mb-4">
           <label className="block mb-1 font-medium">Description</label>
           <textarea
@@ -245,6 +279,7 @@ function ProductModal({
             disabled={loading}
           />
         </div>
+
         <div className="mb-4">
           <label className="block mb-1 font-medium">Images</label>
           <input
@@ -258,7 +293,7 @@ function ProductModal({
             {images.map((img, i) => (
               <div
                 key={i}
-                className="w-20 h-20 bg-gray-100 rounded flex items-center justify-center overflow-hidden border"
+                className="w-20 h-20 bg-gray-100 rounded overflow-hidden border"
               >
                 <img
                   src={img}
@@ -269,23 +304,23 @@ function ProductModal({
             ))}
           </div>
         </div>
+
         <div className="mb-4 flex items-center gap-2">
           <input
             type="checkbox"
-            id="isUnique"
             checked={isUnique}
             onChange={(e) => setIsUnique(e.target.checked)}
             disabled={loading}
           />
-          <label htmlFor="isUnique" className="font-medium">
-            Is Unique
-          </label>
+          <label className="font-medium">Is Unique</label>
         </div>
+
         {error && <div className="mb-2 text-red-600 text-sm">{error}</div>}
+
         <div className="flex justify-end gap-2 mt-4">
           <button
             type="button"
-            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
+            className="px-4 py-2 rounded bg-gray-200"
             onClick={onClose}
             disabled={loading}
           >
@@ -293,7 +328,7 @@ function ProductModal({
           </button>
           <button
             type="submit"
-            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 font-semibold"
+            className="px-4 py-2 rounded bg-blue-600 text-white font-semibold"
             disabled={loading}
           >
             {loading ? "Saving..." : "Save"}
