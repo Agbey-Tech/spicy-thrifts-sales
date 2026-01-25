@@ -1,5 +1,6 @@
 import type { Config } from "tailwindcss";
 const config: Config = {
+  darkMode: false,
   content: [
     "./app/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -21,6 +22,7 @@ const config: Config = {
       },
     },
   },
+
   plugins: [],
 };
 
