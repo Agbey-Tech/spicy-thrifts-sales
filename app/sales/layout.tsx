@@ -1,6 +1,8 @@
 "use client";
 
-import { SalesSidebar, SalesTopbar } from "@/components/layout/SalesNav";
+import { useState } from "react";
+import { SalesSidebar } from "@/components/layout/SalesSidebar";
+import { SalesTopbar } from "@/components/layout/SalesTopbar";
 import { useAuth } from "@/hooks/useAuth";
 
 export default function SalesLayout({
@@ -8,15 +10,21 @@ export default function SalesLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+
   useAuth();
+
   return (
-    <div className="flex flex-col min-h-screen md:flex-row bg-white">
-      <SalesSidebar />
-      <div className="flex-1 flex flex-col min-h-0">
-        <SalesTopbar />
-        <main className="flex-1 p-2 md:p-4 max-w-md mx-auto w-full overflow-auto">
-          {children}
-        </main>
+    <div className="flex min-h-screen bg-gray-50">
+      <SalesSidebar
+        isOpen={sidebarOpen}
+        onClose={() => setSidebarOpen(false)}
+      />
+
+      <div className="flex-1 flex flex-col">
+        <SalesTopbar onMenuClick={() => setSidebarOpen(true)} />
+
+        <main className="flex-1 p-4">{children}</main>
       </div>
     </div>
   );
