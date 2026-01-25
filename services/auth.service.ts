@@ -49,7 +49,7 @@ export class AuthService {
       await this.supabase.auth.admin.createUser({
         email,
         password,
-        email_confirm: false,
+        email_confirm: true,
       });
 
     if (userError || !userData?.user?.id) {
