@@ -4,10 +4,7 @@ import { validate } from "@/lib/validators/validate";
 import { requireAuth } from "@/lib/auth/requireAuth";
 import { requireRole } from "@/lib/auth/requireRole";
 import { ProductsService } from "@/services/products.service";
-import {
-  createProductSchema,
-  updateProductSchema,
-} from "@/core/validation/products.schema";
+import { createProductSchema } from "@/core/validation/products.schema";
 
 const service = new ProductsService();
 
