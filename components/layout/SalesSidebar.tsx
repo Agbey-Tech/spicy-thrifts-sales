@@ -31,39 +31,43 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
   const SidebarContent = (
     <>
       {/* Brand */}
-      <div className="px-6 py-4 font-bold text-lg border-b">
+      <div className="px-6 py-4 text-lg font-bold border-b border-gray-800">
         Spicy Thrifts POS
       </div>
 
       {/* Nav */}
-      <nav className="flex-1 py-4 space-y-1">
-        {nav.map((item) => (
-          <Link
-            key={item.href}
-            href={item.href}
-            onClick={onClose}
-            className={`flex items-center gap-3 px-6 py-3 font-medium transition
-              ${
-                pathname === item.href
-                  ? "bg-blue-100 text-blue-600"
-                  : "text-gray-700 hover:bg-gray-100"
-              }`}
-          >
-            {item.icon}
-            {item.label}
-          </Link>
-        ))}
+      <nav className="flex-1 px-3 py-4 space-y-1">
+        {nav.map((item) => {
+          const isActive = pathname === item.href;
+
+          return (
+            <Link
+              key={item.href}
+              href={item.href}
+              onClick={onClose}
+              className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors
+                ${
+                  isActive
+                    ? "bg-gray-800 text-white"
+                    : "text-gray-300 hover:bg-gray-800 hover:text-white"
+                }`}
+            >
+              {item.icon}
+              {item.label}
+            </Link>
+          );
+        })}
       </nav>
 
       {/* Logout bottom */}
-      <div className="border-t p-4">
+      <div className="border-t border-gray-800 p-4">
         <button
           onClick={async () => {
             await logout();
             toast.success("Logged out");
             router.push("/login");
           }}
-          className="flex items-center gap-3 text-red-600 font-medium w-full px-2 py-2 hover:bg-red-50 rounded"
+          className="flex items-center gap-3 w-full rounded-md px-3 py-2 text-sm font-medium text-red-400 hover:bg-gray-800 hover:text-red-300 transition"
         >
           <LogOut className="w-5 h-5" />
           Logout
@@ -74,12 +78,12 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
 
   return (
     <>
-      {/* ===== Desktop Sidebar ===== */}
-      <aside className="hidden md:flex w-56 h-screen bg-white border-r flex-col">
+      {/* Desktop */}
+      <aside className="hidden md:flex w-64 h-screen bg-gray-900 text-gray-100 flex-col">
         {SidebarContent}
       </aside>
 
-      {/* ===== Mobile Overlay ===== */}
+      {/* Mobile overlay */}
       {isOpen && (
         <div
           onClick={onClose}
@@ -87,11 +91,12 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
         />
       )}
 
-      {/* ===== Mobile Drawer ===== */}
+      {/* Mobile drawer */}
       <aside
         className={`
           fixed top-0 left-0 z-50
-          h-screen w-64 bg-white
+          h-screen w-64
+          bg-gray-900 text-gray-100
           flex flex-col
           transform transition-transform duration-300
           md:hidden
