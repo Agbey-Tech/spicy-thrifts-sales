@@ -9,7 +9,7 @@ export async function getOrders(): Promise<Order[]> {
 }
 
 // Get a single order by ID (ADMIN, SALES)
-export async function getOrder(orderId: string): Promise<Order> {
+export async function getOrder(orderId: string): Promise<any> {
   const res = await fetch(`/api/orders/${orderId}`, { credentials: "include" });
   const { success, data, error } = await res.json();
   if (!success) throw new Error(error || "Failed to fetch order");

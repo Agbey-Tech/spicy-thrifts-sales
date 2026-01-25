@@ -11,7 +11,7 @@ const service = new OrdersService();
 // GET /api/orders - List all orders (ADMIN only)
 export const GET = withErrorHandling(async (req: NextRequest) => {
   const user = await requireAuth();
-  await requireRole(user, ["ADMIN"]);
+  await requireRole(user, ["ADMIN", "SALES"]);
   const orders = await service.listOrders();
   return NextResponse.json({ success: true, data: orders, error: null });
 });
