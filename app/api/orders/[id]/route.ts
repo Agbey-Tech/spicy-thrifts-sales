@@ -10,8 +10,9 @@ const service = new OrdersService();
 export const GET = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
     const user = await requireAuth();
+    const { id } = await params;
     await requireRole(user, ["ADMIN", "SALES"]);
-    const order = await service.getOrder(params.id);
+    const order = await service.getOrder(id);
     return NextResponse.json({ success: true, data: order, error: null });
   },
 );
