@@ -1,4 +1,22 @@
 import type { UserRole } from "@/app/types/database";
+// Login function for /login page
+export async function login({
+  email,
+  password,
+}: {
+  email: string;
+  password: string;
+}) {
+  const res = await fetch("/api/auth", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+    body: JSON.stringify({ email, password }),
+  });
+  const { success, error } = await res.json();
+  if (!success) throw new Error(error || "Invalid credentials");
+  return true;
+}
 
 export interface AuthMeResponse {
   id: string;
@@ -7,7 +25,7 @@ export interface AuthMeResponse {
   full_name: string;
 }
 
-export async function getAuthMe(): Promise<AuthMeResponse> {
+export async function getProfile(): Promise<AuthMeResponse> {
   const res = await fetch("/api/auth/me", { credentials: "include" });
   const { success, data, error } = await res.json();
   if (!success) throw new Error(error || "Failed to fetch user profile");
