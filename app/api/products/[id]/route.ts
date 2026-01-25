@@ -12,10 +12,11 @@ const service = new ProductsService();
 export const PATCH = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
     const user = await requireAuth();
+    const { id } = await params;
     await requireRole(user, ["ADMIN"]);
     const body = await req.json();
     const input = validate(updateProductSchema, body);
-    const updated = await service.updateProduct(params.id, input);
+    const updated = await service.updateProduct(id, input);
     return NextResponse.json({ success: true, data: updated, error: null });
   },
 );
@@ -24,8 +25,9 @@ export const PATCH = withErrorHandling(
 export const DELETE = withErrorHandling(
   async (req: NextRequest, { params }: { params: { id: string } }) => {
     const user = await requireAuth();
+    const { id } = await params;
     await requireRole(user, ["ADMIN"]);
-    const deleted = await service.deleteProduct(params.id);
+    const deleted = await service.deleteProduct(id);
     return NextResponse.json({ success: true, data: deleted, error: null });
   },
 );
