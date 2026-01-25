@@ -50,6 +50,7 @@ export class AuthService {
         email,
         password,
         email_confirm: true,
+        user_metadata: { role: role },
       });
 
     if (userError || !userData?.user?.id) {

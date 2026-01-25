@@ -1,8 +1,10 @@
-export async function requireRole(
-  user: { role?: string },
-  allowedRoles: string[],
-) {
-  if (!user.role || !allowedRoles.includes(user.role)) {
+import { User } from "@supabase/auth-js";
+
+export async function requireRole(user: User, allowedRoles: string[]) {
+  if (
+    !user.user_metadata.role ||
+    !allowedRoles.includes(user.user_metadata.role)
+  ) {
     throw new Error("Forbidden");
   }
 }
