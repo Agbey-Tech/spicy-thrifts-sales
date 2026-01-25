@@ -1,0 +1,32 @@
+import { NextRequest, NextResponse } from "next/server";
+import { withErrorHandling } from "@/lib/interceptors/withErrorHandling";
+import { validate } from "@/lib/validators/validate";
+import { requireAuth } from "@/lib/auth/requireAuth";
+import { requireRole } from "@/lib/auth/requireRole";
+import { ProductsService } from "@/services/products.service";
+import {
+  createProductSchema,
+  updateProductSchema,
+} from "@/core/validation/products.schema";
+
+const service = new ProductsService();
+
+// GET /api/products - List all products (ADMIN, SALES)
+export const GET = withErrorHandling(async (req: NextRequest) => {
+  const user = await requireAuth(req);
+  await requireRole(user, ["ADMIN", "SALES"]);
+  const includeVariants =
+    req.nextUrl.searchParams.get("includeVariants") === "true";
+  const products = await service.listProducts({ includeVariants });
+  return NextResponse.json({ success: true, data: products, error: null });
+});
+
+// POST /api/products - Create a new product (ADMIN only)
+export const POST = withErrorHandling(async (req: NextRequest) => {
+  const user = await requireAuth(req);
+  await requireRole(user, ["ADMIN"]);
+  const body = await req.json();
+  const input = validate(createProductSchema, body);
+  const created = await service.createProduct(input);
+  return NextResponse.json({ success: true, data: created, error: null });
+});

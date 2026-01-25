@@ -43,7 +43,7 @@ export class VariantsService {
   async updateVariant(
     variantId: string,
     input: unknown,
-    role: "ADMIN" | "SALES",
+    role: "ADMIN" | "SALES" | any,
   ) {
     const data = updateVariantSchema.parse(input);
     // SALES can only update stock_quantity and price
