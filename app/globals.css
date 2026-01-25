@@ -1,77 +1,85 @@
-/* === GLOBAL DESIGN TOKENS === */
+@import "tailwindcss";
+
+/* ============================= */
+/* 🌍 ROOT DESIGN TOKENS */
+/* ============================= */
 
 :root {
-  /* Brand Colors */
-  --color-primary: #ec4899; /* Pink */
-  --color-secondary: #8b5cf6; /* Violet */
+  /* ---------- Brand ---------- */
+  --color-primary: #ec4899; /* pink-500 */
+  --color-primary-hover: #db2777;
+  --color-secondary: #8b5cf6; /* violet-500 */
 
-  /* Neutrals */
-  --color-bg: #fafafa; /* App background */
-  --color-surface: #ffffff; /* Cards, surfaces */
-  --color-border: #e5e7eb; /* Subtle border */
-  --color-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.04);
+  /* ---------- Backgrounds ---------- */
+  --color-bg: #fafafa;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f4f4f5;
 
-  /* Text */
-  --color-text-primary: #171717;
-  --color-text-muted: #6b7280;
+  /* ---------- Text ---------- */
+  --color-text-primary: #18181b;
+  --color-text-secondary: #3f3f46;
+  --color-text-muted: #71717a;
   --color-text-inverse: #ffffff;
 
-  /* States */
+  /* ---------- Borders ---------- */
+  --color-border: #e4e4e7;
+  --color-border-muted: #f4f4f5;
+
+  /* ---------- States ---------- */
   --color-success: #22c55e;
-  --color-warning: #f59e42;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  --color-warning: #f59e0b;
+  --color-danger: #ef4444;
 
-  /* Button Variants */
-  --color-btn-primary-bg: var(--color-primary);
-  --color-btn-primary-text: var(--color-text-inverse);
-  --color-btn-secondary-bg: var(--color-secondary);
-  --color-btn-secondary-text: var(--color-text-inverse);
-  --color-btn-ghost-bg: transparent;
-  --color-btn-ghost-text: var(--color-primary);
-  --color-btn-destructive-bg: var(--color-error);
-  --color-btn-destructive-text: var(--color-text-inverse);
+  /* ---------- Radius ---------- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 14px;
 
-  /* Typography */
-  --font-sans: "Inter", Arial, Helvetica, sans-serif;
-  --font-mono: "Fira Mono", "Menlo", "Monaco", monospace;
+  /* ---------- Shadows ---------- */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 10px rgba(0, 0, 0, 0.08);
 
-  --text-xs: 0.75rem;
-  --text-sm: 0.875rem;
-  --text-md: 1rem;
-  --text-lg: 1.125rem;
-  --text-xl: 1.25rem;
+  /* ---------- Spacing Scale ---------- */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
 
-  /* Spacing Scale */
-  --space-xs: 0.25rem;
-  --space-sm: 0.5rem;
-  --space-md: 1rem;
-  --space-lg: 1.5rem;
-  --space-xl: 2rem;
-
-  /* Border radius */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  /* ---------- Typography ---------- */
+  --text-xs: 12px;
+  --text-sm: 14px;
+  --text-md: 16px;
+  --text-lg: 18px;
+  --text-xl: 22px;
+  --text-2xl: 28px;
 }
 
-/* === DARK THEME OVERRIDES === */
+/* ============================= */
+/* 🌙 DARK MODE */
+/* ============================= */
+
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #18181b;
-    --color-surface: #232329;
-    --color-border: #27272a;
-    --color-shadow: 0 2px 8px 0 rgba(0, 0, 0, 0.32);
+    --color-bg: #0f0f11;
+    --color-surface: #18181b;
+    --color-surface-muted: #27272a;
 
-    --color-text-primary: #ededed;
+    --color-text-primary: #fafafa;
+    --color-text-secondary: #e4e4e7;
     --color-text-muted: #a1a1aa;
-    --color-text-inverse: #171717;
+
+    --color-border: #27272a;
+    --color-border-muted: #3f3f46;
   }
 }
 
-/* === BASE STYLES === */
+/* ============================= */
+/* 🧍 BASE STYLES */
+/* ============================= */
+
 body {
-  background: var(--color-bg);
+  background-color: var(--color-bg);
   color: var(--color-text-primary);
   font-family: var(--font-sans);
 }
