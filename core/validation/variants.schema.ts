@@ -8,10 +8,12 @@ export const createVariantSchema = z.object({
   price: z.number().positive(),
   stock_quantity: z.number().int().min(0),
   attributes: z.record(z.any(), z.any()).optional(),
+  images: z.string().array(),
 });
 
 export const updateVariantSchema = z.object({
   price: z.number().positive().optional(),
   stock_quantity: z.number().int().min(0).optional(),
   attributes: z.record(z.any(), z.any()).optional(),
+  images: z.string().array(),
 });

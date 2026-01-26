@@ -8,10 +8,22 @@ import {
   updateProduct,
   deleteProduct,
 } from "@/lib/api/products";
-import { uploadImage } from "@/lib/uploads/uploadProfileImage";
 import { getCategories } from "@/lib/api/categories";
 import toast from "react-hot-toast";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Trash2,
+  Package,
+  Grid3x3,
+  List,
+  AlertCircle,
+  Box,
+  X,
+  Layers,
+  CheckCircle,
+  XCircle,
+} from "lucide-react";
 
 export default function ProductsPage() {
   const {
@@ -32,6 +44,7 @@ export default function ProductsPage() {
 
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState<any>(null);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
@@ -39,10 +52,10 @@ export default function ProductsPage() {
     try {
       if (editProduct) {
         await updateProduct(editProduct.id, values);
-        toast.success("Product updated");
+        toast.success("Product updated successfully");
       } else {
         await createProduct(values);
-        toast.success("Product created");
+        toast.success("Product created successfully");
       }
       setShowModal(false);
       setEditProduct(null);
@@ -58,7 +71,7 @@ export default function ProductsPage() {
 
     try {
       await deleteProduct(productId);
-      toast.success("Product deleted");
+      toast.success("Product deleted successfully");
       mutate();
     } catch (e: any) {
       toast.error(e?.message || "Failed to delete product");
@@ -66,92 +79,386 @@ export default function ProductsPage() {
   };
 
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Products</h1>
-        <button
-          className="flex items-center gap-2 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={() => {
-            setEditProduct(null);
-            setShowModal(true);
-          }}
-        >
-          <Plus className="w-4 h-4" /> New Product
-        </button>
-      </div>
-
-      <div className="bg-white rounded shadow p-4 overflow-x-auto">
-        {/* Initial load only */}
-        {isLoading && !products ? (
-          <div>Loading...</div>
-        ) : (
-          <>
-            {/* Non-blocking offline / error banner */}
-            {(error || isOffline) && (
-              <div className="mb-3 text-sm text-yellow-600">
-                You’re offline or having network issues. Showing last saved
-                data.
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+            <div className="flex items-center gap-3">
+              <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg">
+                <Package className="w-6 h-6 text-white" />
               </div>
-            )}
+              <div>
+                <h1 className="text-3xl font-bold text-gray-800">Products</h1>
+                <p className="text-sm text-gray-600">
+                  Manage your product catalog
+                </p>
+              </div>
+            </div>
 
-            <table className="w-full text-left min-w-[700px]">
-              <thead>
-                <tr className="border-b">
-                  <th className="py-2 px-2">Name</th>
-                  <th className="py-2 px-2">Category</th>
-                  <th className="py-2 px-2">Active</th>
-                  <th className="py-2 px-2">Variant Count</th>
-                  <th className="py-2 px-2 w-20">Edit</th>
-                  <th className="py-2 px-2 w-20">Delete</th>
-                </tr>
-              </thead>
-              <tbody>
-                {products?.map((prod: any) => (
-                  <tr key={prod.id} className="border-b hover:bg-gray-50">
-                    <td className="py-2 px-2">{prod.name}</td>
-                    <td className="py-2 px-2">
-                      {categories?.find((c) => c.id === prod.category_id)
-                        ?.name || "-"}
-                    </td>
-                    <td className="py-2 px-2">
-                      {prod.is_active ? "Yes" : "No"}
-                    </td>
-                    <td className="py-2 px-2">{prod.variants?.length ?? 0}</td>
-                    <td className="py-2 px-2">
-                      <button
-                        className="p-1 hover:bg-gray-200 rounded"
-                        onClick={() => {
-                          setEditProduct(prod);
-                          setShowModal(true);
-                        }}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                    </td>
-                    <td className="py-2 px-2">
-                      <button
-                        className="p-1 hover:bg-red-100 rounded"
-                        onClick={() => handleDelete(prod.id)}
-                      >
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </button>
-                    </td>
-                  </tr>
-                ))}
+            <div className="flex items-center gap-3">
+              {/* View Toggle */}
+              <div className="flex gap-2 bg-white rounded-xl p-1.5 shadow-sm border-2 border-gray-200">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2.5 rounded-lg transition-all ${
+                    viewMode === "grid"
+                      ? "bg-purple-500 text-white shadow-md"
+                      : "text-gray-500 hover:bg-gray-100"
+                  }`}
+                >
+                  <Grid3x3 className="w-5 h-5" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-2.5 rounded-lg transition-all ${
+                    viewMode === "list"
+                      ? "bg-purple-500 text-white shadow-md"
+                      : "text-gray-500 hover:bg-gray-100"
+                  }`}
+                >
+                  <List className="w-5 h-5" />
+                </button>
+              </div>
 
-                {!products?.length && (
-                  <tr>
-                    <td colSpan={6} className="text-center py-6 text-gray-500">
-                      No products found
-                    </td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </>
-        )}
+              {/* Add Button */}
+              <button
+                className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95"
+                onClick={() => {
+                  setEditProduct(null);
+                  setShowModal(true);
+                }}
+              >
+                <Plus className="w-5 h-5" />
+                <span className="hidden sm:inline">New Product</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
+          {isLoading && !products ? (
+            <div className="flex flex-col items-center justify-center py-16 space-y-4">
+              <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
+              <p className="text-gray-500 font-medium">Loading products...</p>
+            </div>
+          ) : (
+            <>
+              {/* Offline/Error Banner */}
+              {(error || isOffline) && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 m-4 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-yellow-800">
+                      Network Issue
+                    </p>
+                    <p className="text-sm text-yellow-700">
+                      You're offline or having network issues. Showing last
+                      saved data.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Grid View */}
+              {viewMode === "grid" && (
+                <div className="p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {products?.map((prod: any) => (
+                      <div
+                        key={prod.id}
+                        className="group relative bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-lg transition-all duration-300"
+                      >
+                        {/* Icon & Actions */}
+                        <div className="flex items-start justify-between mb-4">
+                          <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
+                            <Box className="w-5 h-5 text-white" />
+                          </div>
+                          <div className="flex gap-1">
+                            <button
+                              className="p-2 hover:bg-purple-50 rounded-lg transition-colors text-gray-400 hover:text-purple-600"
+                              onClick={() => {
+                                setEditProduct(prod);
+                                setShowModal(true);
+                              }}
+                              title="Edit product"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-600"
+                              onClick={() => handleDelete(prod.id)}
+                              title="Delete product"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Content */}
+                        <div className="space-y-3">
+                          <div>
+                            <h3 className="font-bold text-lg text-gray-800 mb-1 truncate">
+                              {prod.name}
+                            </h3>
+                            <p className="text-xs text-gray-500 line-clamp-2">
+                              {prod.description || "No description"}
+                            </p>
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                            <div className="flex items-center gap-1.5">
+                              <Layers className="w-3.5 h-3.5 text-gray-400" />
+                              <span className="text-xs text-gray-600 font-medium">
+                                {prod.variants?.length ?? 0} variants
+                              </span>
+                            </div>
+                            {prod.is_active ? (
+                              <div className="flex items-center gap-1 text-green-600">
+                                <CheckCircle className="w-3.5 h-3.5" />
+                                <span className="text-xs font-semibold">
+                                  Active
+                                </span>
+                              </div>
+                            ) : (
+                              <div className="flex items-center gap-1 text-gray-400">
+                                <XCircle className="w-3.5 h-3.5" />
+                                <span className="text-xs font-semibold">
+                                  Inactive
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
+                            {categories?.find((c) => c.id === prod.category_id)
+                              ?.name || "No category"}
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    {!products?.length && (
+                      <div className="col-span-full flex flex-col items-center justify-center py-16">
+                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                          <Package className="w-16 h-16 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                          No products yet
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Create your first product to get started
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* List View */}
+              {viewMode === "list" && (
+                <>
+                  {/* Desktop Table */}
+                  <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                          <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                            Product Name
+                          </th>
+                          <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                            Category
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                            Active
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                            Variants
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-32">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {products?.map((prod: any) => (
+                          <tr
+                            key={prod.id}
+                            className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 group"
+                          >
+                            <td className="py-4 px-6">
+                              <div className="flex items-center gap-3">
+                                <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                  <Box className="w-4 h-4 text-white" />
+                                </div>
+                                <div>
+                                  <span className="font-semibold text-gray-800 block">
+                                    {prod.name}
+                                  </span>
+                                  <span className="text-xs text-gray-500 line-clamp-1">
+                                    {prod.description || "No description"}
+                                  </span>
+                                </div>
+                              </div>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                {categories?.find(
+                                  (c) => c.id === prod.category_id,
+                                )?.name || "-"}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              {prod.is_active ? (
+                                <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                  <CheckCircle className="w-3 h-3" />
+                                  Active
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                  <XCircle className="w-3 h-3" />
+                                  Inactive
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <span className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                <Layers className="w-3 h-3" />
+                                {prod.variants?.length ?? 0}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6">
+                              <div className="flex items-center justify-center gap-2">
+                                <button
+                                  className="p-2 hover:bg-purple-100 rounded-lg transition-colors text-gray-600 hover:text-purple-600"
+                                  onClick={() => {
+                                    setEditProduct(prod);
+                                    setShowModal(true);
+                                  }}
+                                  title="Edit product"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  className="p-2 hover:bg-red-100 rounded-lg transition-colors text-gray-600 hover:text-red-600"
+                                  onClick={() => handleDelete(prod.id)}
+                                  title="Delete product"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        ))}
+
+                        {!products?.length && (
+                          <tr>
+                            <td colSpan={5} className="py-16">
+                              <div className="flex flex-col items-center justify-center text-center">
+                                <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                                  <Package className="w-16 h-16 text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                                  No products yet
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                  Create your first product to get started
+                                </p>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile List */}
+                  <div className="md:hidden p-4 space-y-3">
+                    {products?.map((prod: any) => (
+                      <div
+                        key={prod.id}
+                        className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-purple-300 hover:shadow-md transition-all duration-300"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex items-start gap-3 flex-1 min-w-0">
+                            <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-md flex-shrink-0">
+                              <Box className="w-5 h-5 text-white" />
+                            </div>
+                            <div className="min-w-0 flex-1">
+                              <h3 className="font-bold text-gray-800 truncate">
+                                {prod.name}
+                              </h3>
+                              <p className="text-xs text-gray-500 line-clamp-1">
+                                {prod.description || "No description"}
+                              </p>
+                              <div className="flex flex-wrap gap-2 mt-2">
+                                <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                  {categories?.find(
+                                    (c) => c.id === prod.category_id,
+                                  )?.name || "-"}
+                                </span>
+                                <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                  <Layers className="w-3 h-3" />
+                                  {prod.variants?.length ?? 0}
+                                </span>
+                                {prod.is_active ? (
+                                  <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                    <CheckCircle className="w-3 h-3" />
+                                    Active
+                                  </span>
+                                ) : (
+                                  <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                    <XCircle className="w-3 h-3" />
+                                    Inactive
+                                  </span>
+                                )}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="flex gap-1 ml-2 flex-shrink-0">
+                            <button
+                              className="p-2 hover:bg-purple-50 rounded-lg transition-colors text-gray-400 hover:text-purple-600"
+                              onClick={() => {
+                                setEditProduct(prod);
+                                setShowModal(true);
+                              }}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-600"
+                              onClick={() => handleDelete(prod.id)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+
+                    {!products?.length && (
+                      <div className="flex flex-col items-center justify-center py-16 text-center">
+                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                          <Package className="w-16 h-16 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                          No products yet
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          Create your first product to get started
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
+      {/* Modal */}
       {showModal && (
         <ProductModal
           initial={editProduct}
@@ -168,7 +475,7 @@ export default function ProductsPage() {
 }
 
 /* ===========================
-   Modal (unchanged logic)
+   Modal
 =========================== */
 
 function ProductModal({
@@ -186,27 +493,10 @@ function ProductModal({
   const [categoryId, setCategoryId] = useState(initial?.category_id || "");
   const [description, setDescription] = useState(initial?.description || "");
   const [isUnique, setIsUnique] = useState(initial?.is_unique || false);
-  const [images, setImages] = useState<string[]>(initial?.images || []);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    setLoading(true);
-
-    const urls: string[] = [];
-    for (const file of files) {
-      const url = await uploadImage(file);
-      if (url) urls.push(url);
-      else toast.error("Failed to upload image");
-    }
-
-    setImages(urls);
-    setLoading(false);
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async () => {
     setError("");
     setLoading(true);
     try {
@@ -215,7 +505,6 @@ function ProductModal({
         category_id: categoryId,
         description,
         is_unique: isUnique,
-        images,
       });
       onClose();
     } catch (e: any) {
@@ -226,110 +515,133 @@ function ProductModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded shadow-lg p-8 w-full max-w-lg"
-      >
-        <h2 className="text-lg font-bold mb-4">
-          {initial ? "Edit Product" : "New Product"}
-        </h2>
-
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Name</label>
-          <input
-            className="w-full border px-3 py-2 rounded"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            required
-            disabled={loading}
-          />
-        </div>
-
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Category</label>
-          <select
-            className="w-full border px-3 py-2 rounded"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-            required
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 p-2 rounded-lg">
+              <Package className="w-5 h-5" />
+            </div>
+            <h2 className="text-xl font-bold">
+              {initial ? "Edit Product" : "New Product"}
+            </h2>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
             disabled={loading}
           >
-            <option value="">Select category</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
+            <X className="w-5 h-5" />
+          </button>
         </div>
 
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Description</label>
-          <textarea
-            className="w-full border px-3 py-2 rounded"
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            rows={3}
-            disabled={loading}
-          />
-        </div>
+        {/* Form */}
+        <div className="p-6 space-y-5">
+          {/* Name Input */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Product Name
+            </label>
+            <input
+              type="text"
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              placeholder="Enter product name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              disabled={loading}
+            />
+          </div>
 
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Images</label>
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-            disabled={loading}
-          />
-          <div className="flex gap-2 mt-2 flex-wrap">
-            {images.map((img, i) => (
-              <div
-                key={i}
-                className="w-20 h-20 bg-gray-100 rounded overflow-hidden border"
-              >
-                <img
-                  src={img}
-                  alt="Preview"
-                  className="object-cover w-full h-full"
-                />
-              </div>
-            ))}
+          {/* Category Select */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Category
+            </label>
+            <select
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              value={categoryId}
+              onChange={(e) => setCategoryId(e.target.value)}
+              disabled={loading}
+            >
+              <option value="">Select category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Description */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Description
+            </label>
+            <textarea
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none resize-none"
+              placeholder="Enter product description"
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              rows={3}
+              disabled={loading}
+            />
+          </div>
+
+          {/* Is Unique Checkbox */}
+          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
+            <input
+              type="checkbox"
+              id="isUnique"
+              checked={isUnique}
+              onChange={(e) => setIsUnique(e.target.checked)}
+              disabled={loading}
+              className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2"
+            />
+            <label
+              htmlFor="isUnique"
+              className="font-semibold text-gray-700 cursor-pointer flex-1"
+            >
+              Is Unique Product
+            </label>
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              className="flex-1 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={loading || !name.trim() || !categoryId}
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Saving...
+                </span>
+              ) : (
+                "Save Product"
+              )}
+            </button>
           </div>
         </div>
-
-        <div className="mb-4 flex items-center gap-2">
-          <input
-            type="checkbox"
-            checked={isUnique}
-            onChange={(e) => setIsUnique(e.target.checked)}
-            disabled={loading}
-          />
-          <label className="font-medium">Is Unique</label>
-        </div>
-
-        {error && <div className="mb-2 text-red-600 text-sm">{error}</div>}
-
-        <div className="flex justify-end gap-2 mt-4">
-          <button
-            type="button"
-            className="px-4 py-2 rounded bg-gray-200"
-            onClick={onClose}
-            disabled={loading}
-          >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded bg-blue-600 text-white font-semibold"
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save"}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }
