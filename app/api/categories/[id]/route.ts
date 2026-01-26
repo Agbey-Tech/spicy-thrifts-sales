@@ -10,7 +10,7 @@ const service = new CategoriesService();
 
 // PATCH /api/categories/:id - Update category (ADMIN only)
 export const PATCH = withErrorHandling(
-  async (req: NextRequest, { params }: { params: { id: string } }) => {
+  async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const user = await requireAuth();
     await requireRole(user, ["ADMIN"]);
     const { id } = await params;

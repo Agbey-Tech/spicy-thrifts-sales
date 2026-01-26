@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import useSWR from "swr";
-import toast from "react-hot-toast";
 import { getSalesSummary, getLowStockVariants } from "@/lib/api/reports";
 import { Bar } from "react-chartjs-2";
 import {

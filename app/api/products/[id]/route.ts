@@ -10,7 +10,7 @@ const service = new ProductsService();
 
 // PATCH /api/products/:id - Update product (ADMIN only)
 export const PATCH = withErrorHandling(
-  async (req: NextRequest, { params }: { params: { id: string } }) => {
+  async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const user = await requireAuth();
     const { id } = await params;
     await requireRole(user, ["ADMIN"]);
@@ -23,7 +23,7 @@ export const PATCH = withErrorHandling(
 
 // DELETE /api/products/:id - Delete product (ADMIN only)
 export const DELETE = withErrorHandling(
-  async (req: NextRequest, { params }: { params: { id: string } }) => {
+  async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const user = await requireAuth();
     const { id } = await params;
     await requireRole(user, ["ADMIN"]);

@@ -8,7 +8,7 @@ const service = new OrdersService();
 
 // GET /api/orders/:id - Get single order (ADMIN, SALES)
 export const GET = withErrorHandling(
-  async (req: NextRequest, { params }: { params: { id: string } }) => {
+  async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
     const user = await requireAuth();
     const { id } = await params;
     await requireRole(user, ["ADMIN", "SALES"]);
