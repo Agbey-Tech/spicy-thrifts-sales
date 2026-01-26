@@ -25,7 +25,7 @@ export interface Product {
   description?: string;
   base_price?: number;
   is_unique: boolean;
-  images?: string[];
+  images?: string[]; //TODO; rm later
   created_at: string;
 }
 
@@ -38,6 +38,7 @@ export interface ProductVariant {
   price: number;
   stock_quantity: number;
   attributes?: Record<string, any>;
+  images?: string[];
   created_at: string;
 }
 
