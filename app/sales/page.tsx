@@ -49,7 +49,7 @@ export default function SalesPOSPage() {
     setShowInvoice(true);
     setInvoiceId(orderId);
     setCart([]);
-    setRefreshKey(Date.now().toString()); // triggers variant re-fetch
+    setRefreshKey(Date.now().toString());
   };
 
   const handleCheckout = () => {
