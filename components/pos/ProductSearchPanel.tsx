@@ -73,7 +73,7 @@ export function ProductSearchPanel({
   return (
     <section className="space-y-6">
       {/* Search and Filter Header */}
-      <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-sm border border-blue-100">
+      <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-2xl p-6 shadow-sm border border-blue-100">
         <div className="flex flex-col lg:flex-row gap-4">
           {/* Search Input */}
           <div className="flex-1 relative group">
@@ -158,7 +158,7 @@ export function ProductSearchPanel({
               key={product.id}
               className="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 overflow-hidden border border-gray-100"
             >
-              <div className="bg-gradient-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
+              <div className="bg-linear-to-r from-gray-50 to-gray-100 px-6 py-4 border-b border-gray-200">
                 <h3 className="font-bold text-xl text-gray-800">
                   {product.name}
                 </h3>
@@ -179,14 +179,14 @@ export function ProductSearchPanel({
                 {variants.map((variant) => (
                   <div
                     key={variant.id}
-                    className={`group bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl overflow-hidden hover:border-blue-400 hover:shadow-lg transition-all duration-300 ${
+                    className={`group bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl overflow-hidden hover:border-blue-400 hover:shadow-lg transition-all duration-300 ${
                       viewMode === "list" ? "flex gap-4" : "flex flex-col"
                     }`}
                   >
                     {/* Image */}
                     <div
                       onClick={() => setSelectedVariant(variant)}
-                      className={`bg-white ${viewMode === "list" ? "w-32 h-32 flex-shrink-0" : "w-full aspect-square"} flex items-center justify-center p-3 border-b border-gray-100`}
+                      className={`bg-white ${viewMode === "list" ? "w-32 h-32 shrink-0" : "w-full aspect-square"} flex items-center justify-center p-3 border-b border-gray-100`}
                     >
                       {variant.images && variant.images.length > 0 ? (
                         <img
@@ -195,7 +195,7 @@ export function ProductSearchPanel({
                           className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
                         />
                       ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg">
+                        <div className="w-full h-full flex flex-col items-center justify-center bg-linear-to-br from-gray-100 to-gray-200 rounded-lg">
                           <Package className="w-12 h-12 text-gray-400 mb-2" />
                           <span className="text-xs text-gray-500">
                             No Image
@@ -246,7 +246,7 @@ export function ProductSearchPanel({
                       </div>
 
                       <button
-                        className="mt-3 w-full py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg active:scale-95"
+                        className="mt-3 w-full py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg active:scale-95"
                         disabled={variant.stock_quantity === 0}
                         onClick={() => onAddToCart(variant)}
                       >
@@ -271,7 +271,7 @@ export function ProductSearchPanel({
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black bg-opacity-50 backdrop-blur-sm animate-in fade-in duration-200">
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-in zoom-in-95 duration-200">
             {/* Header */}
-            <div className="sticky top-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 flex items-center justify-between rounded-t-2xl">
+            <div className="sticky top-0 bg-linear-to-r from-blue-600 to-indigo-600 text-white px-6 py-4 flex items-center justify-between rounded-t-2xl">
               <h3 className="font-bold text-xl">Product Details</h3>
               <button
                 className="p-2 hover:bg-white/20 rounded-lg transition-colors"
@@ -285,7 +285,7 @@ export function ProductSearchPanel({
             {/* Content */}
             <div className="p-6 space-y-6">
               {/* Images */}
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4">
+              <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-4">
                 {selectedVariant.images && selectedVariant.images.length > 0 ? (
                   <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                     {selectedVariant.images.map((img, idx) => (
@@ -298,7 +298,7 @@ export function ProductSearchPanel({
                     ))}
                   </div>
                 ) : (
-                  <div className="aspect-video flex flex-col items-center justify-center bg-gradient-to-br from-gray-200 to-gray-300 rounded-lg">
+                  <div className="aspect-video flex flex-col items-center justify-center bg-linear-to-br from-gray-200 to-gray-300 rounded-lg">
                     <Package className="w-16 h-16 text-gray-400 mb-2" />
                     <span className="text-sm text-gray-500">
                       No Images Available
@@ -365,7 +365,7 @@ export function ProductSearchPanel({
 
               {/* Action Button */}
               <button
-                className="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl active:scale-95"
+                className="w-full py-4 rounded-xl font-bold text-lg transition-all duration-300 flex items-center justify-center gap-3 disabled:opacity-50 disabled:cursor-not-allowed bg-linear-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-xl active:scale-95"
                 disabled={selectedVariant.stock_quantity === 0}
                 onClick={() => {
                   onAddToCart(selectedVariant);

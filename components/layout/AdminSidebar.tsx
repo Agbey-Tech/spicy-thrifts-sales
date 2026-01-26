@@ -29,11 +29,11 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
   };
 
   const SidebarContent = (
-    <div className="h-full flex flex-col bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800">
+    <div className="h-full flex flex-col bg-linear-to-b from-gray-900 via-gray-900 to-gray-800">
       {/* Brand Header */}
       <div className="p-6 border-b border-gray-700/50">
         <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2.5 rounded-xl shadow-lg">
+          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2.5 rounded-xl shadow-lg">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -68,7 +68,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
                 transition-all duration-300 overflow-hidden
                 ${
                   isActive
-                    ? "bg-gradient-to-r " + gradient + " shadow-lg scale-105"
+                    ? "bg-linear-to-r " + gradient + " shadow-lg scale-105"
                     : "text-gray-300 hover:bg-gray-800/50"
                 }
               `}
@@ -77,7 +77,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
               {!isActive && (
                 <div
                   className={`
-                  absolute inset-0 bg-gradient-to-r ${gradient} 
+                  absolute inset-0 bg-linear-to-r ${gradient} 
                   opacity-0 group-hover:opacity-10 transition-opacity duration-300
                 `}
                 />

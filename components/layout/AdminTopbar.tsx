@@ -48,7 +48,7 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
 
         {/* Page Title - Hidden on mobile, shown on desktop */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-md">
+          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-md">
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
@@ -62,7 +62,7 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
         {/* Mobile Logo */}
         <div className="md:hidden flex items-center gap-2">
           <Shield className="w-5 h-5 text-purple-600" />
-          <h2 className="text-lg font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+          <h2 className="text-lg font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
             Spicy Thrifts
           </h2>
         </div>
@@ -97,12 +97,12 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
           >
             {/* Avatar */}
             <div className="relative">
-              <div className="h-10 w-10 rounded-xl bg-gradient-to-br from-purple-500 to-pink-600 flex items-center justify-center font-bold text-white shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="h-10 w-10 rounded-xl bg-linear-to-br from-purple-500 to-pink-600 flex items-center justify-center font-bold text-white shadow-lg group-hover:shadow-xl transition-shadow">
                 {getInitials(user?.full_name || "")}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
               {/* Admin badge indicator */}
-              <div className="absolute -top-1 -right-1 bg-gradient-to-br from-purple-500 to-pink-600 rounded-full p-0.5">
+              <div className="absolute -top-1 -right-1 bg-linear-to-br from-purple-500 to-pink-600 rounded-full p-0.5">
                 <Crown className="w-2.5 h-2.5 text-white" />
               </div>
             </div>
@@ -125,7 +125,7 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
               {/* Dropdown Content */}
               <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50 animate-in slide-in-from-top-2 duration-200">
                 {/* User Info Header */}
-                <div className="bg-gradient-to-r from-purple-500 to-pink-600 p-4 text-white">
+                <div className="bg-linear-to-r from-purple-500 to-pink-600 p-4 text-white">
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-bold text-lg">

@@ -41,11 +41,11 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
   };
 
   const SidebarContent = (
-    <div className="h-full flex flex-col bg-gradient-to-b from-gray-900 via-gray-900 to-gray-800">
+    <div className="h-full flex flex-col bg-linear-to-b from-gray-900 via-gray-900 to-gray-800">
       {/* Brand Header */}
       <div className="p-6 border-b border-gray-700/50">
         <div className="flex items-center gap-3">
-          <div className="bg-gradient-to-br from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-lg">
+          <div className="bg-linear-to-br from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-lg">
             <Store className="w-6 h-6 text-white" />
           </div>
           <div>
@@ -79,9 +79,7 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
                 transition-all duration-300 overflow-hidden
                 ${
                   isActive
-                    ? "bg-gradient-to-r " +
-                      item.gradient +
-                      " shadow-lg scale-105"
+                    ? "bg-linear-to-r " + item.gradient + " shadow-lg scale-105"
                     : "text-gray-300 hover:bg-gray-800/50"
                 }
               `}
@@ -90,7 +88,7 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
               {!isActive && (
                 <div
                   className={`
-                  absolute inset-0 bg-gradient-to-r ${item.gradient} 
+                  absolute inset-0 bg-linear-to-r ${item.gradient} 
                   opacity-0 group-hover:opacity-10 transition-opacity duration-300
                 `}
                 />
@@ -141,7 +139,7 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
                      transition-all duration-300 relative overflow-hidden"
         >
           {/* Hover effect */}
-          <div className="absolute inset-0 bg-gradient-to-r from-red-500 to-pink-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
+          <div className="absolute inset-0 bg-linear-to-r from-red-500 to-pink-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
 
           <div className="relative z-10 p-2 rounded-lg bg-gray-800 group-hover:bg-red-500/20 transition-all duration-300">
             <LogOut className="w-5 h-5" />

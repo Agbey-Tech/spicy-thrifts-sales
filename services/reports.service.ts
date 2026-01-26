@@ -20,6 +20,7 @@ export class ReportsService {
       orderCount: data.length,
       from,
       to,
+      orders: data
     };
   }
 

@@ -87,7 +87,7 @@ export function SalesOrderInvoiceOverlay({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-6 py-5 flex items-center justify-between">
+        <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <Receipt className="w-6 h-6" />
@@ -109,7 +109,7 @@ export function SalesOrderInvoiceOverlay({
         {/* Content */}
         <div className="flex-1 overflow-y-auto p-6 space-y-6">
           {/* Invoice Info Card */}
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-200">
+          <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-6 border-2 border-gray-200">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <div className="text-sm text-gray-600 mb-1 flex items-center gap-2">
@@ -163,7 +163,7 @@ export function SalesOrderInvoiceOverlay({
           {(order.customer_name ||
             order.customer_phone ||
             order.delivery_address) && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
+            <div className="bg-linear-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border-2 border-blue-200">
               <h3 className="font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <User className="w-5 h-5 text-blue-600" />
                 Customer Information
@@ -221,7 +221,7 @@ export function SalesOrderInvoiceOverlay({
 
           {/* Items Table */}
           <div className="bg-white rounded-xl border-2 border-gray-200 overflow-hidden">
-            <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-4 py-3">
+            <div className="bg-linear-to-r from-gray-800 to-gray-900 text-white px-4 py-3">
               <h3 className="font-bold flex items-center gap-2">
                 <Package className="w-5 h-5" />
                 Order Items
@@ -308,7 +308,7 @@ export function SalesOrderInvoiceOverlay({
           </div>
 
           {/* Grand Total */}
-          <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
+          <div className="bg-linear-to-r from-blue-600 to-indigo-600 rounded-xl p-6 text-white">
             <div className="flex justify-between items-center">
               <span className="text-lg font-semibold">Grand Total</span>
               <span className="text-3xl font-bold">
@@ -319,10 +319,10 @@ export function SalesOrderInvoiceOverlay({
         </div>
 
         {/* Footer Actions */}
-        <div className="border-t-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 p-6">
+        <div className="border-t-2 border-gray-200 bg-linear-to-r from-gray-50 to-gray-100 p-6">
           <div className="flex flex-col sm:flex-row gap-3">
             <button
-              className="flex-1 py-3 px-6 rounded-xl bg-gradient-to-r from-green-600 to-emerald-600 text-white font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
+              className="flex-1 py-3 px-6 rounded-xl bg-linear-to-r from-green-600 to-emerald-600 text-white font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
               onClick={() => onPrint(order)}
             >
               <Printer className="w-5 h-5" />

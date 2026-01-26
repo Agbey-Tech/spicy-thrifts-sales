@@ -31,7 +31,7 @@ export function CartPanel({
   return (
     <section className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden h-full flex flex-col">
       {/* Header */}
-      <div className="bg-gradient-to-r from-gray-800 to-gray-900 text-white px-6 py-4">
+      <div className="bg-lnear-to-r from-gray-800 to-gray-900 text-white px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white/10 p-2 rounded-lg">
@@ -50,7 +50,7 @@ export function CartPanel({
       {/* Empty State */}
       {items.length === 0 && (
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+          <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
             <ShoppingBag className="w-16 h-16 text-gray-400" />
           </div>
           <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -67,11 +67,11 @@ export function CartPanel({
             {items.map(({ variant, quantity }) => (
               <div
                 key={variant.id}
-                className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-300 group"
+                className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-300 group"
               >
                 <div className="flex gap-4">
                   {/* Image */}
-                  <div className="w-20 h-20 flex-shrink-0 bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
+                  <div className="w-20 h-20 shrink-0 bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
                     {variant.images && variant.images.length > 0 ? (
                       <img
                         src={variant.images[0]}
@@ -79,7 +79,7 @@ export function CartPanel({
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
                       />
                     ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200">
+                      <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-gray-100 to-gray-200">
                         <Package className="w-8 h-8 text-gray-400" />
                       </div>
                     )}
@@ -193,7 +193,7 @@ export function CartPanel({
           </div>
 
           {/* Summary */}
-          <div className="border-t-2 border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 p-6 space-y-4">
+          <div className="border-t-2 border-gray-200 bg-linear-to-r from-gray-50 to-gray-100 p-6 space-y-4">
             <div className="space-y-2">
               <div className="flex justify-between items-center text-gray-600">
                 <span className="text-sm">Items</span>

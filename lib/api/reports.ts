@@ -7,6 +7,7 @@ export async function getSalesSummary(
   orderCount: number;
   from: string;
   to: string;
+  orders: [{ created_at: string; total_amount: number }];
 }> {
   const url = new URL("/api/reports/sales-summary", window.location.origin);
   url.searchParams.set("from", from);

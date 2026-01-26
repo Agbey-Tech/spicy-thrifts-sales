@@ -95,12 +95,12 @@ export default function SalesOrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3 mb-4">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-3 rounded-xl shadow-lg">
+            <div className="bg-linear-to-r from-blue-600 to-indigo-600 p-3 rounded-xl shadow-lg">
               <Receipt className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -172,7 +172,7 @@ export default function SalesOrdersPage() {
             <>
               {(error || isOffline) && (
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 m-4 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-yellow-800">
                       Network Issue
@@ -189,7 +189,7 @@ export default function SalesOrdersPage() {
               <div className="hidden lg:block overflow-x-auto">
                 <table className="w-full">
                   <thead>
-                    <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                    <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
                       <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
                         Invoice #
                       </th>
@@ -217,7 +217,7 @@ export default function SalesOrdersPage() {
                     {paginatedOrders.map((order: Order) => (
                       <tr
                         key={order.id}
-                        className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 cursor-pointer group"
+                        className="border-b border-gray-100 hover:bg-linear-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-200 cursor-pointer group"
                         onClick={() => setSelectedOrder(order)}
                       >
                         <td className="py-4 px-6">
@@ -296,7 +296,7 @@ export default function SalesOrdersPage() {
                       <tr>
                         <td colSpan={7} className="py-16">
                           <div className="flex flex-col items-center justify-center text-center">
-                            <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                            <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                               <Package className="w-16 h-16 text-gray-400" />
                             </div>
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -320,7 +320,7 @@ export default function SalesOrdersPage() {
                 {paginatedOrders.map((order: Order) => (
                   <div
                     key={order.id}
-                    className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                    className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
                     onClick={() => setSelectedOrder(order)}
                   >
                     {/* Header */}
@@ -401,7 +401,7 @@ export default function SalesOrdersPage() {
 
                 {!paginatedOrders.length && (
                   <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                    <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                       <Package className="w-16 h-16 text-gray-400" />
                     </div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -418,7 +418,7 @@ export default function SalesOrdersPage() {
 
               {/* Pagination */}
               {totalPages > 1 && (
-                <div className="bg-gradient-to-r from-gray-50 to-gray-100 border-t-2 border-gray-200 p-6">
+                <div className="bg-linear-to-r from-gray-50 to-gray-100 border-t-2 border-gray-200 p-6">
                   <div className="flex items-center justify-between">
                     <button
                       className="flex items-center gap-2 px-4 py-2 rounded-lg bg-white border-2 border-gray-300 hover:border-blue-500 hover:bg-blue-50 transition-all disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:border-gray-300 disabled:hover:bg-white font-semibold text-gray-700"

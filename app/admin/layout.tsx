@@ -29,7 +29,7 @@ export default function AdminLayout({
   };
 
   return (
-    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+    <div className="flex h-screen bg-linear-to-br from-gray-50 to-gray-100 overflow-hidden">
       {/* Sidebar */}
       <AdminSidebar
         isOpen={sidebarOpen}

@@ -70,7 +70,7 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col items-center justify-center py-20">
             <div className="relative">
@@ -88,7 +88,7 @@ export default function AdminDashboard() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
         <div className="max-w-7xl mx-auto">
           <div className="bg-red-50 border-2 border-red-200 rounded-2xl p-8 text-center">
             <AlertTriangle className="w-12 h-12 text-red-500 mx-auto mb-4" />
@@ -105,12 +105,12 @@ export default function AdminDashboard() {
   if (!metrics) return null;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-7xl mx-auto space-y-6">
         {/* Header */}
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg">
+            <div className="bg-linear-to-br from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -232,7 +232,7 @@ function MetricCard({
       {/* Icon Header */}
       <div className="flex items-center justify-between mb-4">
         <div
-          className={`bg-gradient-to-br ${gradient} p-3 rounded-xl shadow-md group-hover:shadow-lg transition-shadow`}
+          className={`bg-linear-to-br ${gradient} p-3 rounded-xl shadow-md group-hover:shadow-lg transition-shadow`}
         >
           <div className="text-white">{icon}</div>
         </div>
@@ -266,7 +266,7 @@ function MetricCard({
       {/* Progress Bar */}
       <div className="mt-4 h-1 bg-gray-200 rounded-full overflow-hidden">
         <div
-          className={`h-full bg-gradient-to-r ${gradient} rounded-full transition-all duration-1000`}
+          className={`h-full bg-linear-to-r ${gradient} rounded-full transition-all duration-1000`}
           style={{ width: "75%" }}
         ></div>
       </div>
@@ -289,14 +289,14 @@ function ActivityCard({
     <div className="group relative bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden">
       {/* Gradient Background on Hover */}
       <div
-        className={`absolute inset-0 bg-gradient-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
+        className={`absolute inset-0 bg-linear-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
       />
 
       {/* Content */}
       <div className="relative z-10 flex items-start gap-4">
         {/* Icon */}
         <div
-          className={`flex-shrink-0 bg-gradient-to-br ${gradient} p-4 rounded-xl shadow-md group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}
+          className={`shrink-0 bg-linear-to-br ${gradient} p-4 rounded-xl shadow-md group-hover:shadow-xl group-hover:scale-110 transition-all duration-300`}
         >
           <div className="text-white">{icon}</div>
         </div>
@@ -310,14 +310,14 @@ function ActivityCard({
         </div>
 
         {/* Arrow Icon */}
-        <div className="flex-shrink-0 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300">
+        <div className="shrink-0 text-gray-400 group-hover:text-gray-600 group-hover:translate-x-1 transition-all duration-300">
           <ArrowUp className="w-5 h-5 rotate-45" />
         </div>
       </div>
 
       {/* Bottom Accent Line */}
       <div
-        className={`absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
+        className={`absolute bottom-0 left-0 right-0 h-1 bg-linear-to-r ${gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`}
       />
     </div>
   );

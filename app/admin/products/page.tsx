@@ -79,13 +79,13 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg">
+              <div className="bg-linear-to-br from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg">
                 <Package className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -123,7 +123,7 @@ export default function ProductsPage() {
 
               {/* Add Button */}
               <button
-                className="flex items-center gap-2 bg-gradient-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95"
+                className="flex items-center gap-2 bg-linear-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95"
                 onClick={() => {
                   setEditProduct(null);
                   setShowModal(true);
@@ -148,7 +148,7 @@ export default function ProductsPage() {
               {/* Offline/Error Banner */}
               {(error || isOffline) && (
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 m-4 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-yellow-800">
                       Network Issue
@@ -168,11 +168,11 @@ export default function ProductsPage() {
                     {products?.map((prod: any) => (
                       <div
                         key={prod.id}
-                        className="group relative bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-lg transition-all duration-300"
+                        className="group relative bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-lg transition-all duration-300"
                       >
                         {/* Icon & Actions */}
                         <div className="flex items-start justify-between mb-4">
-                          <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
+                          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
                             <Box className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex gap-1">
@@ -241,7 +241,7 @@ export default function ProductsPage() {
 
                     {!products?.length && (
                       <div className="col-span-full flex flex-col items-center justify-center py-16">
-                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                        <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                           <Package className="w-16 h-16 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -263,7 +263,7 @@ export default function ProductsPage() {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                        <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
                           <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
                             Product Name
                           </th>
@@ -285,11 +285,11 @@ export default function ProductsPage() {
                         {products?.map((prod: any) => (
                           <tr
                             key={prod.id}
-                            className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 group"
+                            className="border-b border-gray-100 hover:bg-linear-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 group"
                           >
                             <td className="py-4 px-6">
                               <div className="flex items-center gap-3">
-                                <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-sm group-hover:scale-110 transition-transform duration-300">
                                   <Box className="w-4 h-4 text-white" />
                                 </div>
                                 <div>
@@ -356,7 +356,7 @@ export default function ProductsPage() {
                           <tr>
                             <td colSpan={5} className="py-16">
                               <div className="flex flex-col items-center justify-center text-center">
-                                <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                                <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                                   <Package className="w-16 h-16 text-gray-400" />
                                 </div>
                                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -378,11 +378,11 @@ export default function ProductsPage() {
                     {products?.map((prod: any) => (
                       <div
                         key={prod.id}
-                        className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-purple-300 hover:shadow-md transition-all duration-300"
+                        className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-purple-300 hover:shadow-md transition-all duration-300"
                       >
                         <div className="flex items-start justify-between mb-3">
                           <div className="flex items-start gap-3 flex-1 min-w-0">
-                            <div className="bg-gradient-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-md flex-shrink-0">
+                            <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-md shrink-0">
                               <Box className="w-5 h-5 text-white" />
                             </div>
                             <div className="min-w-0 flex-1">
@@ -416,7 +416,7 @@ export default function ProductsPage() {
                               </div>
                             </div>
                           </div>
-                          <div className="flex gap-1 ml-2 flex-shrink-0">
+                          <div className="flex gap-1 ml-2 shrink-0">
                             <button
                               className="p-2 hover:bg-purple-50 rounded-lg transition-colors text-gray-400 hover:text-purple-600"
                               onClick={() => {
@@ -439,7 +439,7 @@ export default function ProductsPage() {
 
                     {!products?.length && (
                       <div className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                        <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                           <Package className="w-16 h-16 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -518,7 +518,7 @@ function ProductModal({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
         {/* Header */}
-        <div className="bg-gradient-to-r from-purple-600 to-pink-600 text-white px-6 py-5 flex items-center justify-between">
+        <div className="bg-linear-to-r from-purple-600 to-pink-600 text-white px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <Package className="w-5 h-5" />
@@ -609,7 +609,7 @@ function ProductModal({
           {/* Error Message */}
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg flex items-start gap-2">
-              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
@@ -627,7 +627,7 @@ function ProductModal({
             <button
               type="button"
               onClick={handleSubmit}
-              className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-purple-600 to-pink-600 text-white font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-purple-600 to-pink-600 text-white font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading || !name.trim() || !categoryId}
             >
               {loading ? (

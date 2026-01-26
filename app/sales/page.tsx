@@ -63,7 +63,7 @@ export default function SalesPOSPage() {
   const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className="min-h-[calc(100vh-64px)] bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-[calc(100vh-64px)] bg-linear-to-br from-gray-50 to-gray-100">
       {!showInvoice ? (
         <div className="h-full">
           {/* Desktop Layout */}
@@ -113,7 +113,7 @@ export default function SalesPOSPage() {
           {cart.length > 0 && (
             <button
               onClick={() => setShowMobileCart(true)}
-              className="lg:hidden fixed bottom-6 right-6 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-full p-4 shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 active:scale-95 z-40 group"
+              className="lg:hidden fixed bottom-6 right-6 bg-linear-to-r from-blue-600 to-indigo-600 text-white rounded-full p-4 shadow-2xl hover:shadow-blue-500/50 transition-all duration-300 active:scale-95 z-40 group"
             >
               <div className="relative">
                 <ShoppingCart className="w-6 h-6" />
@@ -136,7 +136,7 @@ export default function SalesPOSPage() {
               {/* Drawer */}
               <div className="absolute bottom-0 left-0 right-0 bg-white rounded-t-3xl shadow-2xl max-h-[90vh] flex flex-col animate-in slide-in-from-bottom duration-300">
                 {/* Header */}
-                <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-gray-50 to-gray-100 rounded-t-3xl">
+                <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-linear-to-r from-gray-50 to-gray-100 rounded-t-3xl">
                   <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
                     <ShoppingCart className="w-5 h-5 text-blue-600" />
                     Your Cart
@@ -178,7 +178,7 @@ export default function SalesPOSPage() {
         <div className="min-h-[calc(100vh-64px)] flex items-center justify-center p-4">
           <div className="max-w-md w-full bg-white rounded-2xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
             {/* Success Header */}
-            <div className="bg-gradient-to-r from-green-500 to-emerald-500 p-8 text-center">
+            <div className="bg-linear-to-r from-green-500 to-emerald-500 p-8 text-center">
               <div className="inline-flex items-center justify-center w-20 h-20 bg-white rounded-full mb-4 animate-in zoom-in duration-500">
                 <CheckCircle className="w-12 h-12 text-green-500" />
               </div>
@@ -192,7 +192,7 @@ export default function SalesPOSPage() {
 
             {/* Order Details */}
             <div className="p-8 space-y-6">
-              <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
+              <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-4 border border-gray-200">
                 <div className="text-sm text-gray-600 mb-1">Order ID</div>
                 <div className="font-mono font-bold text-lg text-gray-800">
                   {invoiceId}
@@ -201,7 +201,7 @@ export default function SalesPOSPage() {
 
               <button
                 onClick={handleNewSale}
-                className="w-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
+                className="w-full bg-linear-to-r from-blue-600 to-indigo-600 text-white py-4 rounded-xl font-bold text-lg hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
               >
                 <ArrowLeft className="w-5 h-5" />
                 Start New Sale

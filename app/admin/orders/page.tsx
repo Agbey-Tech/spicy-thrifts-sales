@@ -54,13 +54,13 @@ export default function OrdersPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="bg-gradient-to-br from-orange-500 to-red-600 p-3 rounded-xl shadow-lg">
+              <div className="bg-linear-to-br from-orange-500 to-red-600 p-3 rounded-xl shadow-lg">
                 <ShoppingCart className="w-6 h-6 text-white" />
               </div>
               <div>
@@ -109,7 +109,7 @@ export default function OrdersPage() {
               {/* Offline/Error Banner */}
               {(error || isOffline) && (
                 <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 m-4 rounded-lg flex items-start gap-3">
-                  <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
                   <div>
                     <p className="text-sm font-semibold text-yellow-800">
                       Network Issue
@@ -129,12 +129,12 @@ export default function OrdersPage() {
                     {paginatedOrders.map((order: Order) => (
                       <div
                         key={order.id}
-                        className="group relative bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-5 hover:border-orange-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
+                        className="group relative bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-5 hover:border-orange-300 hover:shadow-lg transition-all duration-300 cursor-pointer"
                         onClick={() => setSelectedOrder(order)}
                       >
                         {/* Header */}
                         <div className="flex items-start justify-between mb-4">
-                          <div className="bg-gradient-to-br from-orange-500 to-red-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
+                          <div className="bg-linear-to-br from-orange-500 to-red-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
                             <FileText className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex gap-1">
@@ -205,7 +205,7 @@ export default function OrdersPage() {
 
                     {!paginatedOrders.length && (
                       <div className="col-span-full flex flex-col items-center justify-center py-16">
-                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                        <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                           <ShoppingCart className="w-16 h-16 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -227,7 +227,7 @@ export default function OrdersPage() {
                   <div className="hidden md:block overflow-x-auto">
                     <table className="w-full">
                       <thead>
-                        <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                        <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
                           <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
                             Invoice #
                           </th>
@@ -255,7 +255,7 @@ export default function OrdersPage() {
                         {paginatedOrders.map((order: Order) => (
                           <tr
                             key={order.id}
-                            className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-200 cursor-pointer group"
+                            className="border-b border-gray-100 hover:bg-linear-to-r hover:from-orange-50 hover:to-red-50 transition-all duration-200 cursor-pointer group"
                             onClick={() => setSelectedOrder(order)}
                           >
                             <td className="py-4 px-6">
@@ -325,7 +325,7 @@ export default function OrdersPage() {
                           <tr>
                             <td colSpan={7} className="py-16">
                               <div className="flex flex-col items-center justify-center text-center">
-                                <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                                <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                                   <ShoppingCart className="w-16 h-16 text-gray-400" />
                                 </div>
                                 <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -347,7 +347,7 @@ export default function OrdersPage() {
                     {paginatedOrders.map((order: Order) => (
                       <div
                         key={order.id}
-                        className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-orange-300 hover:shadow-md transition-all duration-300 cursor-pointer"
+                        className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-orange-300 hover:shadow-md transition-all duration-300 cursor-pointer"
                         onClick={() => setSelectedOrder(order)}
                       >
                         <div className="flex items-start justify-between mb-3">
@@ -384,7 +384,7 @@ export default function OrdersPage() {
                               )}
                             </div>
                           </div>
-                          <div className="flex gap-1 ml-2 flex-shrink-0">
+                          <div className="flex gap-1 ml-2 shrink-0">
                             <button
                               className="p-2 hover:bg-orange-50 rounded-lg transition-colors text-gray-400 hover:text-orange-600"
                               onClick={(e) => {
@@ -410,7 +410,7 @@ export default function OrdersPage() {
 
                     {!paginatedOrders.length && (
                       <div className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                        <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                           <ShoppingCart className="w-16 h-16 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-gray-800 mb-2">
@@ -476,7 +476,7 @@ export default function OrdersPage() {
                                 onClick={() => setPage(p)}
                                 className={`w-10 h-10 rounded-lg font-semibold transition-all ${
                                   page === p
-                                    ? "bg-gradient-to-r from-orange-500 to-red-600 text-white shadow-md"
+                                    ? "bg-linear-to-r from-orange-500 to-red-600 text-white shadow-md"
                                     : "bg-white border-2 border-gray-200 text-gray-700 hover:border-orange-300"
                                 }`}
                               >
@@ -529,7 +529,7 @@ function OrderOverlay({
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl overflow-hidden animate-in zoom-in-95 duration-200 max-h-[90vh] overflow-y-auto">
         {/* Header */}
-        <div className="bg-gradient-to-r from-orange-500 to-red-600 text-white px-6 py-5 flex items-center justify-between sticky top-0 z-10">
+        <div className="bg-linear-to-r from-orange-500 to-red-600 text-white px-6 py-5 flex items-center justify-between sticky top-0 z-10">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <FileText className="w-5 h-5" />
@@ -547,7 +547,7 @@ function OrderOverlay({
         {/* Content */}
         <div className="p-6 space-y-6">
           {/* Invoice Number */}
-          <div className="bg-gradient-to-br from-gray-50 to-gray-100 rounded-xl p-4 border-2 border-gray-200">
+          <div className="bg-linear-to-br from-gray-50 to-gray-100 rounded-xl p-4 border-2 border-gray-200">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs font-semibold text-gray-600 uppercase mb-1">
@@ -557,7 +557,7 @@ function OrderOverlay({
                   {order.invoice_number}
                 </p>
               </div>
-              <div className="bg-gradient-to-br from-orange-500 to-red-600 p-3 rounded-xl">
+              <div className="bg-linear-to-br from-orange-500 to-red-600 p-3 rounded-xl">
                 <FileText className="w-6 h-6 text-white" />
               </div>
             </div>
@@ -639,7 +639,7 @@ function OrderOverlay({
 
           {/* Customer Details */}
           {(order.customer_name || order.customer_phone) && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-5">
+            <div className="bg-linear-to-br from-blue-50 to-indigo-50 border-2 border-blue-200 rounded-xl p-5">
               <h3 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <User className="w-5 h-5 text-blue-600" />
                 Customer Information
@@ -677,7 +677,7 @@ function OrderOverlay({
 
           {/* Delivery Details */}
           {(order.delivery_address || order.delivery_status) && (
-            <div className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-5">
+            <div className="bg-linear-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-5">
               <h3 className="text-sm font-bold text-gray-800 mb-4 flex items-center gap-2">
                 <Truck className="w-5 h-5 text-green-600" />
                 Delivery Information
@@ -685,7 +685,7 @@ function OrderOverlay({
               <div className="space-y-3">
                 {order.delivery_address && (
                   <div className="flex items-start gap-3">
-                    <div className="bg-white p-2 rounded-lg flex-shrink-0">
+                    <div className="bg-white p-2 rounded-lg shrink-0">
                       <MapPin className="w-4 h-4 text-green-600" />
                     </div>
                     <div className="flex-1">
@@ -725,7 +725,7 @@ function OrderOverlay({
             <button
               type="button"
               onClick={() => onPrint(order)}
-              className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-orange-500 to-red-600 text-white font-semibold hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
+              className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-orange-500 to-red-600 text-white font-semibold hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
             >
               <Printer className="w-5 h-5" />
               Print Invoice
