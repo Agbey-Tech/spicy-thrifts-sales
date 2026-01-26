@@ -1,36 +1,89 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Spicy Thrifts POS – Internal Management System
+
+Spicy Thrifts POS is a secure, modern, and efficient Point of Sale and inventory management system designed exclusively for internal staff. It streamlines sales, inventory, and operational workflows for Spicy Thrifts retail operations.
+
+## Features
+
+- **Staff Authentication & Authorization** (Admin & Sales roles)
+- **Sales Order Management** (Create, view, and manage orders)
+- **Product & Inventory Management** (CRUD for products, categories, variants)
+- **Low Stock & Sales Reports**
+- **Responsive UI** for desktop and tablet
+- **Role-based Dashboards** (Admin & Sales)
+- **Secure API** with input validation and error handling
+- **Modern UI** with Tailwind CSS and custom branding
+
+## Tech Stack
+
+- **Framework:** [Next.js 14+](https://nextjs.org/)
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Database:** (Configured via `/database/schema.sql`)
+- **ORM/Service Layer:** Custom service classes
+- **Authentication:** Supabase (see `/lib/supabase`)
+- **Validation:** Zod schemas
+- **Notifications:** react-hot-toast
 
 ## Getting Started
 
-First, run the development server:
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/Agbey-Tech/spicy-thrifts-sales.git
+cd spicy-thrifts-sales
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+```
+
+### 3. Configure Environment
+
+- Copy `.env.example` to `.env.local` and fill in required environment variables (Supabase keys, etc).
+
+### 4. Database Setup
+
+- Review and apply the schema in `/database/schema.sql` to your database.
+- (Optional) Seed data using `/database/seed.sql`.
+
+### 5. Run the development server
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit [http://localhost:3000](http://localhost:3000) to access the app.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project Structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `app/` – Next.js app directory (routes, pages, API)
+- `components/` – Reusable UI components
+- `core/validation/` – Zod schemas for input validation
+- `database/` – SQL schema and seed files
+- `lib/` – API, authentication, and utility libraries
+- `services/` – Business logic and data access
+- `types/` – TypeScript types
 
-## Learn More
+## Contributing
 
-To learn more about Next.js, take a look at the following resources:
+This project is proprietary and intended solely for Spicy Thrifts and its authorized internal team.  
+**External contributions, forks, or pull requests are not permitted.**  
+If you are a team member and need access, please contact the project administrator.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## License
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+This project is confidential and for internal use by Spicy Thrifts staff only.  
+Unauthorized use, distribution, or modification is strictly prohibited.
 
-## Deploy on Vercel
+---
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+**For technical support, contact:**
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Email: ziglacity@gmail.com
+- Phone: +233 592 194 480
+
+**Main website:** [spicythrifts.com](https://spicythrifts.com)
