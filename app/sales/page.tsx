@@ -67,9 +67,9 @@ export default function SalesPOSPage() {
       {!showInvoice ? (
         <div className="h-full">
           {/* Desktop Layout */}
-          <div className="hidden lg:grid lg:grid-cols-[1fr_420px] gap-6 p-6 h-full">
+          <div className="hidden h-screen lg:grid lg:grid-cols-[1fr_420px] gap-6 p-6 overflow-auto mb-30">
             {/* LEFT — PRODUCT BROWSER */}
-            <div className="h-full overflow-y-auto pr-2">
+            <div className="h-full overflow-y-auto pr-2 mb-64">
               <ProductSearchPanel
                 onAddToCart={handleAddToCart}
                 refreshKey={refreshKey}
@@ -77,25 +77,27 @@ export default function SalesPOSPage() {
             </div>
 
             {/* RIGHT — CART + CHECKOUT */}
-            <div className="h-full flex flex-col gap-6 sticky top-6">
-              <div className="flex-1 overflow-hidden">
-                <CartPanel
-                  items={cart}
-                  onUpdateQuantity={handleUpdateQuantity}
-                  onRemove={handleRemove}
-                  onCheckout={() => {}}
-                />
-              </div>
-              {cart.length > 0 && (
-                <div className="animate-in slide-in-from-bottom duration-300">
-                  <CheckoutPanel
+            <div className="h-full overflow-hidden">
+              <div className="h-full flex flex-col gap-6 sticky top-6 overflow-y-auto">
+                <div className="flex-1">
+                  <CartPanel
                     items={cart}
-                    onOrderSuccess={handleOrderSuccess}
-                    loading={loading}
-                    setLoading={setLoading}
+                    onUpdateQuantity={handleUpdateQuantity}
+                    onRemove={handleRemove}
+                    onCheckout={() => {}}
                   />
                 </div>
-              )}
+                {cart.length > 0 && (
+                  <div className="animate-in slide-in-from-bottom duration-300 mb-10">
+                    <CheckoutPanel
+                      items={cart}
+                      onOrderSuccess={handleOrderSuccess}
+                      loading={loading}
+                      setLoading={setLoading}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
 
