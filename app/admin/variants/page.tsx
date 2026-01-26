@@ -62,16 +62,6 @@ export default function VariantsPage() {
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
   // Add Variant
-
-  function generateSku(name: string): string {
-    if (!name)
-      return "SKU-" + Math.random().toString(36).substring(2, 8).toUpperCase();
-
-    const prefix = name.substring(0, 3).toUpperCase();
-    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
-    return `SKU-${prefix}-${randomPart}`;
-  }
-
   const handleAdd = async (values: Partial<ProductVariant>) => {
     try {
       if (!values.product_id) {
