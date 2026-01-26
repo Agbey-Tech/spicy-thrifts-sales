@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 
 type RouteHandler<TParams = unknown> = (
   req: NextRequest,
-  context: { params: TParams },
+  context: { params: Promise<TParams> },
 ) => Promise<Response> | Response;
 
 function resolveStatus(message: string) {
@@ -20,11 +20,10 @@ function resolveStatus(message: string) {
       return 400;
   }
 }
-
 export function withErrorHandling<TParams = unknown>(
   handler: RouteHandler<TParams>,
 ): RouteHandler<TParams> {
-  return async (req: NextRequest, context: { params: TParams }) => {
+  return async (req, context) => {
     try {
       return await handler(req, context);
     } catch (error: any) {
