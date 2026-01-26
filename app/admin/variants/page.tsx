@@ -3,6 +3,7 @@
 import { useState } from "react";
 import useSWR from "swr";
 import toast from "react-hot-toast";
+
 import {
   Plus,
   Pencil,
@@ -18,7 +19,10 @@ import {
   Palette,
   Ruler,
   BarChart3,
+  Grid3x3,
+  List,     
 } from "lucide-react";
+
 import { getVariants, updateVariant, createVariant } from "@/lib/api/variants";
 import { getProducts } from "@/lib/api/products";
 import { getCategories } from "@/lib/api/categories";
@@ -58,6 +62,7 @@ export default function VariantsPage() {
   const [modalType, setModalType] = useState<"add" | "edit" | null>(null);
   const [modalVariant, setModalVariant] = useState<ProductVariant | null>(null);
   const [showModal, setShowModal] = useState(false);
+  const [viewMode, setViewMode] = useState<"grid" | "list">("list");
 
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
@@ -129,6 +134,30 @@ export default function VariantsPage() {
                     </span>
                   )}
                 </button>
+
+                {/* View Toggle */}
+                <div className="flex gap-2 bg-white rounded-xl p-1.5 shadow-sm border-2 border-gray-200">
+                  <button
+                    onClick={() => setViewMode("grid")}
+                    className={`p-2.5 rounded-lg transition-all ${
+                      viewMode === "grid"
+                        ? "bg-emerald-500 text-white shadow-md"
+                        : "text-gray-500 hover:bg-gray-100"
+                    }`}
+                  >
+                    <Grid3x3 className="w-5 h-5" />
+                  </button>
+                  <button
+                    onClick={() => setViewMode("list")}
+                    className={`p-2.5 rounded-lg transition-all ${
+                      viewMode === "list"
+                        ? "bg-emerald-500 text-white shadow-md"
+                        : "text-gray-500 hover:bg-gray-100"
+                    }`}
+                  >
+                    <List className="w-5 h-5" />
+                  </button>
+                </div>
 
                 {/* Add Button */}
                 {isAdmin && (
@@ -245,114 +274,93 @@ export default function VariantsPage() {
                 </div>
               )}
 
-              {/* Desktop Table */}
-              <div className="hidden lg:block overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                      <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
-                        SKU
-                      </th>
-                      <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
-                        Product
-                      </th>
-                      <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
-                        Category
-                      </th>
-                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
-                        Size
-                      </th>
-                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
-                        Color
-                      </th>
-                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
-                        Stock
-                      </th>
-                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
-                        Price
-                      </th>
-                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
-                        Status
-                      </th>
-                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-24">
-                        Actions
-                      </th>
-                    </tr>
-                  </thead>
-                  <tbody>
+              {/* Grid View */}
+              {viewMode === "grid" && (
+                <div className="p-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                     {variants?.map((variant) => (
-                      <tr
+                      <div
                         key={variant.id}
-                        className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all duration-200 group"
+                        className="group bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl overflow-hidden hover:border-emerald-400 hover:shadow-lg transition-all duration-300"
                       >
-                        <td className="py-4 px-6">
-                          <span className="font-mono text-sm font-semibold text-gray-800">
-                            {variant.sku}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="font-semibold text-gray-800">
-                            {products?.find((p) => p.id === variant.product_id)
-                              ?.name || "-"}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6">
-                          <span className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                            {categories?.find(
-                              (c) =>
-                                c.id ===
-                                products?.find(
-                                  (p) => p.id === variant.product_id,
-                                )?.category_id,
-                            )?.name || "-"}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold">
-                            <Ruler className="w-3 h-3" />
-                            {variant.size || "-"}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <span className="inline-flex items-center gap-1 bg-pink-100 text-pink-700 px-2.5 py-1 rounded-full text-xs font-semibold">
-                            <Palette className="w-3 h-3" />
-                            {variant.primary_color || "-"}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <span
-                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
-                              variant.stock_quantity > 10
-                                ? "bg-green-100 text-green-700"
-                                : variant.stock_quantity > 0
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-red-100 text-red-700"
-                            }`}
-                          >
-                            <BarChart3 className="w-3 h-3" />
-                            {variant.stock_quantity}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-semibold">
-                            <DollarSign className="w-3 h-3" />
-                            {variant.price}
-                          </span>
-                        </td>
-                        <td className="py-4 px-6 text-center">
-                          {variant.stock_quantity > 0 ? (
-                            <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                              Active
-                            </span>
+                        {/* Image */}
+                        <div className="bg-white w-full aspect-square flex items-center justify-center p-3 border-b border-gray-100">
+                          {variant.images && variant.images.length > 0 ? (
+                            <img
+                              src={variant.images[0]}
+                              alt={variant.sku}
+                              className="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                            />
                           ) : (
-                            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs font-semibold">
-                              Inactive
-                            </span>
+                            <div className="w-full h-full flex flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-gray-200 rounded-lg">
+                              <Package2 className="w-12 h-12 text-gray-400 mb-2" />
+                              <span className="text-xs text-gray-500">
+                                No Image
+                              </span>
+                            </div>
                           )}
-                        </td>
-                        <td className="py-4 px-6 text-center">
+                        </div>
+
+                        {/* Details */}
+                        <div className="p-4 space-y-3">
+                          <div>
+                            <span className="font-mono text-sm font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded inline-block mb-2">
+                              {variant.sku}
+                            </span>
+                            <h3 className="font-semibold text-gray-800 text-sm line-clamp-1">
+                              {products?.find(
+                                (p) => p.id === variant.product_id,
+                              )?.name || "-"}
+                            </h3>
+                          </div>
+
+                          <div className="flex flex-wrap gap-1.5">
+                            <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              {categories?.find(
+                                (c) =>
+                                  c.id ===
+                                  products?.find(
+                                    (p) => p.id === variant.product_id,
+                                  )?.category_id,
+                              )?.name || "-"}
+                            </span>
+                            {variant.size && (
+                              <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                <Ruler className="w-3 h-3" />
+                                {variant.size}
+                              </span>
+                            )}
+                            {variant.primary_color && (
+                              <span className="inline-flex items-center gap-1 bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                <Palette className="w-3 h-3" />
+                                {variant.primary_color}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                            <div className="flex items-center gap-1">
+                              <DollarSign className="w-4 h-4 text-emerald-600" />
+                              <span className="text-lg font-bold text-emerald-600">
+                                {variant.price}
+                              </span>
+                            </div>
+                            <span
+                              className={`inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-semibold ${
+                                variant.stock_quantity > 10
+                                  ? "bg-green-100 text-green-700"
+                                  : variant.stock_quantity > 0
+                                    ? "bg-yellow-100 text-yellow-700"
+                                    : "bg-red-100 text-red-700"
+                              }`}
+                            >
+                              <BarChart3 className="w-3 h-3" />
+                              {variant.stock_quantity}
+                            </span>
+                          </div>
+
                           <button
-                            className="p-2 hover:bg-emerald-100 rounded-lg transition-colors text-gray-600 hover:text-emerald-600"
+                            className="w-full p-2 hover:bg-emerald-50 rounded-lg transition-colors text-gray-600 hover:text-emerald-600 flex items-center justify-center gap-2 border-2 border-gray-200 hover:border-emerald-300"
                             onClick={() => {
                               setModalType("edit");
                               setModalVariant(variant);
@@ -361,131 +369,279 @@ export default function VariantsPage() {
                             title="Edit variant"
                           >
                             <Pencil className="w-4 h-4" />
+                            <span className="text-sm font-semibold">Edit</span>
                           </button>
-                        </td>
-                      </tr>
+                        </div>
+                      </div>
                     ))}
 
                     {!variants?.length && (
-                      <tr>
-                        <td colSpan={9} className="py-16">
-                          <div className="flex flex-col items-center justify-center text-center">
-                            <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
-                              <Box className="w-16 h-16 text-gray-400" />
-                            </div>
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                              No variants found
-                            </h3>
-                            <p className="text-sm text-gray-500">
-                              {hasActiveFilters
-                                ? "Try adjusting your filters"
-                                : "Create your first variant to get started"}
-                            </p>
-                          </div>
-                        </td>
-                      </tr>
-                    )}
-                  </tbody>
-                </table>
-              </div>
-
-              {/* Mobile Cards */}
-              <div className="lg:hidden p-4 space-y-3">
-                {variants?.map((variant) => (
-                  <div
-                    key={variant.id}
-                    className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-emerald-300 hover:shadow-md transition-all duration-300"
-                  >
-                    <div className="flex items-start justify-between mb-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-2">
-                          <span className="font-mono text-sm font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">
-                            {variant.sku}
-                          </span>
-                          {variant.stock_quantity > 0 ? (
-                            <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                              Active
-                            </span>
-                          ) : (
-                            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-semibold">
-                              Inactive
-                            </span>
-                          )}
+                      <div className="col-span-full flex flex-col items-center justify-center py-16">
+                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                          <Box className="w-16 h-16 text-gray-400" />
                         </div>
-                        <h3 className="font-bold text-gray-800 mb-1">
-                          {products?.find((p) => p.id === variant.product_id)
-                            ?.name || "-"}
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                          No variants found
                         </h3>
-                        <div className="flex flex-wrap gap-2 mt-2">
-                          <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                            {categories?.find(
-                              (c) =>
-                                c.id ===
-                                products?.find(
-                                  (p) => p.id === variant.product_id,
-                                )?.category_id,
-                            )?.name || "-"}
-                          </span>
-                          {variant.size && (
-                            <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                              <Ruler className="w-3 h-3" />
-                              {variant.size}
-                            </span>
-                          )}
-                          {variant.primary_color && (
-                            <span className="inline-flex items-center gap-1 bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                              <Palette className="w-3 h-3" />
-                              {variant.primary_color}
-                            </span>
-                          )}
-                          <span
-                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
-                              variant.stock_quantity > 10
-                                ? "bg-green-100 text-green-700"
-                                : variant.stock_quantity > 0
-                                  ? "bg-yellow-100 text-yellow-700"
-                                  : "bg-red-100 text-red-700"
-                            }`}
+                        <p className="text-sm text-gray-500">
+                          {hasActiveFilters
+                            ? "Try adjusting your filters"
+                            : "Create your first variant to get started"}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+
+              {/* List View - Desktop Table */}
+              {viewMode === "list" && (
+                <>
+                  {/* Desktop Table */}
+                  <div className="hidden lg:block overflow-x-auto">
+                    <table className="w-full">
+                      <thead>
+                        <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                          <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                            SKU
+                          </th>
+                          <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                            Product
+                          </th>
+                          <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                            Category
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                            Size
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                            Color
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                            Stock
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                            Price
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                            Status
+                          </th>
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-24">
+                            Actions
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {variants?.map((variant) => (
+                          <tr
+                            key={variant.id}
+                            className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all duration-200 group"
                           >
-                            <BarChart3 className="w-3 h-3" />
-                            Stock: {variant.stock_quantity}
-                          </span>
-                          <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                            <DollarSign className="w-3 h-3" />
-                            {variant.price}
-                          </span>
+                            <td className="py-4 px-6">
+                              <span className="font-mono text-sm font-semibold text-gray-800">
+                                {variant.sku}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="font-semibold text-gray-800">
+                                {products?.find(
+                                  (p) => p.id === variant.product_id,
+                                )?.name || "-"}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6">
+                              <span className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                {categories?.find(
+                                  (c) =>
+                                    c.id ===
+                                    products?.find(
+                                      (p) => p.id === variant.product_id,
+                                    )?.category_id,
+                                )?.name || "-"}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                                <Ruler className="w-3 h-3" />
+                                {variant.size || "-"}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <span className="inline-flex items-center gap-1 bg-pink-100 text-pink-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                                <Palette className="w-3 h-3" />
+                                {variant.primary_color || "-"}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <span
+                                className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                                  variant.stock_quantity > 10
+                                    ? "bg-green-100 text-green-700"
+                                    : variant.stock_quantity > 0
+                                      ? "bg-yellow-100 text-yellow-700"
+                                      : "bg-red-100 text-red-700"
+                                }`}
+                              >
+                                <BarChart3 className="w-3 h-3" />
+                                {variant.stock_quantity}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                                <DollarSign className="w-3 h-3" />
+                                {variant.price}
+                              </span>
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              {variant.stock_quantity > 0 ? (
+                                <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                  Active
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs font-semibold">
+                                  Inactive
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-4 px-6 text-center">
+                              <button
+                                className="p-2 hover:bg-emerald-100 rounded-lg transition-colors text-gray-600 hover:text-emerald-600"
+                                onClick={() => {
+                                  setModalType("edit");
+                                  setModalVariant(variant);
+                                  setShowModal(true);
+                                }}
+                                title="Edit variant"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                            </td>
+                          </tr>
+                        ))}
+
+                        {!variants?.length && (
+                          <tr>
+                            <td colSpan={9} className="py-16">
+                              <div className="flex flex-col items-center justify-center text-center">
+                                <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                                  <Box className="w-16 h-16 text-gray-400" />
+                                </div>
+                                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                                  No variants found
+                                </h3>
+                                <p className="text-sm text-gray-500">
+                                  {hasActiveFilters
+                                    ? "Try adjusting your filters"
+                                    : "Create your first variant to get started"}
+                                </p>
+                              </div>
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+
+                  {/* Mobile Cards */}
+                  <div className="lg:hidden p-4 space-y-3">
+                    {variants?.map((variant) => (
+                      <div
+                        key={variant.id}
+                        className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-emerald-300 hover:shadow-md transition-all duration-300"
+                      >
+                        <div className="flex items-start justify-between mb-3">
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2 mb-2">
+                              <span className="font-mono text-sm font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">
+                                {variant.sku}
+                              </span>
+                              {variant.stock_quantity > 0 ? (
+                                <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                  Active
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                  Inactive
+                                </span>
+                              )}
+                            </div>
+                            <h3 className="font-bold text-gray-800 mb-1">
+                              {products?.find(
+                                (p) => p.id === variant.product_id,
+                              )?.name || "-"}
+                            </h3>
+                            <div className="flex flex-wrap gap-2 mt-2">
+                              <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                {categories?.find(
+                                  (c) =>
+                                    c.id ===
+                                    products?.find(
+                                      (p) => p.id === variant.product_id,
+                                    )?.category_id,
+                                )?.name || "-"}
+                              </span>
+                              {variant.size && (
+                                <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                  <Ruler className="w-3 h-3" />
+                                  {variant.size}
+                                </span>
+                              )}
+                              {variant.primary_color && (
+                                <span className="inline-flex items-center gap-1 bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                  <Palette className="w-3 h-3" />
+                                  {variant.primary_color}
+                                </span>
+                              )}
+                              <span
+                                className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
+                                  variant.stock_quantity > 10
+                                    ? "bg-green-100 text-green-700"
+                                    : variant.stock_quantity > 0
+                                      ? "bg-yellow-100 text-yellow-700"
+                                      : "bg-red-100 text-red-700"
+                                }`}
+                              >
+                                <BarChart3 className="w-3 h-3" />
+                                Stock: {variant.stock_quantity}
+                              </span>
+                              <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                                <DollarSign className="w-3 h-3" />
+                                {variant.price}
+                              </span>
+                            </div>
+                          </div>
+                          <button
+                            className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-gray-400 hover:text-emerald-600 flex-shrink-0 ml-2"
+                            onClick={() => {
+                              setModalType("edit");
+                              setModalVariant(variant);
+                              setShowModal(true);
+                            }}
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
                         </div>
                       </div>
-                      <button
-                        className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-gray-400 hover:text-emerald-600 flex-shrink-0 ml-2"
-                        onClick={() => {
-                          setModalType("edit");
-                          setModalVariant(variant);
-                          setShowModal(true);
-                        }}
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                ))}
+                    ))}
 
-                {!variants?.length && (
-                  <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
-                      <Box className="w-16 h-16 text-gray-400" />
-                    </div>
-                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                      No variants found
-                    </h3>
-                    <p className="text-sm text-gray-500">
-                      {hasActiveFilters
-                        ? "Try adjusting your filters"
-                        : "Create your first variant to get started"}
-                    </p>
+                    {!variants?.length && (
+                      <div className="flex flex-col items-center justify-center py-16 text-center">
+                        <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                          <Box className="w-16 h-16 text-gray-400" />
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                          No variants found
+                        </h3>
+                        <p className="text-sm text-gray-500">
+                          {hasActiveFilters
+                            ? "Try adjusting your filters"
+                            : "Create your first variant to get started"}
+                        </p>
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
+                </>
+              )}
             </>
           )}
         </div>
@@ -508,7 +664,7 @@ export default function VariantsPage() {
   );
 }
 
-function VariantModal({
+export function VariantModal({
   type,
   initial,
   products,
