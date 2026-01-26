@@ -3,10 +3,26 @@
 import { useState } from "react";
 import useSWR from "swr";
 import toast from "react-hot-toast";
-import { Plus, Pencil } from "lucide-react";
+import {
+  Plus,
+  Pencil,
+  Box,
+  Filter,
+  X,
+  AlertCircle,
+  Image as ImageIcon,
+  Upload,
+  Trash2,
+  DollarSign,
+  Package2,
+  Palette,
+  Ruler,
+  BarChart3,
+} from "lucide-react";
 import { getVariants, updateVariant, createVariant } from "@/lib/api/variants";
 import { getProducts } from "@/lib/api/products";
 import { getCategories } from "@/lib/api/categories";
+import { uploadImage } from "@/lib/uploads/uploadProfileImage";
 import { useUserStore } from "@/lib/auth/userStore";
 import type { ProductVariant } from "@/app/types/database";
 
@@ -18,6 +34,7 @@ export default function VariantsPage() {
   const [sku, setSku] = useState("");
   const [categoryId, setCategoryId] = useState("");
   const [productId, setProductId] = useState("");
+  const [showFilters, setShowFilters] = useState(false);
 
   // Data
   const {
@@ -45,14 +62,23 @@ export default function VariantsPage() {
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
   // Add Variant
+
+  function generateSku(name: string): string {
+    if (!name)
+      return "SKU-" + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+    const prefix = name.substring(0, 3).toUpperCase();
+    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+    return `SKU-${prefix}-${randomPart}`;
+  }
+
   const handleAdd = async (values: Partial<ProductVariant>) => {
     try {
       if (!values.product_id) {
         throw new Error("SKU and Product are required");
       }
-      //   TODO: generate the SKU for consistency from every variant/product
       await createVariant(values);
-      toast.success("Variant added");
+      toast.success("Variant added successfully");
       setShowModal(false);
       mutate();
     } catch (e: any) {
@@ -65,7 +91,7 @@ export default function VariantsPage() {
     try {
       if (!modalVariant) return;
       await updateVariant(modalVariant.id, values);
-      toast.success("Variant updated");
+      toast.success("Variant updated successfully");
       setShowModal(false);
       setModalVariant(null);
       mutate();
@@ -74,107 +100,374 @@ export default function VariantsPage() {
     }
   };
 
+  const hasActiveFilters = sku || categoryId || productId;
+
   return (
-    <div>
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold">Variants</h1>
-        <div className="flex gap-2">
-          <input
-            className="border px-2 py-1 rounded"
-            placeholder="Filter by SKU"
-            value={sku}
-            onChange={(e) => setSku(e.target.value)}
-          />
-          <select
-            className="border px-2 py-1 rounded"
-            value={categoryId}
-            onChange={(e) => setCategoryId(e.target.value)}
-          >
-            <option value="">All Categories</option>
-            {categories?.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-          <select
-            className="border px-2 py-1 rounded"
-            value={productId}
-            onChange={(e) => setProductId(e.target.value)}
-          >
-            <option value="">All Products</option>
-            {products?.map((prod) => (
-              <option key={prod.id} value={prod.id}>
-                {prod.name}
-              </option>
-            ))}
-          </select>
-          {isAdmin && (
-            <button
-              className="flex items-center gap-1 px-3 py-1 bg-blue-600 text-white rounded hover:bg-blue-700"
-              onClick={() => {
-                setModalType("add");
-                setShowModal(true);
-              }}
-            >
-              <Plus className="w-4 h-4" /> Add Variant
-            </button>
-          )}
-        </div>
-      </div>
-      <div className="bg-white rounded shadow p-4 overflow-x-auto">
-        {isLoading && !variants ? (
-          <div>Loading...</div>
-        ) : (
-          <>
-            {(error || isOffline) && (
-              <div className="mb-3 text-sm text-yellow-600">
-                You’re offline or having network issues. Showing last saved
-                data.
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+      <div className="max-w-7xl mx-auto">
+        {/* Header */}
+        <div className="mb-6">
+          <div className="flex flex-col gap-4">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div className="flex items-center gap-3">
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-3 rounded-xl shadow-lg">
+                  <Box className="w-6 h-6 text-white" />
+                </div>
+                <div>
+                  <h1 className="text-3xl font-bold text-gray-800">Variants</h1>
+                  <p className="text-sm text-gray-600">
+                    Manage product variants and inventory
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3">
+                {/* Filter Toggle */}
+                <button
+                  onClick={() => setShowFilters(!showFilters)}
+                  className={`flex items-center gap-2 px-4 py-3 rounded-xl font-semibold transition-all duration-300 hover:shadow-lg active:scale-95 ${
+                    hasActiveFilters
+                      ? "bg-gradient-to-r from-emerald-600 to-teal-600 text-white"
+                      : "bg-white text-gray-700 border-2 border-gray-200"
+                  }`}
+                >
+                  <Filter className="w-5 h-5" />
+                  <span className="hidden sm:inline">Filters</span>
+                  {hasActiveFilters && (
+                    <span className="bg-white/20 text-white px-2 py-0.5 rounded-full text-xs font-bold">
+                      {[sku, categoryId, productId].filter(Boolean).length}
+                    </span>
+                  )}
+                </button>
+
+                {/* Add Button */}
+                {isAdmin && (
+                  <button
+                    className="flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 hover:shadow-lg active:scale-95"
+                    onClick={() => {
+                      setModalType("add");
+                      setShowModal(true);
+                    }}
+                  >
+                    <Plus className="w-5 h-5" />
+                    <span className="hidden sm:inline">Add Variant</span>
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Filters Panel */}
+            {showFilters && (
+              <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 animate-in slide-in-from-top duration-300">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Filter by SKU
+                    </label>
+                    <input
+                      type="text"
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                      placeholder="Enter SKU"
+                      value={sku}
+                      onChange={(e) => setSku(e.target.value)}
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Filter by Category
+                    </label>
+                    <select
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                      value={categoryId}
+                      onChange={(e) => setCategoryId(e.target.value)}
+                    >
+                      <option value="">All Categories</option>
+                      {categories?.map((cat) => (
+                        <option key={cat.id} value={cat.id}>
+                          {cat.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                      Filter by Product
+                    </label>
+                    <select
+                      className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                      value={productId}
+                      onChange={(e) => setProductId(e.target.value)}
+                    >
+                      <option value="">All Products</option>
+                      {products?.map((prod) => (
+                        <option key={prod.id} value={prod.id}>
+                          {prod.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+
+                {hasActiveFilters && (
+                  <div className="mt-4 flex justify-end">
+                    <button
+                      onClick={() => {
+                        setSku("");
+                        setCategoryId("");
+                        setProductId("");
+                      }}
+                      className="text-sm text-emerald-600 hover:text-emerald-700 font-semibold flex items-center gap-1"
+                    >
+                      <X className="w-4 h-4" />
+                      Clear all filters
+                    </button>
+                  </div>
+                )}
               </div>
             )}
-            <table className="w-full text-left min-w-[900px]">
-              <thead>
-                <tr className="border-b">
-                  <th className="py-2 px-2">SKU</th>
-                  <th className="py-2 px-2">Product</th>
-                  <th className="py-2 px-2">Category</th>
-                  <th className="py-2 px-2">Size</th>
-                  <th className="py-2 px-2">Color</th>
-                  <th className="py-2 px-2">Stock</th>
-                  <th className="py-2 px-2">Price</th>
-                  <th className="py-2 px-2">Active</th>
-                  <th className="py-2 px-2 w-12">Edit</th>
-                </tr>
-              </thead>
-              <tbody>
+          </div>
+        </div>
+
+        {/* Main Content */}
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
+          {isLoading && !variants ? (
+            <div className="flex flex-col items-center justify-center py-16 space-y-4">
+              <div className="w-12 h-12 border-4 border-emerald-200 border-t-emerald-600 rounded-full animate-spin"></div>
+              <p className="text-gray-500 font-medium">Loading variants...</p>
+            </div>
+          ) : (
+            <>
+              {/* Offline/Error Banner */}
+              {(error || isOffline) && (
+                <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 m-4 rounded-lg flex items-start gap-3">
+                  <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0 mt-0.5" />
+                  <div>
+                    <p className="text-sm font-semibold text-yellow-800">
+                      Network Issue
+                    </p>
+                    <p className="text-sm text-yellow-700">
+                      You're offline or having network issues. Showing last
+                      saved data.
+                    </p>
+                  </div>
+                </div>
+              )}
+
+              {/* Desktop Table */}
+              <div className="hidden lg:block overflow-x-auto">
+                <table className="w-full">
+                  <thead>
+                    <tr className="bg-gradient-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                      <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                        SKU
+                      </th>
+                      <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                        Product
+                      </th>
+                      <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                        Category
+                      </th>
+                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                        Size
+                      </th>
+                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                        Color
+                      </th>
+                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                        Stock
+                      </th>
+                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                        Price
+                      </th>
+                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
+                        Status
+                      </th>
+                      <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-24">
+                        Actions
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {variants?.map((variant) => (
+                      <tr
+                        key={variant.id}
+                        className="border-b border-gray-100 hover:bg-gradient-to-r hover:from-emerald-50 hover:to-teal-50 transition-all duration-200 group"
+                      >
+                        <td className="py-4 px-6">
+                          <span className="font-mono text-sm font-semibold text-gray-800">
+                            {variant.sku}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="font-semibold text-gray-800">
+                            {products?.find((p) => p.id === variant.product_id)
+                              ?.name || "-"}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6">
+                          <span className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                            {categories?.find(
+                              (c) =>
+                                c.id ===
+                                products?.find(
+                                  (p) => p.id === variant.product_id,
+                                )?.category_id,
+                            )?.name || "-"}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                            <Ruler className="w-3 h-3" />
+                            {variant.size || "-"}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <span className="inline-flex items-center gap-1 bg-pink-100 text-pink-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                            <Palette className="w-3 h-3" />
+                            {variant.primary_color || "-"}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <span
+                            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold ${
+                              variant.stock_quantity > 10
+                                ? "bg-green-100 text-green-700"
+                                : variant.stock_quantity > 0
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            <BarChart3 className="w-3 h-3" />
+                            {variant.stock_quantity}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full text-xs font-semibold">
+                            <DollarSign className="w-3 h-3" />
+                            {variant.price}
+                          </span>
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          {variant.stock_quantity > 0 ? (
+                            <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                              Active
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs font-semibold">
+                              Inactive
+                            </span>
+                          )}
+                        </td>
+                        <td className="py-4 px-6 text-center">
+                          <button
+                            className="p-2 hover:bg-emerald-100 rounded-lg transition-colors text-gray-600 hover:text-emerald-600"
+                            onClick={() => {
+                              setModalType("edit");
+                              setModalVariant(variant);
+                              setShowModal(true);
+                            }}
+                            title="Edit variant"
+                          >
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+
+                    {!variants?.length && (
+                      <tr>
+                        <td colSpan={9} className="py-16">
+                          <div className="flex flex-col items-center justify-center text-center">
+                            <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                              <Box className="w-16 h-16 text-gray-400" />
+                            </div>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                              No variants found
+                            </h3>
+                            <p className="text-sm text-gray-500">
+                              {hasActiveFilters
+                                ? "Try adjusting your filters"
+                                : "Create your first variant to get started"}
+                            </p>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Mobile Cards */}
+              <div className="lg:hidden p-4 space-y-3">
                 {variants?.map((variant) => (
-                  <tr key={variant.id} className="border-b hover:bg-gray-50">
-                    <td className="py-2 px-2">{variant.sku}</td>
-                    <td className="py-2 px-2">
-                      {products?.find((p) => p.id === variant.product_id)
-                        ?.name || "-"}
-                    </td>
-                    <td className="py-2 px-2">
-                      {categories?.find(
-                        (c) =>
-                          c.id ===
-                          products?.find((p) => p.id === variant.product_id)
-                            ?.category_id,
-                      )?.name || "-"}
-                    </td>
-                    <td className="py-2 px-2">{variant.size || "-"}</td>
-                    <td className="py-2 px-2">
-                      {variant.primary_color || "-"}
-                    </td>
-                    <td className="py-2 px-2">{variant.stock_quantity}</td>
-                    <td className="py-2 px-2">${variant.price}</td>
-                    <td className="py-2 px-2">
-                      {variant.stock_quantity > 0 ? "Yes" : "No"}
-                    </td>
-                    <td className="py-2 px-2">
+                  <div
+                    key={variant.id}
+                    className="bg-gradient-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-emerald-300 hover:shadow-md transition-all duration-300"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="font-mono text-sm font-bold text-gray-800 bg-gray-100 px-2 py-1 rounded">
+                            {variant.sku}
+                          </span>
+                          {variant.stock_quantity > 0 ? (
+                            <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              Active
+                            </span>
+                          ) : (
+                            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              Inactive
+                            </span>
+                          )}
+                        </div>
+                        <h3 className="font-bold text-gray-800 mb-1">
+                          {products?.find((p) => p.id === variant.product_id)
+                            ?.name || "-"}
+                        </h3>
+                        <div className="flex flex-wrap gap-2 mt-2">
+                          <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                            {categories?.find(
+                              (c) =>
+                                c.id ===
+                                products?.find(
+                                  (p) => p.id === variant.product_id,
+                                )?.category_id,
+                            )?.name || "-"}
+                          </span>
+                          {variant.size && (
+                            <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              <Ruler className="w-3 h-3" />
+                              {variant.size}
+                            </span>
+                          )}
+                          {variant.primary_color && (
+                            <span className="inline-flex items-center gap-1 bg-pink-100 text-pink-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                              <Palette className="w-3 h-3" />
+                              {variant.primary_color}
+                            </span>
+                          )}
+                          <span
+                            className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-semibold ${
+                              variant.stock_quantity > 10
+                                ? "bg-green-100 text-green-700"
+                                : variant.stock_quantity > 0
+                                  ? "bg-yellow-100 text-yellow-700"
+                                  : "bg-red-100 text-red-700"
+                            }`}
+                          >
+                            <BarChart3 className="w-3 h-3" />
+                            Stock: {variant.stock_quantity}
+                          </span>
+                          <span className="inline-flex items-center gap-1 bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded-full text-xs font-semibold">
+                            <DollarSign className="w-3 h-3" />
+                            {variant.price}
+                          </span>
+                        </div>
+                      </div>
                       <button
-                        className="p-1 hover:bg-gray-200 rounded"
+                        className="p-2 hover:bg-emerald-50 rounded-lg transition-colors text-gray-400 hover:text-emerald-600 flex-shrink-0 ml-2"
                         onClick={() => {
                           setModalType("edit");
                           setModalVariant(variant);
@@ -183,21 +476,31 @@ export default function VariantsPage() {
                       >
                         <Pencil className="w-4 h-4" />
                       </button>
-                    </td>
-                  </tr>
+                    </div>
+                  </div>
                 ))}
+
                 {!variants?.length && (
-                  <tr>
-                    <td colSpan={9} className="text-center py-6 text-gray-500">
+                  <div className="flex flex-col items-center justify-center py-16 text-center">
+                    <div className="bg-gradient-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                      <Box className="w-16 h-16 text-gray-400" />
+                    </div>
+                    <h3 className="text-lg font-semibold text-gray-800 mb-2">
                       No variants found
-                    </td>
-                  </tr>
+                    </h3>
+                    <p className="text-sm text-gray-500">
+                      {hasActiveFilters
+                        ? "Try adjusting your filters"
+                        : "Create your first variant to get started"}
+                    </p>
+                  </div>
                 )}
-              </tbody>
-            </table>
-          </>
-        )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
+
       {showModal && modalType && (
         <VariantModal
           type={modalType}
@@ -236,11 +539,37 @@ function VariantModal({
   const [color, setColor] = useState(initial?.primary_color || "");
   const [price, setPrice] = useState(initial?.price || 0);
   const [stock, setStock] = useState(initial?.stock_quantity || 0);
+  const [images, setImages] = useState<string[]>(initial?.images || []);
   const [loading, setLoading] = useState(false);
+  const [uploadingImages, setUploadingImages] = useState(false);
   const [error, setError] = useState("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleImageChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    if (!files.length) return;
+
+    setUploadingImages(true);
+    const urls: string[] = [];
+
+    for (const file of files) {
+      try {
+        const url = await uploadImage(file);
+        if (url) urls.push(url);
+        else toast.error("Failed to upload image");
+      } catch (err) {
+        toast.error("Failed to upload image");
+      }
+    }
+
+    setImages((prev) => [...prev, ...urls]);
+    setUploadingImages(false);
+  };
+
+  const removeImage = (index: number) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
+
+  const handleSubmit = async () => {
     setError("");
     setLoading(true);
     try {
@@ -252,9 +581,10 @@ function VariantModal({
           primary_color: color,
           price,
           stock_quantity: stock,
+          images,
         });
       } else {
-        await onSave({ price, stock_quantity: stock });
+        await onSave({ price, stock_quantity: stock, images });
       }
       onClose();
     } catch (e: any) {
@@ -265,114 +595,239 @@ function VariantModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-      <form
-        onSubmit={handleSubmit}
-        className="bg-white rounded shadow-lg p-8 w-full max-w-sm"
-      >
-        <h2 className="text-lg font-bold mb-4">
-          {type === "add" ? "Add Variant" : "Edit Variant"}
-        </h2>
-        {type === "add" && (
-          <>
-            <div className="mb-4">
-              <label className="block mb-1 font-medium">SKU</label>
-              <input
-                className="w-full border px-3 py-2 rounded"
-                value={sku}
-                onChange={(e) => setSku(e.target.value)}
-                required
-                disabled={loading}
-              />
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200 overflow-y-auto">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-2xl my-8 overflow-hidden animate-in zoom-in-95 duration-200">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-emerald-600 to-teal-600 text-white px-6 py-5 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="bg-white/20 p-2 rounded-lg">
+              <Package2 className="w-5 h-5" />
             </div>
-            <div className="mb-4">
-              <label className="block mb-1 font-medium">Product</label>
-              <select
-                className="w-full border px-3 py-2 rounded"
-                value={productId}
-                onChange={(e) => setProductId(e.target.value)}
-                required
-                disabled={loading}
-              >
-                <option value="">Select Product</option>
-                {products.map((prod) => (
-                  <option key={prod.id} value={prod.id}>
-                    {prod.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="mb-4">
-              <label className="block mb-1 font-medium">Size</label>
-              <input
-                className="w-full border px-3 py-2 rounded"
-                value={size}
-                onChange={(e) => setSize(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-            <div className="mb-4">
-              <label className="block mb-1 font-medium">Color</label>
-              <input
-                className="w-full border px-3 py-2 rounded"
-                value={color}
-                onChange={(e) => setColor(e.target.value)}
-                disabled={loading}
-              />
-            </div>
-          </>
-        )}
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Price</label>
-          <input
-            type="number"
-            className="w-full border px-3 py-2 rounded"
-            value={price}
-            onChange={(e) => setPrice(Number(e.target.value))}
-            required
-            min={0}
-            step={0.01}
-            disabled={loading}
-          />
-        </div>
-        <div className="mb-4">
-          <label className="block mb-1 font-medium">Stock Quantity</label>
-          <input
-            type="number"
-            className="w-full border px-3 py-2 rounded"
-            value={stock}
-            onChange={(e) => setStock(Number(e.target.value))}
-            required
-            min={0}
-            step={1}
-            disabled={loading}
-          />
-        </div>
-        {error && <div className="mb-2 text-red-600 text-sm">{error}</div>}
-        <div className="flex justify-end gap-2 mt-4">
+            <h2 className="text-xl font-bold">
+              {type === "add" ? "Add Variant" : "Edit Variant"}
+            </h2>
+          </div>
           <button
-            type="button"
-            className="px-4 py-2 rounded bg-gray-200 hover:bg-gray-300"
             onClick={onClose}
+            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
             disabled={loading}
           >
-            Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-4 py-2 rounded bg-blue-600 text-white hover:bg-blue-700 font-semibold"
-            disabled={loading}
-          >
-            {loading
-              ? type === "add"
-                ? "Adding..."
-                : "Saving..."
-              : type === "add"
-                ? "Add"
-                : "Save"}
+            <X className="w-5 h-5" />
           </button>
         </div>
-      </form>
+
+        {/* Form */}
+        <div className="p-6 space-y-5 max-h-[calc(100vh-200px)] overflow-y-auto">
+          {type === "add" && (
+            <>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    SKU
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none font-mono"
+                    placeholder="Enter SKU"
+                    value={sku}
+                    onChange={(e) => setSku(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Product
+                  </label>
+                  <select
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                    value={productId}
+                    onChange={(e) => setProductId(e.target.value)}
+                    disabled={loading}
+                  >
+                    <option value="">Select Product</option>
+                    {products.map((prod) => (
+                      <option key={prod.id} value={prod.id}>
+                        {prod.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Size
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                    placeholder="e.g., S, M, L, XL"
+                    value={size}
+                    onChange={(e) => setSize(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                    Color
+                  </label>
+                  <input
+                    type="text"
+                    className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                    placeholder="e.g., Red, Blue"
+                    value={color}
+                    onChange={(e) => setColor(e.target.value)}
+                    disabled={loading}
+                  />
+                </div>
+              </div>
+            </>
+          )}
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Price ($)
+              </label>
+              <input
+                type="number"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                placeholder="0.00"
+                value={price}
+                onChange={(e) => setPrice(Number(e.target.value))}
+                min={0}
+                step={0.01}
+                disabled={loading}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">
+                Stock Quantity
+              </label>
+              <input
+                type="number"
+                className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none"
+                placeholder="0"
+                value={stock}
+                onChange={(e) => setStock(Number(e.target.value))}
+                min={0}
+                step={1}
+                disabled={loading}
+              />
+            </div>
+          </div>
+
+          {/* Image Upload */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Product Images
+            </label>
+            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 hover:border-emerald-500 transition-colors">
+              <input
+                type="file"
+                id="imageUpload"
+                multiple
+                accept="image/*"
+                onChange={handleImageChange}
+                disabled={loading || uploadingImages}
+                className="hidden"
+              />
+              <label
+                htmlFor="imageUpload"
+                className="flex flex-col items-center justify-center cursor-pointer"
+              >
+                <div className="bg-gradient-to-br from-emerald-500 to-teal-600 p-4 rounded-full mb-3">
+                  <Upload className="w-6 h-6 text-white" />
+                </div>
+                <p className="text-sm font-semibold text-gray-700 mb-1">
+                  {uploadingImages
+                    ? "Uploading images..."
+                    : "Click to upload images"}
+                </p>
+                <p className="text-xs text-gray-500">
+                  PNG, JPG, GIF up to 10MB each
+                </p>
+              </label>
+            </div>
+
+            {/* Image Previews */}
+            {images.length > 0 && (
+              <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-5 gap-3">
+                {images.map((img, i) => (
+                  <div
+                    key={i}
+                    className="relative group aspect-square bg-gray-100 rounded-lg overflow-hidden border-2 border-gray-200 hover:border-emerald-500 transition-all"
+                  >
+                    <img
+                      src={img}
+                      alt={`Preview ${i + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      onClick={() => removeImage(i)}
+                      className="absolute top-1 right-1 p-1.5 bg-red-500 text-white rounded-lg opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-600"
+                      disabled={loading}
+                      type="button"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Error Message */}
+          {error && (
+            <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg flex items-start gap-2">
+              <AlertCircle className="w-4 h-4 text-red-600 flex-shrink-0 mt-0.5" />
+              <p className="text-sm text-red-700">{error}</p>
+            </div>
+          )}
+
+          {/* Actions */}
+          <div className="flex gap-3 pt-2">
+            <button
+              type="button"
+              className="flex-1 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+              onClick={onClose}
+              disabled={loading}
+            >
+              Cancel
+            </button>
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="flex-1 px-4 py-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 text-white font-semibold hover:from-emerald-700 hover:to-teal-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              disabled={
+                loading ||
+                uploadingImages ||
+                (type === "add" && (!sku || !productId))
+              }
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  {type === "add" ? "Adding..." : "Saving..."}
+                </span>
+              ) : uploadingImages ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                  Uploading...
+                </span>
+              ) : type === "add" ? (
+                "Add Variant"
+              ) : (
+                "Save Changes"
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
