@@ -185,6 +185,7 @@ export function ProductSearchPanel({
                   >
                     {/* Image */}
                     <div
+                      onClick={() => setSelectedVariant(variant)}
                       className={`bg-white ${viewMode === "list" ? "w-32 h-32 flex-shrink-0" : "w-full aspect-square"} flex items-center justify-center p-3 border-b border-gray-100`}
                     >
                       {variant.images && variant.images.length > 0 ? (
@@ -247,7 +248,7 @@ export function ProductSearchPanel({
                       <button
                         className="mt-3 w-full py-3 rounded-xl font-semibold transition-all duration-300 flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed bg-gradient-to-r from-blue-600 to-indigo-600 text-white hover:from-blue-700 hover:to-indigo-700 hover:shadow-lg active:scale-95"
                         disabled={variant.stock_quantity === 0}
-                        onClick={() => setSelectedVariant(variant)}
+                        onClick={() => onAddToCart(variant)}
                       >
                         <ShoppingCart className="w-4 h-4" />
                         <span>
