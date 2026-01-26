@@ -21,7 +21,7 @@ export default function SalesLayout({
   const handleLogout = async () => {
     try {
       await logout();
-      toast.success("Logged out");
+      toast.success("Logged out successfully");
       router.replace("/login");
     } catch {
       toast.error("Logout failed");
@@ -29,19 +29,23 @@ export default function SalesLayout({
   };
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+      {/* Sidebar */}
       <SalesSidebar
         isOpen={sidebarOpen}
         onClose={() => setSidebarOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col">
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Topbar */}
         <SalesTopbar
           onMenuClick={() => setSidebarOpen(true)}
           onLogout={handleLogout}
         />
 
-        <main className="flex-1 p-4">{children}</main>
+        {/* Page Content */}
+        <main className="flex-1 overflow-auto">{children}</main>
       </div>
     </div>
   );
