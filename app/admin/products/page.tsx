@@ -211,10 +211,10 @@ export default function ProductsPage() {
                             <div className="flex items-center gap-1.5">
                               <Layers className="w-3.5 h-3.5 text-gray-400" />
                               <span className="text-xs text-gray-600 font-medium">
-                                {prod.variants?.length ?? 0} variants
+                                {prod.product_variants?.length ?? 0} variants
                               </span>
                             </div>
-                            {prod.is_active ? (
+                            {prod.product_variants?.length ? (
                               <div className="flex items-center gap-1 text-green-600">
                                 <CheckCircle className="w-3.5 h-3.5" />
                                 <span className="text-xs font-semibold">
