@@ -20,13 +20,13 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
       label: "Point of Sale",
       href: "/sales",
       icon: ShoppingCart,
-      gradient: "from-blue-500 to-indigo-600",
+      gradient: "from-blue-500 to-blue-500",
     },
     {
       label: "Orders",
       href: "/sales/orders",
       icon: Receipt,
-      gradient: "from-purple-500 to-pink-600",
+      gradient: "from-blue-500 to-blue-500",
     },
   ];
 
