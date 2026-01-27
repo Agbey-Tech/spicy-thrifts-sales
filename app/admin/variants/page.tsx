@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 import toast from "react-hot-toast";
 
@@ -29,6 +29,7 @@ import { getCategories } from "@/lib/api/categories";
 import { uploadImage } from "@/lib/uploads/uploadProfileImage";
 import { useUserStore } from "@/lib/auth/userStore";
 import type { ProductVariant } from "@/app/types/database";
+import { generateSKU } from "@/lib/generators/products";
 
 export default function VariantsPage() {
   const user = useUserStore((s) => s.user);
@@ -724,13 +725,24 @@ export function VariantModal({
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
+  const generatedSku = useMemo(() => {
+    return generateSKU(products.find((p) => p.id === productId)?.name || "", {
+      size,
+      color,
+    });
+  }, [productId, size, color]);
+
   const handleSubmit = async () => {
     setError("");
     setLoading(true);
     try {
+      const sku = generateSKU(
+        products.find((p) => p.id === productId)?.name || "",
+        { size, color },
+      );
       if (type === "add") {
         await onSave({
-          sku,
+          sku: generatedSku,
           product_id: productId,
           size,
           primary_color: color,
@@ -783,10 +795,10 @@ export function VariantModal({
                   <input
                     type="text"
                     className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-emerald-500 focus:ring-4 focus:ring-emerald-100 transition-all outline-none font-mono"
-                    placeholder="Enter SKU"
-                    value={sku}
+                    placeholder="Enter SKU (Auto generated from product, size, color)"
+                    value={generatedSku}
                     onChange={(e) => setSku(e.target.value)}
-                    disabled={loading}
+                    disabled={true}
                   />
                 </div>
 
