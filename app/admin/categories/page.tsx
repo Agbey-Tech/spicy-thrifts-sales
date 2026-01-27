@@ -18,6 +18,7 @@ import {
   X,
 } from "lucide-react";
 import toast from "react-hot-toast";
+import { generateCategoryCode } from "@/lib/generators/categories";
 
 type Category = {
   id: string;
@@ -365,22 +366,9 @@ function CategoryModal({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  // Auto-generate code from name if code is empty
-  const generateCode = (categoryName: string) => {
-    if (!categoryName) return "";
-    return categoryName
-      .trim()
-      .substring(0, 3)
-      .toUpperCase()
-      .replace(/[^A-Z0-9]/g, "");
-  };
-
   const handleNameChange = (value: string) => {
     setName(value);
-    // Only auto-generate code if it's empty or if we're creating a new category
-    if (!initial && !code) {
-      setCode(generateCode(value));
-    }
+    setCode(generateCategoryCode(value));
   };
 
   const handleSubmit = async () => {
@@ -388,7 +376,7 @@ function CategoryModal({
     setLoading(true);
     try {
       // Generate code if not provided
-      const finalCode = code.trim() || generateCode(name);
+      const finalCode = code.trim() || generateCategoryCode(name);
       await onSave({ name: name.trim(), code: finalCode });
     } catch (e: any) {
       setError(e?.message || "Failed to save");
@@ -447,8 +435,7 @@ function CategoryModal({
               placeholder="Auto-generated from name"
               value={code}
               onChange={(e) => setCode(e.target.value.toUpperCase())}
-              disabled={loading}
-              maxLength={10}
+              disabled={true}
             />
             <p className="text-xs text-gray-500 mt-1">
               Leave empty to auto-generate from name (first 3 characters)
