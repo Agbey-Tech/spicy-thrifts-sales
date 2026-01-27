@@ -13,6 +13,7 @@ import {
   Receipt,
 } from "lucide-react";
 import type { Order } from "@/app/types/database";
+import { useUserStore } from "@/lib/auth/userStore";
 
 interface SalesOrderInvoiceOverlayProps {
   orderId: string;
@@ -30,6 +31,8 @@ export function SalesOrderInvoiceOverlay({
     isLoading,
     error,
   } = useSWR(orderId ? ["order", orderId] : null, () => getOrder(orderId));
+
+  const user = useUserStore((state) => state.user);
 
   if (isLoading) {
     return (
@@ -215,7 +218,8 @@ export function SalesOrderInvoiceOverlay({
               Sales Person
             </div>
             <div className="font-semibold text-gray-800">
-              {order.sales_person_id}
+              {order.sales_person_id} <br></br>
+              {order.sales_person_id === user?.id && user?.full_name}
             </div>
           </div>
 
