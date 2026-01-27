@@ -17,6 +17,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
   const getItemGradient = (index: number) => {
     const gradients = [
       "from-blue-500 to-cyan-600",
+      "from-blue-500 to-cyan-600",
       "from-purple-500 to-pink-600",
       "from-green-500 to-emerald-600",
       "from-orange-500 to-red-600",
