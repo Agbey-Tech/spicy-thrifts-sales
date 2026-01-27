@@ -165,17 +165,16 @@ export default function AdminDashboard() {
             <Zap className="w-5 h-5 text-purple-600" />
             <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
           </div>
-          <div
-            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"
-            onClick={() => router.push("/admin/orders")}
-          >
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <ActivityCard
+              handleClick={() => router.push("/admin/orders")}
               icon={<ShoppingCart className="w-6 h-6" />}
               title="Recent Orders"
               desc="View and manage all recent sales and order activity"
               gradient="from-purple-500 to-indigo-600"
             />
             <ActivityCard
+              handleClick={() => router.push("/admin/users")}
               icon={<Users className="w-6 h-6" />}
               title="Sales Staff"
               desc="Track performance and manage your sales team"
@@ -194,12 +193,14 @@ export default function AdminDashboard() {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <ActivityCard
+              handleClick={() => null}
               icon={<ListChecks className="w-6 h-6" />}
               title="Inventory Health"
               desc="Monitor stock levels and inventory status across all products"
               gradient="from-teal-500 to-cyan-600"
             />
             <ActivityCard
+              handleClick={() => null}
               icon={<TrendingUp className="w-6 h-6" />}
               title="Sales Trends"
               desc="Visualize sales performance and identify growth opportunities"
@@ -280,18 +281,23 @@ function MetricCard({
 }
 
 function ActivityCard({
+  handleClick,
   icon,
   title,
   desc,
   gradient,
 }: {
+  handleClick: () => void;
   icon: React.ReactNode;
   title: string;
   desc: string;
   gradient: string;
 }) {
   return (
-    <div className="group relative bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden">
+    <div
+      className="group relative bg-white rounded-2xl shadow-lg border-2 border-gray-100 p-6 hover:shadow-2xl hover:scale-105 transition-all duration-300 cursor-pointer overflow-hidden"
+      onClick={handleClick}
+    >
       {/* Gradient Background on Hover */}
       <div
         className={`absolute inset-0 bg-linear-to-br ${gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-300`}
