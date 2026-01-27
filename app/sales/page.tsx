@@ -67,9 +67,9 @@ export default function SalesPOSPage() {
       {!showInvoice ? (
         <div className="h-full">
           {/* Desktop Layout */}
-          <div className="hidden h-screen lg:grid lg:grid-cols-[1fr_420px] gap-6 p-6 overflow-auto mb-30">
+          <div className="hidden h-screen lg:grid lg:grid-cols-[1fr_420px] gap-6 p-6 overflow-auto mb-0">
             {/* LEFT — PRODUCT BROWSER */}
-            <div className="h-full overflow-y-auto pr-2 mb-64">
+            <div className="h-full overflow-y-auto pr-2 mb-4">
               <ProductSearchPanel
                 onAddToCart={handleAddToCart}
                 refreshKey={refreshKey}
@@ -88,7 +88,7 @@ export default function SalesPOSPage() {
                   />
                 </div>
                 {cart.length > 0 && (
-                  <div className="animate-in slide-in-from-bottom duration-300 mb-10">
+                  <div className="animate-in slide-in-from-bottom duration-300 mb-1">
                     <CheckoutPanel
                       items={cart}
                       onOrderSuccess={handleOrderSuccess}
