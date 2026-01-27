@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import { getProducts } from "@/lib/api/products";
 import { getVariants } from "@/lib/api/variants";
 import { getSalesSummary, getLowStockVariants } from "@/lib/api/reports";
@@ -41,6 +42,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
+  const router = useRouter();
   useEffect(() => {
     async function fetchMetrics() {
       try {
@@ -163,7 +165,10 @@ export default function AdminDashboard() {
             <Zap className="w-5 h-5 text-purple-600" />
             <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
           </div>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+          <div
+            className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6"
+            onClick={() => router.push("/admin/orders")}
+          >
             <ActivityCard
               icon={<ShoppingCart className="w-6 h-6" />}
               title="Recent Orders"
