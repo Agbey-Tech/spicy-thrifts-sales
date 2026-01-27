@@ -30,9 +30,9 @@ export class AuthService {
   }
 
   async listUsers() {
-    // List all users with profile info (id, email, role, full_name, is_active)
-    // Implementation to be completed as per Supabase setup
-    throw new Error("Not implemented");
+    const { data, error } = await this.supabase.from("profiles").select("*");
+    if (error || !data) throw new Error("Users not found");
+    return data;
   }
 
   async createUser(input: {
@@ -66,6 +66,7 @@ export class AuthService {
         {
           id: userId,
           full_name,
+          email,
           role,
           is_active: true,
           created_at: new Date().toISOString(),

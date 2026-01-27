@@ -14,6 +14,7 @@ export interface Profile {
   id: string;
   full_name: string;
   role: UserRole;
+  email: string;
   is_active: boolean;
   created_at: string;
 }
