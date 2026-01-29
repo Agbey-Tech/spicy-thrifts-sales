@@ -20,16 +20,16 @@ export class ReportsService {
       orderCount: data.length,
       from,
       to,
-      orders: data
+      orders: data,
     };
   }
 
   // Get low stock variants (ADMIN)
-  async getLowStockVariants(threshold: number = 3) {
+  async getLowStockProducts(threshold: number = 3) {
     // Query variants with stock_quantity <= threshold, include product info
     const { data, error } = await this.supabase
-      .from("product_variants")
-      .select("*,products(name)")
+      .from("products")
+      .select("*")
       .lte("stock_quantity", threshold)
       .order("stock_quantity", { ascending: true });
     if (error) throw new Error(error.message);

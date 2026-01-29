@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProducts } from "@/lib/api/products";
-import { getVariants } from "@/lib/api/variants";
-import { getSalesSummary, getLowStockVariants } from "@/lib/api/reports";
+import { getSps } from "@/lib/api/sp";
+import { getSalesSummary, getLowStockProducts } from "@/lib/api/reports";
 import {
   Package,
-  Layers,
   DollarSign,
   AlertTriangle,
   TrendingUp,
@@ -35,7 +34,7 @@ function getTodayRange() {
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState<{
     totalProducts: number;
-    totalVariants: number;
+    totalSps: number;
     todaysSales: number;
     lowStockCount: number;
   } | null>(null);
@@ -48,16 +47,16 @@ export default function AdminDashboard() {
       try {
         setLoading(true);
         setError("");
-        const [products, variants, lowStock] = await Promise.all([
+        const [products, sps, lowStock] = await Promise.all([
           getProducts(),
-          getVariants(),
-          getLowStockVariants(),
+          getSps(),
+          getLowStockProducts(),
         ]);
         const { from, to } = getTodayRange();
         const salesSummary = await getSalesSummary(from, to);
         setMetrics({
           totalProducts: products.length,
-          totalVariants: variants.length,
+          totalSps: sps.length,
           todaysSales: salesSummary.totalSales,
           lowStockCount: lowStock.length,
         });
@@ -136,9 +135,9 @@ export default function AdminDashboard() {
             trend={{ value: 12, isPositive: true }}
           />
           <MetricCard
-            label="Total Variants"
-            value={metrics.totalVariants}
-            icon={<Layers className="w-6 h-6" />}
+            label="Total SPs"
+            value={metrics.totalSps}
+            icon={<DollarSign className="w-6 h-6" />}
             gradient="from-green-500 to-emerald-600"
             trend={{ value: 8, isPositive: true }}
           />
@@ -146,7 +145,7 @@ export default function AdminDashboard() {
             label="Today's Sales"
             value={metrics.todaysSales}
             prefix="$"
-            icon={<DollarSign className="w-6 h-6" />}
+            icon={<TrendingUp className="w-6 h-6" />}
             gradient="from-amber-500 to-orange-600"
             trend={{ value: 15, isPositive: true }}
           />

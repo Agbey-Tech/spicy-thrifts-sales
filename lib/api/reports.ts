@@ -19,7 +19,7 @@ export async function getSalesSummary(
 }
 
 // Get low stock variants (ADMIN only)
-export async function getLowStockVariants(
+export async function getLowStockProducts(
   threshold: number = 3,
 ): Promise<any[]> {
   const url = new URL("/api/reports/low-stock", window.location.origin);
