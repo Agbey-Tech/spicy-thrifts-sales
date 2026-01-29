@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import useSWR from "swr";
-import { getSalesSummary, getLowStockVariants } from "@/lib/api/reports";
+import { getSalesSummary, getLowStockProducts } from "@/lib/api/reports";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -57,7 +57,7 @@ export default function ReportsPage() {
     error: lowStockError,
     mutate: mutateLowStock,
   } = useSWR(["/api/reports/low-stock", threshold], () =>
-    getLowStockVariants(threshold),
+    getLowStockProducts(threshold),
   );
 
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
@@ -421,7 +421,7 @@ export default function ReportsPage() {
                         <AlertTriangle className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
                         <div>
                           <p className="text-sm font-semibold text-orange-800">
-                            {lowStock.length} variant
+                            {lowStock.length} Product
                             {lowStock.length !== 1 ? "s" : ""} running low
                           </p>
                           <p className="text-xs text-orange-700">
@@ -433,9 +433,6 @@ export default function ReportsPage() {
                       <table className="w-full">
                         <thead>
                           <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                            <th className="py-3 px-4 text-left text-sm font-bold text-gray-700">
-                              SKU
-                            </th>
                             <th className="py-3 px-4 text-left text-sm font-bold text-gray-700">
                               Product
                             </th>
@@ -452,11 +449,8 @@ export default function ReportsPage() {
                             >
                               <td className="py-3 px-4">
                                 <span className="font-mono text-sm font-semibold text-gray-800 bg-gray-100 px-2 py-1 rounded">
-                                  {v.sku}
+                                  {v.name}
                                 </span>
-                              </td>
-                              <td className="py-3 px-4 text-sm text-gray-700 font-medium">
-                                {v.products?.name || "-"}
                               </td>
                               <td className="py-3 px-4 text-center">
                                 <span
