@@ -24,6 +24,11 @@ export const navItems = [
     icon: Package,
   },
   {
+    label: "SPs",
+    href: "/admin/sps",
+    icon: Boxes,
+  },
+  {
     label: "Variants",
     href: "/admin/variants",
     icon: Boxes,
