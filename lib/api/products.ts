@@ -1,12 +1,8 @@
 import type { Product } from "@/app/types/database";
 
-// List all products (optionally include variants)
-export async function getProducts(options?: {
-  includeVariants?: boolean;
-}): Promise<Product[]> {
-  const url = new URL("/api/products", window.location.origin);
-  if (options?.includeVariants) url.searchParams.set("includeVariants", "true");
-  const res = await fetch(url.toString(), { credentials: "include" });
+// List all products
+export async function getProducts(): Promise<Product[]> {
+  const res = await fetch("/api/products", { credentials: "include" });
   const { success, data, error } = await res.json();
   if (!success) throw new Error(error || "Failed to fetch products");
   return data;
@@ -14,7 +10,7 @@ export async function getProducts(options?: {
 
 // Create a new product (ADMIN only)
 export async function createProduct(
-  input: Omit<Product, "id" | "created_at">,
+  input: Pick<Product, "category_id" | "sp_id" | "stock_quantity">,
 ): Promise<Product> {
   const res = await fetch("/api/products", {
     method: "POST",
@@ -30,7 +26,7 @@ export async function createProduct(
 // Update a product (ADMIN only)
 export async function updateProduct(
   productId: string,
-  updates: Partial<Product>,
+  updates: Partial<Pick<Product, "category_id" | "sp_id" | "stock_quantity">>,
 ): Promise<Product> {
   const res = await fetch(`/api/products/${productId}`, {
     method: "PATCH",

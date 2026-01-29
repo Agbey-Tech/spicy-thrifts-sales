@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import {
   getProducts,
@@ -9,21 +9,10 @@ import {
   deleteProduct,
 } from "@/lib/api/products";
 import { getCategories } from "@/lib/api/categories";
+import { getSps } from "@/lib/api/sp";
+import { Package, Plus, Pencil, Trash2, X, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import {
-  Plus,
-  Pencil,
-  Trash2,
-  Package,
-  Grid3x3,
-  List,
-  AlertCircle,
-  Box,
-  X,
-  Layers,
-  CheckCircle,
-  XCircle,
-} from "lucide-react";
+import { ca } from "zod/v4/locales";
 
 export default function ProductsPage() {
   const {
@@ -31,7 +20,7 @@ export default function ProductsPage() {
     mutate,
     isLoading,
     error,
-  } = useSWR("/api/products", () => getProducts({ includeVariants: true }), {
+  } = useSWR("/api/products", getProducts, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
     shouldRetryOnError: false,
@@ -41,10 +30,20 @@ export default function ProductsPage() {
     revalidateOnFocus: false,
     shouldRetryOnError: false,
   });
+  const { data: sps } = useSWR("/api/sp", getSps, {
+    revalidateOnFocus: false,
+    shouldRetryOnError: false,
+  });
+
+  useEffect(() => {
+    sps?.sort((a, b) => a.name.localeCompare(b.name));
+    categories?.sort((a, b) => a.name.localeCompare(b.name));
+  }, [sps, categories]);
 
   const [showModal, setShowModal] = useState(false);
   const [editProduct, setEditProduct] = useState<any>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [confirmDelete, setConfirmDelete] = useState<any>(null);
 
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
@@ -65,16 +64,20 @@ export default function ProductsPage() {
     }
   };
 
-  const handleDelete = async (productId: string) => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+  const handleDelete = (product: any) => {
+    setConfirmDelete(product);
+  };
 
+  const confirmDeleteProduct = async () => {
+    if (!confirmDelete) return;
     try {
-      await deleteProduct(productId);
+      await deleteProduct(confirmDelete.id);
       toast.success("Product deleted successfully");
       mutate();
     } catch (e: any) {
       toast.error(e?.message || "Failed to delete product");
+    } finally {
+      setConfirmDelete(null);
     }
   };
 
@@ -95,32 +98,22 @@ export default function ProductsPage() {
                 </p>
               </div>
             </div>
-
             <div className="flex items-center gap-3">
               {/* View Toggle */}
               <div className="flex gap-2 bg-white rounded-xl p-1.5 shadow-sm border-2 border-gray-200">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2.5 rounded-lg transition-all ${
-                    viewMode === "grid"
-                      ? "bg-purple-500 text-white shadow-md"
-                      : "text-gray-500 hover:bg-gray-100"
-                  }`}
+                  className={`p-2.5 rounded-lg transition-all ${viewMode === "grid" ? "bg-purple-500 text-white shadow-md" : "text-gray-500 hover:bg-gray-100"}`}
                 >
-                  <Grid3x3 className="w-5 h-5" />
+                  <span className="font-bold">Grid</span>
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2.5 rounded-lg transition-all ${
-                    viewMode === "list"
-                      ? "bg-purple-500 text-white shadow-md"
-                      : "text-gray-500 hover:bg-gray-100"
-                  }`}
+                  className={`p-2.5 rounded-lg transition-all ${viewMode === "list" ? "bg-purple-500 text-white shadow-md" : "text-gray-500 hover:bg-gray-100"}`}
                 >
-                  <List className="w-5 h-5" />
+                  <span className="font-bold">List</span>
                 </button>
               </div>
-
               {/* Add Button */}
               <button
                 className="flex items-center gap-2 bg-linear-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95"
@@ -135,7 +128,6 @@ export default function ProductsPage() {
             </div>
           </div>
         </div>
-
         {/* Main Content */}
         <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
           {isLoading && !products ? (
@@ -160,7 +152,6 @@ export default function ProductsPage() {
                   </div>
                 </div>
               )}
-
               {/* Grid View */}
               {viewMode === "grid" && (
                 <div className="p-6">
@@ -173,7 +164,7 @@ export default function ProductsPage() {
                         {/* Icon & Actions */}
                         <div className="flex items-start justify-between mb-4">
                           <div className="bg-linear-to-br from-purple-500 to-pink-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
-                            <Box className="w-5 h-5 text-white" />
+                            <Package className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex gap-1">
                             <button
@@ -188,57 +179,61 @@ export default function ProductsPage() {
                             </button>
                             <button
                               className="p-2 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-600"
-                              onClick={() => handleDelete(prod.id)}
+                              onClick={() => handleDelete(prod)}
                               title="Delete product"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
                           </div>
                         </div>
-
                         {/* Content */}
                         <div className="space-y-3">
                           <div>
                             <h3 className="font-bold text-lg text-gray-800 mb-1 truncate">
                               {prod.name}
                             </h3>
-                            <p className="text-xs text-gray-500 line-clamp-2">
-                              {prod.description || "No description"}
-                            </p>
                           </div>
-
                           <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                            <div className="flex items-center gap-1.5">
-                              <Layers className="w-3.5 h-3.5 text-gray-400" />
-                              <span className="text-xs text-gray-600 font-medium">
-                                {prod.product_variants?.length ?? 0} variants
-                              </span>
-                            </div>
-                            {prod.product_variants?.length ? (
-                              <div className="flex items-center gap-1 text-green-600">
-                                <CheckCircle className="w-3.5 h-3.5" />
-                                <span className="text-xs font-semibold">
-                                  Active
-                                </span>
-                              </div>
-                            ) : (
-                              <div className="flex items-center gap-1 text-gray-400">
-                                <XCircle className="w-3.5 h-3.5" />
-                                <span className="text-xs font-semibold">
-                                  Inactive
-                                </span>
-                              </div>
-                            )}
+                            <span className="text-xs text-gray-600 font-medium">
+                              Category:
+                            </span>
+                            <span className="text-xs font-bold text-purple-700">
+                              {categories?.find(
+                                (c) => c.id === prod.category_id,
+                              )?.name || "-"}
+                            </span>
                           </div>
-
-                          <div className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1 rounded-full text-xs font-semibold">
-                            {categories?.find((c) => c.id === prod.category_id)
-                              ?.name || "No category"}
+                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                            <span className="text-xs text-gray-600 font-medium">
+                              SP:
+                            </span>
+                            <span className="text-xs font-bold text-purple-700">
+                              {sps?.find((s) => s.id === prod.sp_id)?.name ||
+                                "-"}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                            <span className="text-xs text-gray-600 font-medium">
+                              Base Price:
+                            </span>
+                            <span className="text-xs font-bold text-green-700">
+                              GH₵
+                              {sps
+                                ?.find((s) => s.id === prod.sp_id)
+                                ?.base_price?.toLocaleString() || "-"}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
+                            <span className="text-xs text-gray-600 font-medium">
+                              Stock Quantity:
+                            </span>
+                            <span className="text-xs font-bold text-blue-700">
+                              {prod.stock_quantity}
+                            </span>
                           </div>
                         </div>
                       </div>
                     ))}
-
                     {!products?.length && (
                       <div className="col-span-full flex flex-col items-center justify-center py-16">
                         <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
@@ -255,214 +250,109 @@ export default function ProductsPage() {
                   </div>
                 </div>
               )}
-
               {/* List View */}
               {viewMode === "list" && (
-                <>
-                  {/* Desktop Table */}
-                  <div className="hidden md:block overflow-x-auto">
-                    <table className="w-full">
-                      <thead>
-                        <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                          <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
-                            Product Name
-                          </th>
-                          <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
-                            Category
-                          </th>
-                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
-                            Active
-                          </th>
-                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700">
-                            Variants
-                          </th>
-                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-32">
-                            Actions
-                          </th>
+                <div className="overflow-x-auto p-4">
+                  <table className="w-full">
+                    <thead>
+                      <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
+                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                          Name
+                        </th>
+                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                          Category
+                        </th>
+                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                          SP
+                        </th>
+                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                          Base Price
+                        </th>
+                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                          Stock Quantity
+                        </th>
+                        <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-32">
+                          Actions
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {products?.map((prod: any) => (
+                        <tr
+                          key={prod.id}
+                          className="border-b border-gray-100 hover:bg-linear-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 group"
+                        >
+                          <td className="py-4 px-6 font-semibold text-gray-800">
+                            {prod.name}
+                          </td>
+                          <td className="py-4 px-6">
+                            {categories?.find((c) => c.id === prod.category_id)
+                              ?.name || "-"}
+                          </td>
+                          <td className="py-4 px-6">
+                            {sps?.find((s) => s.id === prod.sp_id)?.name || "-"}
+                          </td>
+                          <td className="py-4 px-6">
+                            GH₵
+                            {sps
+                              ?.find((s) => s.id === prod.sp_id)
+                              ?.base_price?.toLocaleString() || "-"}
+                          </td>
+                          <td className="py-4 px-6">{prod.stock_quantity}</td>
+                          <td className="py-4 px-6">
+                            <div className="flex items-center justify-center gap-2">
+                              <button
+                                className="p-2 hover:bg-purple-50 rounded-lg transition-colors text-gray-400 hover:text-purple-600"
+                                onClick={() => {
+                                  setEditProduct(prod);
+                                  setShowModal(true);
+                                }}
+                                title="Edit product"
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                className="p-2 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-600"
+                                onClick={() => handleDelete(prod)}
+                                title="Delete product"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          </td>
                         </tr>
-                      </thead>
-                      <tbody>
-                        {products?.map((prod: any) => (
-                          <tr
-                            key={prod.id}
-                            className="border-b border-gray-100 hover:bg-linear-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 group"
-                          >
-                            <td className="py-4 px-6">
-                              <div className="flex items-center gap-3">
-                                <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-sm group-hover:scale-110 transition-transform duration-300">
-                                  <Box className="w-4 h-4 text-white" />
-                                </div>
-                                <div>
-                                  <span className="font-semibold text-gray-800 block">
-                                    {prod.name}
-                                  </span>
-                                  <span className="text-xs text-gray-500 line-clamp-1">
-                                    {prod.description || "No description"}
-                                  </span>
-                                </div>
+                      ))}
+                      {!products?.length && (
+                        <tr>
+                          <td colSpan={6} className="py-16">
+                            <div className="flex flex-col items-center justify-center text-center">
+                              <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                                <Package className="w-16 h-16 text-gray-400" />
                               </div>
-                            </td>
-                            <td className="py-4 px-6">
-                              <span className="inline-flex items-center gap-1.5 bg-purple-100 text-purple-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                                {categories?.find(
-                                  (c) => c.id === prod.category_id,
-                                )?.name || "-"}
-                              </span>
-                            </td>
-                            <td className="py-4 px-6 text-center">
-                              {prod.is_active ? (
-                                <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                                  <CheckCircle className="w-3 h-3" />
-                                  Active
-                                </span>
-                              ) : (
-                                <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-3 py-1.5 rounded-full text-xs font-semibold">
-                                  <XCircle className="w-3 h-3" />
-                                  Inactive
-                                </span>
-                              )}
-                            </td>
-                            <td className="py-4 px-6 text-center">
-                              <span className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
-                                <Layers className="w-3 h-3" />
-                                {prod.variants?.length ?? 0}
-                              </span>
-                            </td>
-                            <td className="py-4 px-6">
-                              <div className="flex items-center justify-center gap-2">
-                                <button
-                                  className="p-2 hover:bg-purple-100 rounded-lg transition-colors text-gray-600 hover:text-purple-600"
-                                  onClick={() => {
-                                    setEditProduct(prod);
-                                    setShowModal(true);
-                                  }}
-                                  title="Edit product"
-                                >
-                                  <Pencil className="w-4 h-4" />
-                                </button>
-                                <button
-                                  className="p-2 hover:bg-red-100 rounded-lg transition-colors text-gray-600 hover:text-red-600"
-                                  onClick={() => handleDelete(prod.id)}
-                                  title="Delete product"
-                                >
-                                  <Trash2 className="w-4 h-4" />
-                                </button>
-                              </div>
-                            </td>
-                          </tr>
-                        ))}
-
-                        {!products?.length && (
-                          <tr>
-                            <td colSpan={5} className="py-16">
-                              <div className="flex flex-col items-center justify-center text-center">
-                                <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
-                                  <Package className="w-16 h-16 text-gray-400" />
-                                </div>
-                                <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                                  No products yet
-                                </h3>
-                                <p className="text-sm text-gray-500">
-                                  Create your first product to get started
-                                </p>
-                              </div>
-                            </td>
-                          </tr>
-                        )}
-                      </tbody>
-                    </table>
-                  </div>
-
-                  {/* Mobile List */}
-                  <div className="md:hidden p-4 space-y-3">
-                    {products?.map((prod: any) => (
-                      <div
-                        key={prod.id}
-                        className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-purple-300 hover:shadow-md transition-all duration-300"
-                      >
-                        <div className="flex items-start justify-between mb-3">
-                          <div className="flex items-start gap-3 flex-1 min-w-0">
-                            <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-md shrink-0">
-                              <Box className="w-5 h-5 text-white" />
-                            </div>
-                            <div className="min-w-0 flex-1">
-                              <h3 className="font-bold text-gray-800 truncate">
-                                {prod.name}
+                              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                                No products yet
                               </h3>
-                              <p className="text-xs text-gray-500 line-clamp-1">
-                                {prod.description || "No description"}
+                              <p className="text-sm text-gray-500">
+                                Create your first product to get started
                               </p>
-                              <div className="flex flex-wrap gap-2 mt-2">
-                                <span className="inline-flex items-center gap-1 bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                                  {categories?.find(
-                                    (c) => c.id === prod.category_id,
-                                  )?.name || "-"}
-                                </span>
-                                <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                                  <Layers className="w-3 h-3" />
-                                  {prod.variants?.length ?? 0}
-                                </span>
-                                {prod.is_active ? (
-                                  <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-2 py-0.5 rounded-full text-xs font-semibold">
-                                    <CheckCircle className="w-3 h-3" />
-                                    Active
-                                  </span>
-                                ) : (
-                                  <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full text-xs font-semibold">
-                                    <XCircle className="w-3 h-3" />
-                                    Inactive
-                                  </span>
-                                )}
-                              </div>
                             </div>
-                          </div>
-                          <div className="flex gap-1 ml-2 shrink-0">
-                            <button
-                              className="p-2 hover:bg-purple-50 rounded-lg transition-colors text-gray-400 hover:text-purple-600"
-                              onClick={() => {
-                                setEditProduct(prod);
-                                setShowModal(true);
-                              }}
-                            >
-                              <Pencil className="w-4 h-4" />
-                            </button>
-                            <button
-                              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-600"
-                              onClick={() => handleDelete(prod.id)}
-                            >
-                              <Trash2 className="w-4 h-4" />
-                            </button>
-                          </div>
-                        </div>
-                      </div>
-                    ))}
-
-                    {!products?.length && (
-                      <div className="flex flex-col items-center justify-center py-16 text-center">
-                        <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
-                          <Package className="w-16 h-16 text-gray-400" />
-                        </div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                          No products yet
-                        </h3>
-                        <p className="text-sm text-gray-500">
-                          Create your first product to get started
-                        </p>
-                      </div>
-                    )}
-                  </div>
-                </>
+                          </td>
+                        </tr>
+                      )}
+                    </tbody>
+                  </table>
+                </div>
               )}
             </>
           )}
         </div>
       </div>
-
       {/* Modal */}
       {showModal && (
         <ProductModal
           initial={editProduct}
           categories={categories || []}
+          sps={sps || []}
           onClose={() => {
             setShowModal(false);
             setEditProduct(null);
@@ -470,29 +360,62 @@ export default function ProductsPage() {
           onSave={handleSave}
         />
       )}
+      {/* Custom Confirm Delete Modal */}
+      {confirmDelete && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+            <div className="px-6 py-6 flex flex-col items-center">
+              <div className="bg-red-100 rounded-full p-4 mb-4">
+                <Trash2 className="w-8 h-8 text-red-500" />
+              </div>
+              <h2 className="text-xl font-bold text-gray-800 mb-2">
+                Delete Product?
+              </h2>
+              <p className="text-gray-600 mb-6 text-center">
+                Are you sure you want to delete{" "}
+                <span className="font-semibold">{confirmDelete.name}</span>?
+                This action cannot be undone.
+              </p>
+              <div className="flex gap-3 w-full">
+                <button
+                  className="flex-1 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+                  onClick={() => setConfirmDelete(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  className="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
+                  onClick={confirmDeleteProduct}
+                >
+                  Delete
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
 
-/* ===========================
-   Modal
-=========================== */
-
 function ProductModal({
   initial,
   categories,
+  sps,
   onClose,
   onSave,
 }: {
   initial: any;
   categories: any[];
+  sps: any[];
   onClose: () => void;
   onSave: (values: any) => void;
 }) {
-  const [name, setName] = useState(initial?.name || "");
   const [categoryId, setCategoryId] = useState(initial?.category_id || "");
-  const [description, setDescription] = useState(initial?.description || "");
-  const [isUnique, setIsUnique] = useState(initial?.is_unique || false);
+  const [spId, setSpId] = useState(initial?.sp_id || "");
+  const [stockQuantity, setStockQuantity] = useState(
+    initial?.stock_quantity || "",
+  );
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -501,10 +424,9 @@ function ProductModal({
     setLoading(true);
     try {
       await onSave({
-        name,
         category_id: categoryId,
-        description,
-        is_unique: isUnique,
+        sp_id: spId,
+        stock_quantity: Number(stockQuantity),
       });
       onClose();
     } catch (e: any) {
@@ -513,6 +435,9 @@ function ProductModal({
       setLoading(false);
     }
   };
+
+  const selectedSp = sps.find((sp: any) => sp.id === spId);
+  const selectedCategory = categories.find((cat: any) => cat.id === categoryId);
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
@@ -535,24 +460,8 @@ function ProductModal({
             <X className="w-5 h-5" />
           </button>
         </div>
-
         {/* Form */}
         <div className="p-6 space-y-5">
-          {/* Name Input */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Product Name
-            </label>
-            <input
-              type="text"
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
-              placeholder="Enter product name"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              disabled={loading}
-            />
-          </div>
-
           {/* Category Select */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -572,40 +481,58 @@ function ProductModal({
               ))}
             </select>
           </div>
-
-          {/* Description */}
+          {/* SP Select */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Description
+              Special Price (SP)
             </label>
-            <textarea
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none resize-none"
-              placeholder="Enter product description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
-              rows={3}
+            <select
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              value={spId}
+              onChange={(e) => setSpId(e.target.value)}
               disabled={loading}
-            />
-          </div>
-
-          {/* Is Unique Checkbox */}
-          <div className="flex items-center gap-3 p-4 bg-gray-50 rounded-xl border-2 border-gray-200">
-            <input
-              type="checkbox"
-              id="isUnique"
-              checked={isUnique}
-              onChange={(e) => setIsUnique(e.target.checked)}
-              disabled={loading}
-              className="w-5 h-5 rounded border-gray-300 text-purple-600 focus:ring-purple-500 focus:ring-2"
-            />
-            <label
-              htmlFor="isUnique"
-              className="font-semibold text-gray-700 cursor-pointer flex-1"
             >
-              Is Unique Product
-            </label>
+              <option value="">Select SP</option>
+              {sps.map((sp) => (
+                <option key={sp.id} value={sp.id}>
+                  {sp.name} (GH₵{sp.base_price?.toLocaleString()})
+                </option>
+              ))}
+            </select>
           </div>
-
+          {/* Stock Quantity Input */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Stock Quantity
+            </label>
+            <input
+              type="number"
+              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              placeholder="Enter stock quantity"
+              value={stockQuantity}
+              onChange={(e) => setStockQuantity(e.target.value)}
+              min={0}
+              step={1}
+              disabled={loading}
+            />
+          </div>
+          {/* Auto-generated Name & Price Preview */}
+          <div className="p-4 bg-gray-50 rounded-xl border-2 border-gray-200 mt-2">
+            <div className="text-xs text-gray-600 mb-1">
+              Auto-generated Name:
+            </div>
+            <div className="font-bold text-gray-800">
+              {selectedCategory && selectedSp
+                ? `${selectedCategory.name} - ${selectedSp.name}`
+                : "-"}
+            </div>
+            <div className="text-xs text-gray-600 mt-2 mb-1">Base Price:</div>
+            <div className="font-bold text-green-700">
+              {selectedSp
+                ? `GH₵${selectedSp.base_price?.toLocaleString()}`
+                : "-"}
+            </div>
+          </div>
           {/* Error Message */}
           {error && (
             <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg flex items-start gap-2">
@@ -613,7 +540,6 @@ function ProductModal({
               <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
-
           {/* Actions */}
           <div className="flex gap-3 pt-2">
             <button
@@ -628,7 +554,7 @@ function ProductModal({
               type="button"
               onClick={handleSubmit}
               className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-purple-600 to-pink-600 text-white font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={loading || !name.trim() || !categoryId}
+              disabled={loading || !categoryId || !spId || !stockQuantity}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
