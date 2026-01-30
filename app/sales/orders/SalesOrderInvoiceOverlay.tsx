@@ -121,7 +121,7 @@ export function SalesOrderInvoiceOverlay({
       <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
         <div className="bg-white rounded-2xl shadow-2xl w-full max-w-3xl max-h-[90vh] overflow-hidden flex flex-col animate-in zoom-in-95 duration-200">
           {/* Header */}
-          <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white px-6 py-5 flex items-center justify-between">
+          <div className="bg-[#7c377f] text-white px-6 py-5 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="bg-white/20 p-2 rounded-lg">
                 <Receipt className="w-6 h-6" />
@@ -277,7 +277,7 @@ export function SalesOrderInvoiceOverlay({
           <div className="border-t-2 border-gray-200 bg-linear-to-r from-gray-50 to-gray-100 p-6">
             <div className="flex flex-col sm:flex-row gap-3">
               <button
-                className="flex-1 py-3 px-6 rounded-xl bg-linear-to-r from-green-600 to-emerald-600 text-white font-bold hover:from-green-700 hover:to-emerald-700 transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
+                className="flex-1 py-3 px-6 rounded-xl bg-[#7c3770] text-white font-bold hover:bg-[#6b316f] transition-all duration-300 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2"
                 onClick={handlePrint}
               >
                 <Printer className="w-5 h-5" />

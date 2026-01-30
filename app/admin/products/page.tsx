@@ -82,41 +82,41 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-[#fadadd] p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="bg-linear-to-br from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg">
+              <div className="bg-[#7c377f] p-3 rounded-xl shadow-lg">
                 <Package className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">Products</h1>
-                <p className="text-sm text-gray-600">
+                <h1 className="text-3xl font-bold text-[#7c377f]">Products</h1>
+                <p className="text-sm text-black/70">
                   Manage your product catalog
                 </p>
               </div>
             </div>
             <div className="flex items-center gap-3">
               {/* View Toggle */}
-              <div className="flex gap-2 bg-white rounded-xl p-1.5 shadow-sm border-2 border-gray-200">
+              <div className="flex gap-2 bg-white rounded-xl p-1.5 shadow-sm border-2 border-[#fadadd]">
                 <button
                   onClick={() => setViewMode("grid")}
-                  className={`p-2.5 rounded-lg transition-all ${viewMode === "grid" ? "bg-purple-500 text-white shadow-md" : "text-gray-500 hover:bg-gray-100"}`}
+                  className={`p-2.5 rounded-lg transition-all font-bold ${viewMode === "grid" ? "bg-[#7c377f] text-white shadow-md" : "text-black hover:bg-[#fadadd]"}`}
                 >
-                  <span className="font-bold">Grid</span>
+                  Grid
                 </button>
                 <button
                   onClick={() => setViewMode("list")}
-                  className={`p-2.5 rounded-lg transition-all ${viewMode === "list" ? "bg-purple-500 text-white shadow-md" : "text-gray-500 hover:bg-gray-100"}`}
+                  className={`p-2.5 rounded-lg transition-all font-bold ${viewMode === "list" ? "bg-[#7c377f] text-white shadow-md" : "text-black hover:bg-[#fadadd]"}`}
                 >
-                  <span className="font-bold">List</span>
+                  List
                 </button>
               </div>
               {/* Add Button */}
               <button
-                className="flex items-center gap-2 bg-linear-to-r from-purple-600 to-pink-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95"
+                className="flex items-center gap-2 bg-[#7c377f] text-white px-4 py-3 rounded-xl font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95"
                 onClick={() => {
                   setEditProduct(null);
                   setShowModal(true);
@@ -129,7 +129,7 @@ export default function ProductsPage() {
           </div>
         </div>
         {/* Main Content */}
-        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-[#fadadd] overflow-hidden">
           {isLoading && !products ? (
             <div className="flex flex-col items-center justify-center py-16 space-y-4">
               <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
@@ -159,16 +159,16 @@ export default function ProductsPage() {
                     {products?.map((prod: any) => (
                       <div
                         key={prod.id}
-                        className="group relative bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-5 hover:border-purple-300 hover:shadow-lg transition-all duration-300"
+                        className="group relative bg-white border-2 border-[#fadadd] rounded-xl p-5 hover:border-[#7c377f] hover:shadow-lg transition-all duration-300"
                       >
                         {/* Icon & Actions */}
                         <div className="flex items-start justify-between mb-4">
-                          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
+                          <div className="bg-[#7c377f] p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
                             <Package className="w-5 h-5 text-white" />
                           </div>
                           <div className="flex gap-1">
                             <button
-                              className="p-2 hover:bg-purple-50 rounded-lg transition-colors text-gray-400 hover:text-purple-600"
+                              className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
                               onClick={() => {
                                 setEditProduct(prod);
                                 setShowModal(true);
@@ -178,7 +178,7 @@ export default function ProductsPage() {
                               <Pencil className="w-4 h-4" />
                             </button>
                             <button
-                              className="p-2 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-600"
+                              className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-red-600"
                               onClick={() => handleDelete(prod)}
                               title="Delete product"
                             >
@@ -189,7 +189,7 @@ export default function ProductsPage() {
                         {/* Content */}
                         <div className="space-y-3">
                           <div>
-                            <h3 className="font-bold text-lg text-gray-800 mb-1 truncate">
+                            <h3 className="font-bold text-lg text-[#7c377f] mb-1 truncate">
                               {prod.name}
                             </h3>
                           </div>
@@ -197,7 +197,7 @@ export default function ProductsPage() {
                             <span className="text-xs text-gray-600 font-medium">
                               Category:
                             </span>
-                            <span className="text-xs font-bold text-purple-700">
+                            <span className="text-xs font-bold text-[#7c377f]">
                               {categories?.find(
                                 (c) => c.id === prod.category_id,
                               )?.name || "-"}
@@ -207,7 +207,7 @@ export default function ProductsPage() {
                             <span className="text-xs text-gray-600 font-medium">
                               SP:
                             </span>
-                            <span className="text-xs font-bold text-purple-700">
+                            <span className="text-xs font-bold text-[#7c377f]">
                               {sps?.find((s) => s.id === prod.sp_id)?.name ||
                                 "-"}
                             </span>
@@ -227,7 +227,7 @@ export default function ProductsPage() {
                             <span className="text-xs text-gray-600 font-medium">
                               Stock Quantity:
                             </span>
-                            <span className="text-xs font-bold text-blue-700">
+                            <span className="text-xs font-bold text-[#7c377f]">
                               {prod.stock_quantity}
                             </span>
                           </div>
@@ -236,13 +236,13 @@ export default function ProductsPage() {
                     ))}
                     {!products?.length && (
                       <div className="col-span-full flex flex-col items-center justify-center py-16">
-                        <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
-                          <Package className="w-16 h-16 text-gray-400" />
+                        <div className="bg-[#fadadd] rounded-full p-8 mb-4">
+                          <Package className="w-16 h-16 text-[#7c377f]" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
                           No products yet
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-black/60">
                           Create your first product to get started
                         </p>
                       </div>
@@ -255,23 +255,23 @@ export default function ProductsPage() {
                 <div className="overflow-x-auto p-4">
                   <table className="w-full">
                     <thead>
-                      <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                      <tr className="bg-[#fadadd] border-b-2 border-[#fadadd]">
+                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
                           Name
                         </th>
-                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
                           Category
                         </th>
-                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
                           SP
                         </th>
-                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
                           Base Price
                         </th>
-                        <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
+                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
                           Stock Quantity
                         </th>
-                        <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-32">
+                        <th className="py-4 px-6 text-center text-sm font-bold text-[#7c377f] w-32">
                           Actions
                         </th>
                       </tr>
@@ -280,9 +280,9 @@ export default function ProductsPage() {
                       {products?.map((prod: any) => (
                         <tr
                           key={prod.id}
-                          className="border-b border-gray-100 hover:bg-linear-to-r hover:from-purple-50 hover:to-pink-50 transition-all duration-200 group"
+                          className="border-b border-[#fadadd] hover:bg-[#fadadd] transition-all duration-200 group"
                         >
-                          <td className="py-4 px-6 font-semibold text-gray-800">
+                          <td className="py-4 px-6 font-semibold text-[#7c377f]">
                             {prod.name}
                           </td>
                           <td className="py-4 px-6">
@@ -302,7 +302,7 @@ export default function ProductsPage() {
                           <td className="py-4 px-6">
                             <div className="flex items-center justify-center gap-2">
                               <button
-                                className="p-2 hover:bg-purple-50 rounded-lg transition-colors text-gray-400 hover:text-purple-600"
+                                className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
                                 onClick={() => {
                                   setEditProduct(prod);
                                   setShowModal(true);
@@ -312,7 +312,7 @@ export default function ProductsPage() {
                                 <Pencil className="w-4 h-4" />
                               </button>
                               <button
-                                className="p-2 hover:bg-red-50 rounded-lg transition-colors text-gray-400 hover:text-red-600"
+                                className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-red-600"
                                 onClick={() => handleDelete(prod)}
                                 title="Delete product"
                               >
@@ -326,13 +326,13 @@ export default function ProductsPage() {
                         <tr>
                           <td colSpan={6} className="py-16">
                             <div className="flex flex-col items-center justify-center text-center">
-                              <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
-                                <Package className="w-16 h-16 text-gray-400" />
+                              <div className="bg-[#fadadd] rounded-full p-8 mb-4">
+                                <Package className="w-16 h-16 text-[#7c377f]" />
                               </div>
-                              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                              <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
                                 No products yet
                               </h3>
-                              <p className="text-sm text-gray-500">
+                              <p className="text-sm text-black/60">
                                 Create your first product to get started
                               </p>
                             </div>
@@ -363,22 +363,22 @@ export default function ProductsPage() {
       {/* Custom Confirm Delete Modal */}
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200">
+          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-[#fadadd]">
             <div className="px-6 py-6 flex flex-col items-center">
               <div className="bg-red-100 rounded-full p-4 mb-4">
                 <Trash2 className="w-8 h-8 text-red-500" />
               </div>
-              <h2 className="text-xl font-bold text-gray-800 mb-2">
+              <h2 className="text-xl font-bold text-[#7c377f] mb-2">
                 Delete Product?
               </h2>
-              <p className="text-gray-600 mb-6 text-center">
+              <p className="text-black/70 mb-6 text-center">
                 Are you sure you want to delete{" "}
                 <span className="font-semibold">{confirmDelete.name}</span>?
                 This action cannot be undone.
               </p>
               <div className="flex gap-3 w-full">
                 <button
-                  className="flex-1 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+                  className="flex-1 px-4 py-3 rounded-xl bg-[#fadadd] text-black font-semibold hover:bg-[#7c377f] hover:text-white transition-colors"
                   onClick={() => setConfirmDelete(null)}
                 >
                   Cancel
@@ -441,9 +441,9 @@ function ProductModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-[#fadadd]">
         {/* Header */}
-        <div className="bg-linear-to-r from-purple-600 to-pink-600 text-white px-6 py-5 flex items-center justify-between">
+        <div className="bg-[#7c377f] text-white px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <Package className="w-5 h-5" />
@@ -454,7 +454,7 @@ function ProductModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+            className="p-2 hover:bg-[#fadadd]/40 rounded-lg transition-colors"
             disabled={loading}
           >
             <X className="w-5 h-5" />
@@ -464,11 +464,11 @@ function ProductModal({
         <div className="p-6 space-y-5">
           {/* Category Select */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-[#7c377f] mb-2">
               Category
             </label>
             <select
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              className="w-full px-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none"
               value={categoryId}
               onChange={(e) => setCategoryId(e.target.value)}
               disabled={loading}
@@ -483,11 +483,11 @@ function ProductModal({
           </div>
           {/* SP Select */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-[#7c377f] mb-2">
               Special Price (SP)
             </label>
             <select
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              className="w-full px-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none"
               value={spId}
               onChange={(e) => setSpId(e.target.value)}
               disabled={loading}
@@ -502,12 +502,12 @@ function ProductModal({
           </div>
           {/* Stock Quantity Input */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-[#7c377f] mb-2">
               Stock Quantity
             </label>
             <input
               type="number"
-              className="w-full px-4 py-3 rounded-xl border-2 border-gray-200 focus:border-purple-500 focus:ring-4 focus:ring-purple-100 transition-all outline-none"
+              className="w-full px-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none"
               placeholder="Enter stock quantity"
               value={stockQuantity}
               onChange={(e) => setStockQuantity(e.target.value)}
@@ -517,16 +517,16 @@ function ProductModal({
             />
           </div>
           {/* Auto-generated Name & Price Preview */}
-          <div className="p-4 bg-gray-50 rounded-xl border-2 border-gray-200 mt-2">
-            <div className="text-xs text-gray-600 mb-1">
+          <div className="p-4 bg-[#fadadd] rounded-xl border-2 border-[#fadadd] mt-2">
+            <div className="text-xs text-black/70 mb-1">
               Auto-generated Name:
             </div>
-            <div className="font-bold text-gray-800">
+            <div className="font-bold text-[#7c377f]">
               {selectedCategory && selectedSp
                 ? `${selectedCategory.name} - ${selectedSp.name}`
                 : "-"}
             </div>
-            <div className="text-xs text-gray-600 mt-2 mb-1">Base Price:</div>
+            <div className="text-xs text-black/70 mt-2 mb-1">Base Price:</div>
             <div className="font-bold text-green-700">
               {selectedSp
                 ? `GH₵${selectedSp.base_price?.toLocaleString()}`
@@ -544,7 +544,7 @@ function ProductModal({
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              className="flex-1 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+              className="flex-1 px-4 py-3 rounded-xl bg-[#fadadd] text-black font-semibold hover:bg-[#7c377f] hover:text-white transition-colors"
               onClick={onClose}
               disabled={loading}
             >
@@ -553,7 +553,7 @@ function ProductModal({
             <button
               type="button"
               onClick={handleSubmit}
-              className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-purple-600 to-pink-600 text-white font-semibold hover:from-purple-700 hover:to-pink-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 rounded-xl bg-[#7c377f] text-white font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading || !categoryId || !spId || !stockQuantity}
             >
               {loading ? (

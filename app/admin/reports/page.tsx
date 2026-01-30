@@ -105,17 +105,17 @@ export default function ReportsPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-[#fadadd] p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex items-center gap-3">
-            <div className="bg-linear-to-br from-blue-500 to-cyan-600 p-3 rounded-xl shadow-lg">
+            <div className="bg-[#7c377f] p-3 rounded-xl shadow-lg">
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-800">Reports</h1>
-              <p className="text-sm text-gray-600">
+              <h1 className="text-3xl font-bold text-black">Reports</h1>
+              <p className="text-sm text-black">
                 Sales analytics and inventory insights
               </p>
             </div>
@@ -124,13 +124,13 @@ export default function ReportsPage() {
 
         {/* Offline/Error Banner */}
         {isOffline && (
-          <div className="bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg flex items-start gap-3 mb-6">
-            <AlertCircle className="w-5 h-5 text-yellow-600 shrink-0 mt-0.5" />
+          <div className="bg-[#fffbe6] border-l-4 border-[#ffd700] p-4 rounded-lg flex items-start gap-3 mb-6">
+            <AlertCircle className="w-5 h-5 text-[#b8860b] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-yellow-800">
+              <p className="text-sm font-semibold text-[#b8860b]">
                 Network Issue
               </p>
-              <p className="text-sm text-yellow-700">
+              <p className="text-sm text-[#b8860b]">
                 You're offline. Showing last saved data.
               </p>
             </div>
@@ -140,9 +140,9 @@ export default function ReportsPage() {
         {/* Reports Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Sales Summary Card */}
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-[#fadadd] overflow-hidden">
             {/* Card Header */}
-            <div className="bg-linear-to-r from-blue-500 to-cyan-600 text-white px-6 py-5">
+            <div className="bg-[#7c377f] text-white px-6 py-5">
               <div className="flex items-center gap-3">
                 <div className="bg-white/20 p-2 rounded-lg">
                   <TrendingUp className="w-5 h-5" />
@@ -220,30 +220,30 @@ export default function ReportsPage() {
                 <div className="space-y-6">
                   {/* Summary Stats */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-linear-to-br from-green-50 to-emerald-50 border-2 border-green-200 rounded-xl p-4">
+                    <div className="bg-[#fadadd] border-2 border-[#7c377f] rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="bg-green-500 p-2 rounded-lg">
+                        <div className="bg-[#7c377f] p-2 rounded-lg">
                           <DollarSign className="w-4 h-4 text-white" />
                         </div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase">
+                        <p className="text-xs font-semibold text-black uppercase">
                           Total Sales
                         </p>
                       </div>
-                      <p className="text-2xl font-bold text-gray-800">
+                      <p className="text-2xl font-bold text-black">
                         ${sales.totalSales ?? 0}
                       </p>
                     </div>
 
-                    <div className="bg-linear-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 rounded-xl p-4">
+                    <div className="bg-[#fadadd] border-2 border-[#7c377f] rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="bg-blue-500 p-2 rounded-lg">
+                        <div className="bg-[#7c377f] p-2 rounded-lg">
                           <ShoppingCart className="w-4 h-4 text-white" />
                         </div>
-                        <p className="text-xs font-semibold text-gray-600 uppercase">
+                        <p className="text-xs font-semibold text-black uppercase">
                           Total Orders
                         </p>
                       </div>
-                      <p className="text-2xl font-bold text-gray-800">
+                      <p className="text-2xl font-bold text-black">
                         {sales.orderCount ?? 0}
                       </p>
                     </div>
@@ -251,8 +251,8 @@ export default function ReportsPage() {
 
                   {/* Chart */}
                   {chartData && (
-                    <div className="bg-gray-50 rounded-xl p-4 border-2 border-gray-200">
-                      <h3 className="text-sm font-bold text-gray-700 mb-4">
+                    <div className="bg-white rounded-xl p-4 border-2 border-[#fadadd]">
+                      <h3 className="text-sm font-bold text-black mb-4">
                         Daily Sales Trend
                       </h3>
                       <Bar
@@ -263,7 +263,9 @@ export default function ReportsPage() {
                           plugins: {
                             legend: { display: false },
                             tooltip: {
-                              backgroundColor: "rgba(0, 0, 0, 0.8)",
+                              backgroundColor: "#7c377f",
+                              titleColor: "#fadadd",
+                              bodyColor: "#fadadd",
                               padding: 12,
                               cornerRadius: 8,
                               titleFont: { size: 14, weight: "bold" },
@@ -273,13 +275,15 @@ export default function ReportsPage() {
                           scales: {
                             y: {
                               beginAtZero: true,
-                              grid: { color: "rgba(0, 0, 0, 0.05)" },
+                              grid: { color: "#fadadd" },
                               ticks: {
+                                color: "#7c377f",
                                 callback: (value) => "$" + value,
                               },
                             },
                             x: {
                               grid: { display: false },
+                              ticks: { color: "#7c377f" },
                             },
                           },
                         }}
@@ -293,11 +297,11 @@ export default function ReportsPage() {
                     <div className="overflow-x-auto">
                       <table className="w-full">
                         <thead>
-                          <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                            <th className="py-3 px-4 text-left text-sm font-bold text-gray-700">
+                          <tr className="bg-[#fadadd] border-b-2 border-[#7c377f]">
+                            <th className="py-3 px-4 text-left text-sm font-bold text-black">
                               Date
                             </th>
-                            <th className="py-3 px-4 text-right text-sm font-bold text-gray-700">
+                            <th className="py-3 px-4 text-right text-sm font-bold text-black">
                               Sales
                             </th>
                           </tr>
@@ -306,13 +310,13 @@ export default function ReportsPage() {
                           {dailyRows.map((d: any) => (
                             <tr
                               key={d.date}
-                              className="border-b border-gray-100 hover:bg-blue-50 transition-colors"
+                              className="border-b border-[#fadadd] hover:bg-[#fadadd] transition-colors"
                             >
-                              <td className="py-3 px-4 text-sm text-gray-700">
+                              <td className="py-3 px-4 text-sm text-black">
                                 {new Date(d.date).toLocaleDateString()}
                               </td>
                               <td className="py-3 px-4 text-right">
-                                <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
+                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold bg-[#7c377f] text-white">
                                   <DollarSign className="w-3 h-3" />
                                   {d.total.toFixed(2)}
                                 </span>
@@ -329,10 +333,10 @@ export default function ReportsPage() {
               {/* Empty State */}
               {!sales && !salesLoading && from && to && (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-6 mb-4">
-                    <BarChart3 className="w-12 h-12 text-gray-400" />
+                  <div className="bg-[#fadadd] rounded-full p-6 mb-4">
+                    <BarChart3 className="w-12 h-12 text-[#7c377f]" />
                   </div>
-                  <p className="text-sm text-gray-500">
+                  <p className="text-sm text-black">
                     No sales data available for selected period
                   </p>
                 </div>
@@ -340,10 +344,10 @@ export default function ReportsPage() {
 
               {!from && !to && (
                 <div className="flex flex-col items-center justify-center py-12 text-center">
-                  <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-6 mb-4">
-                    <Calendar className="w-12 h-12 text-gray-400" />
+                  <div className="bg-[#fadadd] rounded-full p-6 mb-4">
+                    <Calendar className="w-12 h-12 text-[#7c377f]" />
                   </div>
-                  <p className="text-sm text-gray-600 font-medium">
+                  <p className="text-sm text-black font-medium">
                     Select date range to view sales report
                   </p>
                 </div>
@@ -352,9 +356,9 @@ export default function ReportsPage() {
           </div>
 
           {/* Low Stock Card */}
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-2xl shadow-lg border-2 border-[#fadadd] overflow-hidden">
             {/* Card Header */}
-            <div className="bg-linear-to-r from-orange-500 to-red-600 text-white px-6 py-5">
+            <div className="bg-[#7c377f] text-white px-6 py-5">
               <div className="flex items-center gap-3">
                 <div className="bg-white/20 p-2 rounded-lg">
                   <AlertTriangle className="w-5 h-5" />
@@ -368,7 +372,7 @@ export default function ReportsPage() {
               {/* Threshold Input */}
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  <label className="block text-sm font-semibold text-black mb-2">
                     Stock Threshold
                   </label>
                   <div className="flex gap-3">
@@ -376,7 +380,7 @@ export default function ReportsPage() {
                       <Package className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         type="number"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-orange-500 focus:ring-4 focus:ring-orange-100 transition-all outline-none"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none text-black"
                         value={threshold}
                         min={1}
                         onChange={(e) => setThreshold(Number(e.target.value))}
@@ -385,7 +389,7 @@ export default function ReportsPage() {
                     </div>
                     <button
                       onClick={handleLowStockSubmit}
-                      className="px-4 py-3 rounded-xl bg-linear-to-r from-orange-500 to-red-600 text-white font-semibold hover:from-orange-600 hover:to-red-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50"
+                      className="px-4 py-3 rounded-xl bg-[#7c377f] text-white font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50"
                       disabled={lowStockLoading}
                     >
                       {lowStockLoading ? (
@@ -395,8 +399,8 @@ export default function ReportsPage() {
                       )}
                     </button>
                   </div>
-                  <p className="text-xs text-gray-500 mt-2">
-                    Show variants with stock quantity below this value
+                  <p className="text-xs text-black mt-2">
+                    Show products with stock quantity below this value
                   </p>
                 </div>
               </div>
@@ -417,14 +421,14 @@ export default function ReportsPage() {
                   {lowStock.length > 0 ? (
                     <>
                       {/* Alert Banner */}
-                      <div className="bg-orange-50 border-l-4 border-orange-500 p-3 rounded-lg mb-4 flex items-start gap-2">
-                        <AlertTriangle className="w-5 h-5 text-orange-600 shrink-0 mt-0.5" />
+                      <div className="bg-[#fffbe6] border-l-4 border-[#ffd700] p-3 rounded-lg mb-4 flex items-start gap-2">
+                        <AlertTriangle className="w-5 h-5 text-[#b8860b] shrink-0 mt-0.5" />
                         <div>
-                          <p className="text-sm font-semibold text-orange-800">
+                          <p className="text-sm font-semibold text-[#b8860b]">
                             {lowStock.length} Product
                             {lowStock.length !== 1 ? "s" : ""} running low
                           </p>
-                          <p className="text-xs text-orange-700">
+                          <p className="text-xs text-[#b8860b]">
                             Consider restocking these items soon
                           </p>
                         </div>
@@ -432,11 +436,11 @@ export default function ReportsPage() {
 
                       <table className="w-full">
                         <thead>
-                          <tr className="bg-linear-to-r from-gray-50 to-gray-100 border-b-2 border-gray-200">
-                            <th className="py-3 px-4 text-left text-sm font-bold text-gray-700">
+                          <tr className="bg-[#fadadd] border-b-2 border-[#7c377f]">
+                            <th className="py-3 px-4 text-left text-sm font-bold text-black">
                               Product
                             </th>
-                            <th className="py-3 px-4 text-center text-sm font-bold text-gray-700">
+                            <th className="py-3 px-4 text-center text-sm font-bold text-black">
                               Stock
                             </th>
                           </tr>
@@ -445,10 +449,10 @@ export default function ReportsPage() {
                           {lowStock.map((v: any) => (
                             <tr
                               key={v.id}
-                              className="border-b border-gray-100 hover:bg-orange-50 transition-colors"
+                              className="border-b border-[#fadadd] hover:bg-[#fadadd] transition-colors"
                             >
                               <td className="py-3 px-4">
-                                <span className="font-mono text-sm font-semibold text-gray-800 bg-gray-100 px-2 py-1 rounded">
+                                <span className="font-mono text-sm font-semibold text-black bg-[#fadadd] px-2 py-1 rounded">
                                   {v.name}
                                 </span>
                               </td>
@@ -456,8 +460,8 @@ export default function ReportsPage() {
                                 <span
                                   className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold ${
                                     v.stock_quantity === 0
-                                      ? "bg-red-100 text-red-700"
-                                      : "bg-yellow-100 text-yellow-700"
+                                      ? "bg-[#ffb3b3] text-[#7c377f]"
+                                      : "bg-[#fffbe6] text-[#b8860b]"
                                   }`}
                                 >
                                   <Package className="w-3 h-3" />
@@ -471,14 +475,14 @@ export default function ReportsPage() {
                     </>
                   ) : (
                     <div className="flex flex-col items-center justify-center py-12 text-center">
-                      <div className="bg-linear-to-br from-green-100 to-emerald-100 rounded-full p-6 mb-4">
-                        <Package className="w-12 h-12 text-green-600" />
+                      <div className="bg-[#fadadd] rounded-full p-6 mb-4">
+                        <Package className="w-12 h-12 text-[#7c377f]" />
                       </div>
-                      <h3 className="text-sm font-semibold text-gray-800 mb-1">
+                      <h3 className="text-sm font-semibold text-black mb-1">
                         All stock levels healthy!
                       </h3>
-                      <p className="text-xs text-gray-500">
-                        No variants below threshold of {threshold}
+                      <p className="text-xs text-black">
+                        No products below threshold of {threshold}
                       </p>
                     </div>
                   )}
@@ -488,8 +492,8 @@ export default function ReportsPage() {
               {/* Loading State */}
               {lowStockLoading && (
                 <div className="flex flex-col items-center justify-center py-12">
-                  <div className="w-10 h-10 border-4 border-orange-200 border-t-orange-600 rounded-full animate-spin mb-4"></div>
-                  <p className="text-sm text-gray-500">Loading stock data...</p>
+                  <div className="w-10 h-10 border-4 border-[#fadadd] border-t-[#7c377f] rounded-full animate-spin mb-4"></div>
+                  <p className="text-sm text-black">Loading stock data...</p>
                 </div>
               )}
             </div>

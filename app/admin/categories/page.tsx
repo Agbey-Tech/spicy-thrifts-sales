@@ -62,18 +62,20 @@ export default function CategoriesPage() {
   };
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 p-4 md:p-6">
+    <div className="min-h-screen bg-white p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="mb-6">
           <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="bg-linear-to-br from-blue-500 to-indigo-600 p-3 rounded-xl shadow-lg">
+              <div className="bg-linear-to-br from-[#7c377f] to-[#fadadd] p-3 rounded-xl shadow-lg">
                 <Tag className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-gray-800">Categories</h1>
-                <p className="text-sm text-gray-600">
+                <h1 className="text-3xl font-bold text-[#7c377f]">
+                  Categories
+                </h1>
+                <p className="text-sm text-black/70">
                   Manage product categories and classifications
                 </p>
               </div>
@@ -81,13 +83,13 @@ export default function CategoriesPage() {
 
             <div className="flex items-center gap-3">
               {/* View Toggle */}
-              <div className="flex gap-2 bg-white rounded-xl p-1.5 shadow-sm border-2 border-gray-200">
+              <div className="flex gap-2 bg-white rounded-xl p-1.5 shadow-sm border-2 border-[#fadadd]">
                 <button
                   onClick={() => setViewMode("grid")}
                   className={`p-2.5 rounded-lg transition-all ${
                     viewMode === "grid"
-                      ? "bg-blue-500 text-white shadow-md"
-                      : "text-gray-500 hover:bg-gray-100"
+                      ? "bg-[#7c377f] text-white shadow-md"
+                      : "text-black hover:bg-[#fadadd]"
                   }`}
                 >
                   <Grid3x3 className="w-5 h-5" />
@@ -96,8 +98,8 @@ export default function CategoriesPage() {
                   onClick={() => setViewMode("list")}
                   className={`p-2.5 rounded-lg transition-all ${
                     viewMode === "list"
-                      ? "bg-blue-500 text-white shadow-md"
-                      : "text-gray-500 hover:bg-gray-100"
+                      ? "bg-[#7c377f] text-white shadow-md"
+                      : "text-black hover:bg-[#fadadd]"
                   }`}
                 >
                   <List className="w-5 h-5" />
@@ -106,7 +108,7 @@ export default function CategoriesPage() {
 
               {/* Add Button */}
               <button
-                className="flex items-center gap-2 bg-linear-to-r from-blue-600 to-indigo-600 text-white px-4 py-3 rounded-xl font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 hover:shadow-lg active:scale-95"
+                className="flex items-center gap-2 bg-linear-to-r from-[#7c377f] to-[#fadadd] text-white px-4 py-3 rounded-xl font-semibold hover:from-[#fadadd] hover:to-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95"
                 onClick={() => {
                   setEditCategory(null);
                   setShowModal(true);
@@ -120,7 +122,7 @@ export default function CategoriesPage() {
         </div>
 
         {/* Main Content */}
-        <div className="bg-white rounded-2xl shadow-lg border-2 border-gray-100 overflow-hidden">
+        <div className="bg-white rounded-2xl shadow-lg border-2 border-[#fadadd] overflow-hidden">
           {isLoading && !categories ? (
             <div className="flex flex-col items-center justify-center py-16 space-y-4">
               <div className="w-12 h-12 border-4 border-blue-200 border-t-blue-600 rounded-full animate-spin"></div>
@@ -151,15 +153,15 @@ export default function CategoriesPage() {
                     {categories?.map((cat) => (
                       <div
                         key={cat.id}
-                        className="group relative bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-5 hover:border-blue-300 hover:shadow-lg transition-all duration-300"
+                        className="group relative bg-white border-2 border-[#fadadd] rounded-xl p-5 hover:border-[#7c377f] hover:shadow-lg transition-all duration-300"
                       >
                         {/* Icon */}
                         <div className="flex items-start justify-between mb-3">
-                          <div className="bg-linear-to-br from-blue-500 to-indigo-600 p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
+                          <div className="bg-linear-to-br from-[#7c377f] to-[#fadadd] p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
                             <Folder className="w-5 h-5 text-white" />
                           </div>
                           <button
-                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-gray-400 hover:text-blue-600"
+                            className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
                             onClick={() => {
                               setEditCategory(cat);
                               setShowModal(true);
@@ -172,10 +174,10 @@ export default function CategoriesPage() {
 
                         {/* Content */}
                         <div>
-                          <h3 className="font-bold text-lg text-gray-800 mb-1 truncate">
+                          <h3 className="font-bold text-lg text-[#7c377f] mb-1 truncate">
                             {cat.name}
                           </h3>
-                          <div className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs font-semibold">
+                          <div className="inline-flex items-center gap-1.5 bg-[#fadadd] text-[#7c377f] px-3 py-1 rounded-full text-xs font-semibold">
                             <Tag className="w-3 h-3" />
                             {cat.code}
                           </div>
@@ -188,10 +190,10 @@ export default function CategoriesPage() {
                         <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                           <Tag className="w-16 h-16 text-gray-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
                           No categories yet
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-black/60">
                           Create your first category to get started
                         </p>
                       </div>
@@ -227,23 +229,23 @@ export default function CategoriesPage() {
                           >
                             <td className="py-4 px-6">
                               <div className="flex items-center gap-3">
-                                <div className="bg-linear-to-br from-blue-500 to-indigo-600 p-2 rounded-lg shadow-sm group-hover:scale-110 transition-transform duration-300">
+                                <div className="bg-linear-to-br from-[#7c377f] to-[#fadadd] p-2 rounded-lg shadow-sm group-hover:scale-110 transition-transform duration-300">
                                   <Folder className="w-4 h-4 text-white" />
                                 </div>
-                                <span className="font-semibold text-gray-800">
+                                <span className="font-semibold text-[#7c377f]">
                                   {cat.name}
                                 </span>
                               </div>
                             </td>
                             <td className="py-4 px-6">
-                              <span className="inline-flex items-center gap-1.5 bg-blue-100 text-blue-700 px-3 py-1.5 rounded-full text-xs font-semibold">
+                              <span className="inline-flex items-center gap-1.5 bg-[#fadadd] text-[#7c377f] px-3 py-1.5 rounded-full text-xs font-semibold">
                                 <Tag className="w-3 h-3" />
                                 {cat.code}
                               </span>
                             </td>
                             <td className="py-4 px-6 text-center">
                               <button
-                                className="p-2 hover:bg-blue-100 rounded-lg transition-colors text-gray-600 hover:text-blue-600"
+                                className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
                                 onClick={() => {
                                   setEditCategory(cat);
                                   setShowModal(true);
@@ -263,10 +265,10 @@ export default function CategoriesPage() {
                                 <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                                   <Tag className="w-16 h-16 text-gray-400" />
                                 </div>
-                                <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                                <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
                                   No categories yet
                                 </h3>
-                                <p className="text-sm text-gray-500">
+                                <p className="text-sm text-black/60">
                                   Create your first category to get started
                                 </p>
                               </div>
@@ -282,25 +284,25 @@ export default function CategoriesPage() {
                     {categories?.map((cat) => (
                       <div
                         key={cat.id}
-                        className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-300"
+                        className="bg-linear-to-br from-white to-[#fadadd] border-2 border-[#fadadd] rounded-xl p-4 hover:border-[#7c377f] hover:shadow-md transition-all duration-300"
                       >
                         <div className="flex items-center justify-between mb-3">
                           <div className="flex items-center gap-3">
-                            <div className="bg-linear-to-br from-blue-500 to-indigo-600 p-2 rounded-lg shadow-md">
+                            <div className="bg-linear-to-br from-[#7c377f] to-[#fadadd] p-2 rounded-lg shadow-md">
                               <Folder className="w-5 h-5 text-white" />
                             </div>
                             <div>
-                              <h3 className="font-bold text-gray-800">
+                              <h3 className="font-bold text-[#7c377f]">
                                 {cat.name}
                               </h3>
-                              <span className="inline-flex items-center gap-1 bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full text-xs font-semibold mt-1">
+                              <span className="inline-flex items-center gap-1 bg-[#fadadd] text-[#7c377f] px-2 py-0.5 rounded-full text-xs font-semibold mt-1">
                                 <Tag className="w-3 h-3" />
                                 {cat.code}
                               </span>
                             </div>
                           </div>
                           <button
-                            className="p-2 hover:bg-blue-50 rounded-lg transition-colors text-gray-400 hover:text-blue-600"
+                            className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
                             onClick={() => {
                               setEditCategory(cat);
                               setShowModal(true);
@@ -317,10 +319,10 @@ export default function CategoriesPage() {
                         <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
                           <Tag className="w-16 h-16 text-gray-400" />
                         </div>
-                        <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                        <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
                           No categories yet
                         </h3>
-                        <p className="text-sm text-gray-500">
+                        <p className="text-sm text-black/60">
                           Create your first category to get started
                         </p>
                       </div>
@@ -387,9 +389,9 @@ function CategoryModal({
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-md overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-[#fadadd]">
         {/* Header */}
-        <div className="bg-linear-to-r from-blue-600 to-indigo-600 text-white px-6 py-5 flex items-center justify-between">
+        <div className="bg-linear-to-r from-[#7c377f] to-[#fadadd] text-white px-6 py-5 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="bg-white/20 p-2 rounded-lg">
               <Tag className="w-5 h-5" />
@@ -400,7 +402,7 @@ function CategoryModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-white/20 rounded-lg transition-colors"
+            className="p-2 hover:bg-[#fadadd]/40 rounded-lg transition-colors"
             disabled={loading}
           >
             <X className="w-5 h-5" />
@@ -411,7 +413,7 @@ function CategoryModal({
         <div className="p-6 space-y-5">
           {/* Name Input */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-[#7c377f] mb-2">
               Category Name
             </label>
             <input
@@ -426,7 +428,7 @@ function CategoryModal({
 
           {/* Code Input */}
           <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
+            <label className="block text-sm font-semibold text-[#7c377f] mb-2">
               Category Code
             </label>
             <input
@@ -437,7 +439,7 @@ function CategoryModal({
               onChange={(e) => setCode(e.target.value.toUpperCase())}
               disabled={true}
             />
-            <p className="text-xs text-gray-500 mt-1">
+            <p className="text-xs text-black/60 mt-1">
               Leave empty to auto-generate from name (first 3 characters)
             </p>
           </div>
@@ -454,7 +456,7 @@ function CategoryModal({
           <div className="flex gap-3 pt-2">
             <button
               type="button"
-              className="flex-1 px-4 py-3 rounded-xl bg-gray-100 text-gray-700 font-semibold hover:bg-gray-200 transition-colors"
+              className="flex-1 px-4 py-3 rounded-xl bg-[#fadadd] text-black font-semibold hover:bg-[#7c377f] hover:text-white transition-colors"
               onClick={onClose}
               disabled={loading}
             >
@@ -463,7 +465,7 @@ function CategoryModal({
             <button
               type="button"
               onClick={handleSubmit}
-              className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-blue-600 to-indigo-600 text-white font-semibold hover:from-blue-700 hover:to-indigo-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-[#7c377f] to-[#fadadd] text-white font-semibold hover:from-[#fadadd] hover:to-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={loading || !name.trim()}
             >
               {loading ? (
