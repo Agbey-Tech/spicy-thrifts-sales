@@ -22,12 +22,11 @@ export interface Profile {
 export interface Product {
   id: string;
   category_id: string;
+  sp_id: string;
   name: string;
-  description?: string;
-  base_price?: number;
-  is_unique: boolean;
-  images?: string[]; //TODO; rm later
+  stock_quantity: number;
   created_at: string;
+  updated_at: string;
 }
 
 export interface ProductVariant {
@@ -60,7 +59,7 @@ export interface Order {
 export interface OrderItem {
   id: string;
   order_id: string;
-  product_variant_id: string;
+  product_id: string;
   quantity: number;
   unit_price: number;
   subtotal: number;
@@ -72,4 +71,12 @@ export interface Payment {
   method: PaymentMethod;
   amount: number;
   created_at: string;
+}
+
+export interface Sp {
+  id: string;
+  name: string;
+  base_price: number;
+  created_at: string;
+  updated_at: string;
 }

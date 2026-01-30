@@ -2,7 +2,14 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { ShoppingCart, Receipt, LogOut, X, Store } from "lucide-react";
+import {
+  ShoppingCart,
+  Receipt,
+  LogOut,
+  X,
+  Store,
+  BarChart3,
+} from "lucide-react";
 import { logout } from "@/lib/api/auth";
 import toast from "react-hot-toast";
 
@@ -20,13 +27,19 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
       label: "Point of Sale",
       href: "/sales",
       icon: ShoppingCart,
-      gradient: "from-blue-500 to-blue-500",
+      color: "#7c377f",
     },
     {
       label: "Orders",
       href: "/sales/orders",
       icon: Receipt,
-      gradient: "from-blue-500 to-blue-500",
+      color: "#7c377f",
+    },
+    {
+      label: "Reports",
+      href: "/sales/reports",
+      icon: BarChart3,
+      color: "#7c377f",
     },
   ];
 
@@ -41,25 +54,25 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
   };
 
   const SidebarContent = (
-    <div className="h-full flex flex-col bg-linear-to-b from-gray-900 via-gray-900 to-gray-800">
+    <div className="h-full flex flex-col bg-[#7c377f]">
       {/* Brand Header */}
-      <div className="p-6 border-b border-gray-700/50">
+      <div className="p-6 border-b border-[#fadadd]">
         <div className="flex items-center gap-3">
-          <div className="bg-linear-to-br from-blue-500 to-indigo-600 p-2.5 rounded-xl shadow-lg">
-            <Store className="w-6 h-6 text-white" />
+          <div className="bg-[#fadadd] p-2.5 rounded-xl shadow-lg">
+            <Store className="w-6 h-6 text-[#7c377f]" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">Spicy Thrifts</h1>
-            <p className="text-xs text-gray-400">Point of Sale</p>
+            <p className="text-xs text-[#fadadd]">Point of Sale</p>
           </div>
         </div>
 
         {/* Close button for mobile */}
         <button
           onClick={onClose}
-          className="md:hidden absolute top-6 right-6 p-2 hover:bg-gray-800 rounded-lg transition-colors"
+          className="md:hidden absolute top-6 right-6 p-2 hover:bg-[#fadadd] rounded-lg transition-colors"
         >
-          <X className="w-5 h-5 text-gray-400" />
+          <X className="w-5 h-5 text-[#7c377f]" />
         </button>
       </div>
 
@@ -79,21 +92,11 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
                 transition-all duration-300 overflow-hidden
                 ${
                   isActive
-                    ? "bg-linear-to-r " + item.gradient + " shadow-lg scale-105"
-                    : "text-gray-300 hover:bg-gray-800/50"
+                    ? "bg-[#fadadd] shadow-lg scale-105"
+                    : "text-white hover:bg-[#fadadd] hover:text-[#7c377f]"
                 }
               `}
             >
-              {/* Animated background for hover */}
-              {!isActive && (
-                <div
-                  className={`
-                  absolute inset-0 bg-linear-to-r ${item.gradient} 
-                  opacity-0 group-hover:opacity-10 transition-opacity duration-300
-                `}
-                />
-              )}
-
               {/* Icon */}
               <div
                 className={`
@@ -101,13 +104,13 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
                 ${
                   isActive
                     ? "bg-white/20"
-                    : "bg-gray-800 group-hover:bg-gray-700"
+                    : "bg-[#7c377f] group-hover:bg-[#fadadd]"
                 }
                 ${isActive ? "scale-110" : "group-hover:scale-110"}
               `}
               >
                 <Icon
-                  className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`}
+                  className={`w-5 h-5 ${isActive ? "text-[#7c377f]" : "text-white group-hover:text-[#7c377f]"}`}
                 />
               </div>
 
@@ -115,7 +118,7 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
               <span
                 className={`
                 relative z-10 font-semibold text-sm
-                ${isActive ? "text-white" : "text-gray-300 group-hover:text-white"}
+                ${isActive ? "text-[#7c377f]" : "text-white group-hover:text-[#7c377f]"}
               `}
               >
                 {item.label}
@@ -123,7 +126,7 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
 
               {/* Active indicator */}
               {isActive && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-l-full" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-[#7c377f] rounded-l-full" />
               )}
             </Link>
           );
@@ -131,17 +134,14 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
       </nav>
 
       {/* Logout Button */}
-      <div className="p-4 border-t border-gray-700/50">
+      <div className="p-4 border-t border-[#fadadd]">
         <button
           onClick={handleLogout}
           className="group w-full flex items-center gap-4 rounded-xl px-4 py-3.5 
-                     text-gray-300 hover:bg-red-500/10 hover:text-red-400
+                     text-white hover:bg-[#fadadd] hover:text-[#7c377f]
                      transition-all duration-300 relative overflow-hidden"
         >
-          {/* Hover effect */}
-          <div className="absolute inset-0 bg-linear-to-r from-red-500 to-pink-600 opacity-0 group-hover:opacity-10 transition-opacity duration-300" />
-
-          <div className="relative z-10 p-2 rounded-lg bg-gray-800 group-hover:bg-red-500/20 transition-all duration-300">
+          <div className="relative z-10 p-2 rounded-lg bg-[#7c377f] group-hover:bg-[#fadadd] transition-all duration-300">
             <LogOut className="w-5 h-5" />
           </div>
 

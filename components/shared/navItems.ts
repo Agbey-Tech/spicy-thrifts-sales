@@ -19,15 +19,20 @@ export const navItems = [
     icon: Layers,
   },
   {
+    label: "SPs",
+    href: "/admin/sps",
+    icon: Boxes,
+  },
+  {
     label: "Products",
     href: "/admin/products",
     icon: Package,
   },
-  {
-    label: "Variants",
-    href: "/admin/variants",
-    icon: Boxes,
-  },
+  // {
+  //   label: "Variants",
+  //   href: "/admin/variants",
+  //   icon: Boxes,
+  // },
   {
     label: "Orders",
     href: "/admin/orders",

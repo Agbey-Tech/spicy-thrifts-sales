@@ -9,7 +9,7 @@ export const createOrderSchema = z.object({
   items: z
     .array(
       z.object({
-        product_variant_id: z.string().uuid(),
+        product_id: z.string().uuid(),
         quantity: z.number().int().min(1),
       }),
     )

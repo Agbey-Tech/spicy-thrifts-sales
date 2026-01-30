@@ -3,11 +3,10 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { getProducts } from "@/lib/api/products";
-import { getVariants } from "@/lib/api/variants";
-import { getSalesSummary, getLowStockVariants } from "@/lib/api/reports";
+import { getSps } from "@/lib/api/sp";
+import { getSalesSummary, getLowStockProducts } from "@/lib/api/reports";
 import {
   Package,
-  Layers,
   DollarSign,
   AlertTriangle,
   TrendingUp,
@@ -35,7 +34,7 @@ function getTodayRange() {
 export default function AdminDashboard() {
   const [metrics, setMetrics] = useState<{
     totalProducts: number;
-    totalVariants: number;
+    totalSps: number;
     todaysSales: number;
     lowStockCount: number;
   } | null>(null);
@@ -48,16 +47,16 @@ export default function AdminDashboard() {
       try {
         setLoading(true);
         setError("");
-        const [products, variants, lowStock] = await Promise.all([
+        const [products, sps, lowStock] = await Promise.all([
           getProducts(),
-          getVariants(),
-          getLowStockVariants(),
+          getSps(),
+          getLowStockProducts(),
         ]);
         const { from, to } = getTodayRange();
         const salesSummary = await getSalesSummary(from, to);
         setMetrics({
           totalProducts: products.length,
-          totalVariants: variants.length,
+          totalSps: sps.length,
           todaysSales: salesSummary.totalSales,
           lowStockCount: lowStock.length,
         });
@@ -112,14 +111,14 @@ export default function AdminDashboard() {
         {/* Header */}
         <div>
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-linear-to-br from-purple-500 to-pink-600 p-3 rounded-xl shadow-lg">
+            <div className="bg-linear-to-br from-[#7c377f] p-3 rounded-xl shadow-lg">
               <TrendingUp className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl md:text-4xl font-bold text-gray-800">
+              <h1 className="text-3xl md:text-4xl font-bold text-[#7c377f]">
                 Dashboard Overview
               </h1>
-              <p className="text-sm text-gray-600">
+              <p className="text-sm text-black/70">
                 Real-time business metrics and insights
               </p>
             </div>
@@ -132,29 +131,29 @@ export default function AdminDashboard() {
             label="Total Products"
             value={metrics.totalProducts}
             icon={<Package className="w-6 h-6" />}
-            gradient="from-blue-500 to-cyan-600"
+            gradient="from-[#7c377f] to-[#fadadd]"
             trend={{ value: 12, isPositive: true }}
           />
           <MetricCard
-            label="Total Variants"
-            value={metrics.totalVariants}
-            icon={<Layers className="w-6 h-6" />}
-            gradient="from-green-500 to-emerald-600"
+            label="Total SPs"
+            value={metrics.totalSps}
+            icon={<DollarSign className="w-6 h-6" />}
+            gradient="from-[#fadadd] to-[#7c377f]"
             trend={{ value: 8, isPositive: true }}
           />
           <MetricCard
             label="Today's Sales"
             value={metrics.todaysSales}
             prefix="$"
-            icon={<DollarSign className="w-6 h-6" />}
-            gradient="from-amber-500 to-orange-600"
+            icon={<TrendingUp className="w-6 h-6" />}
+            gradient="from-[#7c377f] to-[#fadadd]"
             trend={{ value: 15, isPositive: true }}
           />
           <MetricCard
             label="Low Stock Items"
             value={metrics.lowStockCount}
             icon={<AlertTriangle className="w-6 h-6" />}
-            gradient="from-red-500 to-pink-600"
+            gradient="from-[#fadadd] to-[#7c377f]"
             trend={{ value: 3, isPositive: false }}
           />
         </div>
@@ -162,8 +161,8 @@ export default function AdminDashboard() {
         {/* Quick Actions Section */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <Zap className="w-5 h-5 text-purple-600" />
-            <h2 className="text-xl font-bold text-gray-800">Quick Actions</h2>
+            <Zap className="w-5 h-5 text-[#7c377f]" />
+            <h2 className="text-xl font-bold text-[#7c377f]">Quick Actions</h2>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
             <ActivityCard
@@ -171,14 +170,14 @@ export default function AdminDashboard() {
               icon={<ShoppingCart className="w-6 h-6" />}
               title="Recent Orders"
               desc="View and manage all recent sales and order activity"
-              gradient="from-purple-500 to-indigo-600"
+              gradient="from-[#7c377f] to-[#fadadd]"
             />
             <ActivityCard
               handleClick={() => router.push("/admin/users")}
               icon={<Users className="w-6 h-6" />}
               title="Sales Staff"
               desc="Track performance and manage your sales team"
-              gradient="from-pink-500 to-rose-600"
+              gradient="from-[#fadadd] to-[#7c377f]"
             />
           </div>
         </div>
@@ -186,8 +185,8 @@ export default function AdminDashboard() {
         {/* Analytics Section */}
         <div>
           <div className="flex items-center gap-2 mb-4">
-            <BarChart3 className="w-5 h-5 text-purple-600" />
-            <h2 className="text-xl font-bold text-gray-800">
+            <BarChart3 className="w-5 h-5 text-[#7c377f]" />
+            <h2 className="text-xl font-bold text-[#7c377f]">
               Analytics & Reports
             </h2>
           </div>
@@ -197,20 +196,20 @@ export default function AdminDashboard() {
               icon={<ListChecks className="w-6 h-6" />}
               title="Inventory Health"
               desc="Monitor stock levels and inventory status across all products"
-              gradient="from-teal-500 to-cyan-600"
+              gradient="from-[#fadadd] to-[#7c377f]"
             />
             <ActivityCard
               handleClick={() => null}
               icon={<TrendingUp className="w-6 h-6" />}
               title="Sales Trends"
               desc="Visualize sales performance and identify growth opportunities"
-              gradient="from-blue-500 to-indigo-600"
+              gradient="from-[#7c377f] to-[#fadadd]"
             />
           </div>
         </div>
 
         {/* Footer Info */}
-        <div className="text-center py-4 text-sm text-gray-500">
+        <div className="text-center py-4 text-sm text-black/60">
           Last updated: {new Date().toLocaleString()}
         </div>
       </div>

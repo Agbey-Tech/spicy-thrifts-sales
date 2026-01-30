@@ -14,6 +14,6 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
     req.nextUrl.searchParams.get("threshold") || "3",
     10,
   );
-  const variants = await service.getLowStockVariants(threshold);
+  const variants = await service.getLowStockProducts(threshold);
   return NextResponse.json({ success: true, data: variants, error: null });
 });

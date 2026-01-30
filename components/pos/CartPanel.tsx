@@ -1,46 +1,45 @@
 "use client";
 
-import { ProductVariant } from "@/app/types/database";
+import { Product, Sp } from "@/app/types/database";
 import { Trash2, ShoppingBag, Plus, Minus, Package } from "lucide-react";
 
-interface CartItem {
-  variant: ProductVariant;
+// New CartItem type
+type CartItem = {
+  product: Product;
+  sp: Sp;
   quantity: number;
-}
+};
 
 interface CartPanelProps {
   items: CartItem[];
-  onUpdateQuantity: (variantId: string, quantity: number) => void;
-  onRemove: (variantId: string) => void;
-  onCheckout: () => void;
+  onUpdateQuantity: (productId: string, quantity: number) => void;
+  onRemove: (productId: string) => void;
 }
 
 export function CartPanel({
   items,
   onUpdateQuantity,
   onRemove,
-  onCheckout,
 }: CartPanelProps) {
   const subtotal = items.reduce(
-    (sum, item) => sum + item.variant.price * item.quantity,
+    (sum, item) => sum + item.sp.base_price * item.quantity,
     0,
   );
-
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <section className="bg-white rounded-2xl shadow-lg border border-gray-200 overflow-hidden h-full flex flex-col">
+    <section className="bg-white rounded-2xl shadow-lg border-2 border-[#fadadd] overflow-hidden h-full flex flex-col">
       {/* Header */}
-      <div className="bg-lnear-to-r from-gray-800 to-gray-900 text-white px-6 py-4">
+      <div className="bg-[#7c377f] text-white px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="bg-white/10 p-2 rounded-lg">
-              <ShoppingBag className="w-5 h-5" />
+            <div className="bg-[#fadadd] p-2 rounded-lg">
+              <ShoppingBag className="w-5 h-5 text-[#7c377f]" />
             </div>
             <h2 className="text-lg font-bold">Shopping Cart</h2>
           </div>
-          <div className="bg-white/20 px-3 py-1 rounded-full">
-            <span className="text-sm font-semibold">
+          <div className="bg-[#fadadd] px-3 py-1 rounded-full">
+            <span className="text-sm font-semibold text-[#7c377f]">
               {totalItems} {totalItems === 1 ? "item" : "items"}
             </span>
           </div>
@@ -50,13 +49,13 @@ export function CartPanel({
       {/* Empty State */}
       {items.length === 0 && (
         <div className="flex-1 flex flex-col items-center justify-center p-8 text-center">
-          <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
-            <ShoppingBag className="w-16 h-16 text-gray-400" />
+          <div className="bg-[#fadadd] rounded-full p-8 mb-4">
+            <ShoppingBag className="w-16 h-16 text-[#7c377f]" />
           </div>
-          <h3 className="text-lg font-semibold text-gray-800 mb-2">
+          <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
             Your cart is empty
           </h3>
-          <p className="text-sm text-gray-500">Add products to get started</p>
+          <p className="text-sm text-black/60">Add products to get started</p>
         </div>
       )}
 
@@ -64,68 +63,49 @@ export function CartPanel({
       {items.length > 0 && (
         <>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {items.map(({ variant, quantity }) => (
+            {items.map(({ product, sp, quantity }) => (
               <div
-                key={variant.id}
-                className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-300 group"
+                key={product.id}
+                className="bg-white border-2 border-[#fadadd] rounded-xl p-4 hover:border-[#7c377f] hover:shadow-md transition-all duration-300 group"
               >
                 <div className="flex gap-4">
-                  {/* Image */}
-                  <div className="w-20 h-20 shrink-0 bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
-                    {variant.images && variant.images.length > 0 ? (
-                      <img
-                        src={variant.images[0]}
-                        alt={variant.sku}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-gray-100 to-gray-200">
-                        <Package className="w-8 h-8 text-gray-400" />
-                      </div>
-                    )}
+                  {/* Icon */}
+                  <div className="w-20 h-20 shrink-0 bg-[#fadadd] rounded-lg border-2 border-[#fadadd] overflow-hidden flex items-center justify-center">
+                    <Package className="w-8 h-8 text-[#7c377f]" />
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
-                    <div className="font-bold text-gray-800 mb-1 truncate">
-                      {variant.sku}
+                    <div className="font-bold text-[#7c377f] mb-1 truncate">
+                      {product.name}
                     </div>
                     <div className="flex items-center gap-2 mb-2">
-                      <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-                        {variant.size || "-"}
-                      </span>
-                      <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-                        {variant.primary_color || "-"}
+                      <span className="text-xs bg-[#fadadd] px-2 py-1 rounded-md text-[#7c377f]">
+                        SP: {sp.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs">
                       <span
-                        className={`inline-flex items-center gap-1 ${
-                          variant.stock_quantity > 10
-                            ? "text-green-600"
-                            : variant.stock_quantity > 0
-                              ? "text-yellow-600"
-                              : "text-red-600"
-                        }`}
+                        className={`inline-flex items-center gap-1 text-[#7c377f]`}
                       >
                         <div
                           className={`w-2 h-2 rounded-full ${
-                            variant.stock_quantity > 10
+                            product.stock_quantity > 10
                               ? "bg-green-500"
-                              : variant.stock_quantity > 0
+                              : product.stock_quantity > 0
                                 ? "bg-yellow-500"
                                 : "bg-red-500"
                           }`}
                         ></div>
-                        Stock: {variant.stock_quantity}
+                        Stock: {product.stock_quantity}
                       </span>
                     </div>
                   </div>
 
                   {/* Remove Button */}
                   <button
-                    onClick={() => onRemove(variant.id)}
-                    className="self-start p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
+                    onClick={() => onRemove(product.id)}
+                    className="self-start p-2 rounded-lg hover:bg-[#fadadd] text-[#7c377f] hover:text-red-500 transition-colors"
                     title="Remove from cart"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -133,18 +113,18 @@ export function CartPanel({
                 </div>
 
                 {/* Quantity and Price Row */}
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-200">
+                <div className="flex items-center justify-between mt-4 pt-4 border-t-2 border-[#fadadd]">
                   {/* Quantity Controls */}
                   <div className="flex items-center gap-2">
                     <button
                       onClick={() => {
                         const newQty = quantity - 1;
                         if (newQty >= 1) {
-                          onUpdateQuantity(variant.id, newQty);
+                          onUpdateQuantity(product.id, newQty);
                         }
                       }}
                       disabled={quantity <= 1}
-                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                      className="w-8 h-8 rounded-lg bg-[#fadadd] hover:bg-[#7c377f] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                     >
                       <Minus className="w-4 h-4" />
                     </button>
@@ -152,27 +132,27 @@ export function CartPanel({
                     <input
                       type="number"
                       min={1}
-                      max={variant.stock_quantity}
+                      max={product.stock_quantity}
                       value={quantity}
                       onChange={(e) => {
                         let val = Number(e.target.value);
-                        if (val > variant.stock_quantity)
-                          val = variant.stock_quantity;
+                        if (val > product.stock_quantity)
+                          val = product.stock_quantity;
                         if (val < 1) val = 1;
-                        onUpdateQuantity(variant.id, val);
+                        onUpdateQuantity(product.id, val);
                       }}
-                      className="w-16 text-center rounded-lg bg-white border-2 border-gray-200 px-2 py-1.5 font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-16 text-center rounded-lg bg-white border-2 border-[#fadadd] px-2 py-1.5 font-semibold text-[#7c377f] focus:outline-none focus:ring-2 focus:ring-[#fadadd] focus:border-[#7c377f]"
                     />
 
                     <button
                       onClick={() => {
                         const newQty = quantity + 1;
-                        if (newQty <= variant.stock_quantity) {
-                          onUpdateQuantity(variant.id, newQty);
+                        if (newQty <= product.stock_quantity) {
+                          onUpdateQuantity(product.id, newQty);
                         }
                       }}
-                      disabled={quantity >= variant.stock_quantity}
-                      className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
+                      disabled={quantity >= product.stock_quantity}
+                      className="w-8 h-8 rounded-lg bg-[#fadadd] hover:bg-[#7c377f] hover:text-white disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                     >
                       <Plus className="w-4 h-4" />
                     </button>
@@ -180,11 +160,11 @@ export function CartPanel({
 
                   {/* Price */}
                   <div className="text-right">
-                    <div className="text-xs text-gray-500">
-                      ${variant.price.toFixed(2)} × {quantity}
+                    <div className="text-xs text-black/70">
+                      GH₵{sp.base_price.toLocaleString()} × {quantity}
                     </div>
-                    <div className="text-lg font-bold text-blue-600">
-                      ${(variant.price * quantity).toFixed(2)}
+                    <div className="text-lg font-bold text-[#7c377f]">
+                      GH₵{(sp.base_price * quantity).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -193,18 +173,18 @@ export function CartPanel({
           </div>
 
           {/* Summary */}
-          <div className="border-t-2 border-gray-200 bg-linear-to-r from-gray-50 to-gray-100 p-6 space-y-4">
+          <div className="border-t-2 border-[#fadadd] bg-[#fadadd] p-6 space-y-4">
             <div className="space-y-2">
-              <div className="flex justify-between items-center text-gray-600">
+              <div className="flex justify-between items-center text-[#7c377f]">
                 <span className="text-sm">Items</span>
                 <span className="font-semibold">{totalItems}</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-lg font-bold text-gray-800">
+                <span className="text-lg font-bold text-[#7c377f]">
                   Subtotal
                 </span>
-                <span className="text-2xl font-bold text-blue-600">
-                  ${subtotal.toFixed(2)}
+                <span className="text-2xl font-bold text-[#7c377f]">
+                  GH₵{subtotal.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -214,5 +194,3 @@ export function CartPanel({
     </section>
   );
 }
-
-export type { CartItem };

@@ -1,81 +1,61 @@
 "use client";
-
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import useSWR from "swr";
-import {
-  getProducts,
-  createProduct,
-  updateProduct,
-  deleteProduct,
-} from "@/lib/api/products";
-import { getCategories } from "@/lib/api/categories";
-import { getSps } from "@/lib/api/sp";
+import { getSps, createSp, updateSp, deleteSp } from "@/lib/api/sp";
 import { Package, Plus, Pencil, Trash2, X, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
-import { ca } from "zod/v4/locales";
 
-export default function ProductsPage() {
+export default function SpsPage() {
   const {
-    data: products,
+    data: sps,
     mutate,
     isLoading,
     error,
-  } = useSWR("/api/products", getProducts, {
+  } = useSWR("/api/sp", getSps, {
     revalidateOnFocus: false,
     revalidateOnReconnect: true,
     shouldRetryOnError: false,
   });
 
-  const { data: categories } = useSWR("/api/categories", getCategories, {
-    revalidateOnFocus: false,
-    shouldRetryOnError: false,
-  });
-  const { data: sps } = useSWR("/api/sp", getSps, {
-    revalidateOnFocus: false,
-    shouldRetryOnError: false,
-  });
-
-  useEffect(() => {
-    sps?.sort((a, b) => a.name.localeCompare(b.name));
-    categories?.sort((a, b) => a.name.localeCompare(b.name));
-  }, [sps, categories]);
-
   const [showModal, setShowModal] = useState(false);
-  const [editProduct, setEditProduct] = useState<any>(null);
+  const [editSp, setEditSp] = useState<any>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
-  const [confirmDelete, setConfirmDelete] = useState<any>(null);
+  const [confirmDelete, setConfirmDelete] = useState<{
+    id: string;
+    name: string;
+  } | null>(null);
 
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
   const handleSave = async (values: any) => {
     try {
-      if (editProduct) {
-        await updateProduct(editProduct.id, values);
-        toast.success("Product updated successfully");
+      if (editSp) {
+        await updateSp(editSp.id, values);
+        toast.success("SP updated successfully");
       } else {
-        await createProduct(values);
-        toast.success("Product created successfully");
+        await createSp(values);
+        toast.success("SP created successfully");
       }
       setShowModal(false);
-      setEditProduct(null);
+      setEditSp(null);
       mutate();
     } catch (e: any) {
-      toast.error(e?.message || "Failed to save product");
+      toast.error(e?.message || "Failed to save SP");
     }
   };
 
-  const handleDelete = (product: any) => {
-    setConfirmDelete(product);
+  const handleDelete = async (spId: string) => {
+    setConfirmDelete(sps?.find((sp: any) => sp.id === spId) || null);
   };
 
-  const confirmDeleteProduct = async () => {
+  const confirmDeleteSp = async () => {
     if (!confirmDelete) return;
     try {
-      await deleteProduct(confirmDelete.id);
-      toast.success("Product deleted successfully");
+      await deleteSp(confirmDelete.id);
+      toast.success("SP deleted successfully");
       mutate();
     } catch (e: any) {
-      toast.error(e?.message || "Failed to delete product");
+      toast.error(e?.message || "Failed to delete SP");
     } finally {
       setConfirmDelete(null);
     }
@@ -92,9 +72,11 @@ export default function ProductsPage() {
                 <Package className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-[#7c377f]">Products</h1>
+                <h1 className="text-3xl font-bold text-[#7c377f]">
+                  Special Prices
+                </h1>
                 <p className="text-sm text-black/70">
-                  Manage your product catalog
+                  Manage base prices for SP items
                 </p>
               </div>
             </div>
@@ -118,22 +100,24 @@ export default function ProductsPage() {
               <button
                 className="flex items-center gap-2 bg-[#7c377f] text-white px-4 py-3 rounded-xl font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95"
                 onClick={() => {
-                  setEditProduct(null);
+                  setEditSp(null);
                   setShowModal(true);
                 }}
               >
                 <Plus className="w-5 h-5" />
-                <span className="hidden sm:inline">New Product</span>
+                <span className="hidden sm:inline">New SP</span>
               </button>
             </div>
           </div>
         </div>
         {/* Main Content */}
         <div className="bg-white rounded-2xl shadow-lg border-2 border-[#fadadd] overflow-hidden">
-          {isLoading && !products ? (
+          {isLoading && !sps ? (
             <div className="flex flex-col items-center justify-center py-16 space-y-4">
               <div className="w-12 h-12 border-4 border-purple-200 border-t-purple-600 rounded-full animate-spin"></div>
-              <p className="text-gray-500 font-medium">Loading products...</p>
+              <p className="text-gray-500 font-medium">
+                Loading special prices...
+              </p>
             </div>
           ) : (
             <>
@@ -156,9 +140,9 @@ export default function ProductsPage() {
               {viewMode === "grid" && (
                 <div className="p-6">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {products?.map((prod: any) => (
+                    {sps?.map((sp: any) => (
                       <div
-                        key={prod.id}
+                        key={sp.id}
                         className="group relative bg-white border-2 border-[#fadadd] rounded-xl p-5 hover:border-[#7c377f] hover:shadow-lg transition-all duration-300"
                       >
                         {/* Icon & Actions */}
@@ -170,17 +154,17 @@ export default function ProductsPage() {
                             <button
                               className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
                               onClick={() => {
-                                setEditProduct(prod);
+                                setEditSp(sp);
                                 setShowModal(true);
                               }}
-                              title="Edit product"
+                              title="Edit SP"
                             >
                               <Pencil className="w-4 h-4" />
                             </button>
                             <button
                               className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-red-600"
-                              onClick={() => handleDelete(prod)}
-                              title="Delete product"
+                              onClick={() => handleDelete(sp.id)}
+                              title="Delete SP"
                             >
                               <Trash2 className="w-4 h-4" />
                             </button>
@@ -190,60 +174,30 @@ export default function ProductsPage() {
                         <div className="space-y-3">
                           <div>
                             <h3 className="font-bold text-lg text-[#7c377f] mb-1 truncate">
-                              {prod.name}
+                              {sp.name}
                             </h3>
-                          </div>
-                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                            <span className="text-xs text-gray-600 font-medium">
-                              Category:
-                            </span>
-                            <span className="text-xs font-bold text-[#7c377f]">
-                              {categories?.find(
-                                (c) => c.id === prod.category_id,
-                              )?.name || "-"}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                            <span className="text-xs text-gray-600 font-medium">
-                              SP:
-                            </span>
-                            <span className="text-xs font-bold text-[#7c377f]">
-                              {sps?.find((s) => s.id === prod.sp_id)?.name ||
-                                "-"}
-                            </span>
                           </div>
                           <div className="flex items-center justify-between pt-2 border-t border-gray-200">
                             <span className="text-xs text-gray-600 font-medium">
                               Base Price:
                             </span>
-                            <span className="text-xs font-bold text-green-700">
-                              GH₵
-                              {sps
-                                ?.find((s) => s.id === prod.sp_id)
-                                ?.base_price?.toLocaleString() || "-"}
-                            </span>
-                          </div>
-                          <div className="flex items-center justify-between pt-2 border-t border-gray-200">
-                            <span className="text-xs text-gray-600 font-medium">
-                              Stock Quantity:
-                            </span>
                             <span className="text-xs font-bold text-[#7c377f]">
-                              {prod.stock_quantity}
+                              GH₵{sp.base_price?.toLocaleString()}
                             </span>
                           </div>
                         </div>
                       </div>
                     ))}
-                    {!products?.length && (
+                    {!sps?.length && (
                       <div className="col-span-full flex flex-col items-center justify-center py-16">
-                        <div className="bg-[#fadadd] rounded-full p-8 mb-4">
-                          <Package className="w-16 h-16 text-[#7c377f]" />
+                        <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                          <Package className="w-16 h-16 text-gray-400" />
                         </div>
                         <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
-                          No products yet
+                          No special prices yet
                         </h3>
                         <p className="text-sm text-black/60">
-                          Create your first product to get started
+                          Create your first SP to get started
                         </p>
                       </div>
                     )}
@@ -260,16 +214,7 @@ export default function ProductsPage() {
                           Name
                         </th>
                         <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
-                          Category
-                        </th>
-                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
-                          SP
-                        </th>
-                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
                           Base Price
-                        </th>
-                        <th className="py-4 px-6 text-left text-sm font-bold text-[#7c377f]">
-                          Stock Quantity
                         </th>
                         <th className="py-4 px-6 text-center text-sm font-bold text-[#7c377f] w-32">
                           Actions
@@ -277,44 +222,33 @@ export default function ProductsPage() {
                       </tr>
                     </thead>
                     <tbody>
-                      {products?.map((prod: any) => (
+                      {sps?.map((sp: any) => (
                         <tr
-                          key={prod.id}
+                          key={sp.id}
                           className="border-b border-[#fadadd] hover:bg-[#fadadd] transition-all duration-200 group"
                         >
                           <td className="py-4 px-6 font-semibold text-[#7c377f]">
-                            {prod.name}
+                            {sp.name}
                           </td>
                           <td className="py-4 px-6">
-                            {categories?.find((c) => c.id === prod.category_id)
-                              ?.name || "-"}
+                            GH₵{sp.base_price?.toLocaleString()}
                           </td>
-                          <td className="py-4 px-6">
-                            {sps?.find((s) => s.id === prod.sp_id)?.name || "-"}
-                          </td>
-                          <td className="py-4 px-6">
-                            GH₵
-                            {sps
-                              ?.find((s) => s.id === prod.sp_id)
-                              ?.base_price?.toLocaleString() || "-"}
-                          </td>
-                          <td className="py-4 px-6">{prod.stock_quantity}</td>
                           <td className="py-4 px-6">
                             <div className="flex items-center justify-center gap-2">
                               <button
                                 className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
                                 onClick={() => {
-                                  setEditProduct(prod);
+                                  setEditSp(sp);
                                   setShowModal(true);
                                 }}
-                                title="Edit product"
+                                title="Edit SP"
                               >
                                 <Pencil className="w-4 h-4" />
                               </button>
                               <button
                                 className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-red-600"
-                                onClick={() => handleDelete(prod)}
-                                title="Delete product"
+                                onClick={() => handleDelete(sp.id)}
+                                title="Delete SP"
                               >
                                 <Trash2 className="w-4 h-4" />
                               </button>
@@ -322,18 +256,18 @@ export default function ProductsPage() {
                           </td>
                         </tr>
                       ))}
-                      {!products?.length && (
+                      {!sps?.length && (
                         <tr>
-                          <td colSpan={6} className="py-16">
+                          <td colSpan={3} className="py-16">
                             <div className="flex flex-col items-center justify-center text-center">
-                              <div className="bg-[#fadadd] rounded-full p-8 mb-4">
-                                <Package className="w-16 h-16 text-[#7c377f]" />
+                              <div className="bg-linear-to-br from-gray-100 to-gray-200 rounded-full p-8 mb-4">
+                                <Package className="w-16 h-16 text-gray-400" />
                               </div>
                               <h3 className="text-lg font-semibold text-[#7c377f] mb-2">
-                                No products yet
+                                No special prices yet
                               </h3>
                               <p className="text-sm text-black/60">
-                                Create your first product to get started
+                                Create your first SP to get started
                               </p>
                             </div>
                           </td>
@@ -349,17 +283,16 @@ export default function ProductsPage() {
       </div>
       {/* Modal */}
       {showModal && (
-        <ProductModal
-          initial={editProduct}
-          categories={categories || []}
-          sps={sps || []}
+        <SpModal
+          initial={editSp}
           onClose={() => {
             setShowModal(false);
-            setEditProduct(null);
+            setEditSp(null);
           }}
           onSave={handleSave}
         />
       )}
+
       {/* Custom Confirm Delete Modal */}
       {confirmDelete && (
         <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
@@ -369,7 +302,7 @@ export default function ProductsPage() {
                 <Trash2 className="w-8 h-8 text-red-500" />
               </div>
               <h2 className="text-xl font-bold text-[#7c377f] mb-2">
-                Delete Product?
+                Delete SP?
               </h2>
               <p className="text-black/70 mb-6 text-center">
                 Are you sure you want to delete{" "}
@@ -385,7 +318,7 @@ export default function ProductsPage() {
                 </button>
                 <button
                   className="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
-                  onClick={confirmDeleteProduct}
+                  onClick={confirmDeleteSp}
                 >
                   Delete
                 </button>
@@ -398,24 +331,17 @@ export default function ProductsPage() {
   );
 }
 
-function ProductModal({
+function SpModal({
   initial,
-  categories,
-  sps,
   onClose,
   onSave,
 }: {
   initial: any;
-  categories: any[];
-  sps: any[];
   onClose: () => void;
   onSave: (values: any) => void;
 }) {
-  const [categoryId, setCategoryId] = useState(initial?.category_id || "");
-  const [spId, setSpId] = useState(initial?.sp_id || "");
-  const [stockQuantity, setStockQuantity] = useState(
-    initial?.stock_quantity || "",
-  );
+  const [name, setName] = useState(initial?.name || "");
+  const [basePrice, setBasePrice] = useState(initial?.base_price || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -424,9 +350,8 @@ function ProductModal({
     setLoading(true);
     try {
       await onSave({
-        category_id: categoryId,
-        sp_id: spId,
-        stock_quantity: Number(stockQuantity),
+        name,
+        base_price: Number(basePrice),
       });
       onClose();
     } catch (e: any) {
@@ -435,9 +360,6 @@ function ProductModal({
       setLoading(false);
     }
   };
-
-  const selectedSp = sps.find((sp: any) => sp.id === spId);
-  const selectedCategory = categories.find((cat: any) => cat.id === categoryId);
 
   return (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
@@ -449,7 +371,7 @@ function ProductModal({
               <Package className="w-5 h-5" />
             </div>
             <h2 className="text-xl font-bold">
-              {initial ? "Edit Product" : "New Product"}
+              {initial ? "Edit SP" : "New SP"}
             </h2>
           </div>
           <button
@@ -462,76 +384,35 @@ function ProductModal({
         </div>
         {/* Form */}
         <div className="p-6 space-y-5">
-          {/* Category Select */}
+          {/* Name Input */}
           <div>
             <label className="block text-sm font-semibold text-[#7c377f] mb-2">
-              Category
+              SP Name
             </label>
-            <select
+            <input
+              type="text"
               className="w-full px-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none"
-              value={categoryId}
-              onChange={(e) => setCategoryId(e.target.value)}
+              placeholder="Enter SP name"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
               disabled={loading}
-            >
-              <option value="">Select category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+            />
           </div>
-          {/* SP Select */}
+          {/* Base Price Input */}
           <div>
             <label className="block text-sm font-semibold text-[#7c377f] mb-2">
-              Special Price (SP)
-            </label>
-            <select
-              className="w-full px-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none"
-              value={spId}
-              onChange={(e) => setSpId(e.target.value)}
-              disabled={loading}
-            >
-              <option value="">Select SP</option>
-              {sps.map((sp) => (
-                <option key={sp.id} value={sp.id}>
-                  {sp.name} (GH₵{sp.base_price?.toLocaleString()})
-                </option>
-              ))}
-            </select>
-          </div>
-          {/* Stock Quantity Input */}
-          <div>
-            <label className="block text-sm font-semibold text-[#7c377f] mb-2">
-              Stock Quantity
+              Base Price
             </label>
             <input
               type="number"
               className="w-full px-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none"
-              placeholder="Enter stock quantity"
-              value={stockQuantity}
-              onChange={(e) => setStockQuantity(e.target.value)}
+              placeholder="Enter base price"
+              value={basePrice}
+              onChange={(e) => setBasePrice(e.target.value)}
               min={0}
-              step={1}
+              step={0.01}
               disabled={loading}
             />
-          </div>
-          {/* Auto-generated Name & Price Preview */}
-          <div className="p-4 bg-[#fadadd] rounded-xl border-2 border-[#fadadd] mt-2">
-            <div className="text-xs text-black/70 mb-1">
-              Auto-generated Name:
-            </div>
-            <div className="font-bold text-[#7c377f]">
-              {selectedCategory && selectedSp
-                ? `${selectedCategory.name} - ${selectedSp.name}`
-                : "-"}
-            </div>
-            <div className="text-xs text-black/70 mt-2 mb-1">Base Price:</div>
-            <div className="font-bold text-green-700">
-              {selectedSp
-                ? `GH₵${selectedSp.base_price?.toLocaleString()}`
-                : "-"}
-            </div>
           </div>
           {/* Error Message */}
           {error && (
@@ -554,7 +435,7 @@ function ProductModal({
               type="button"
               onClick={handleSubmit}
               className="flex-1 px-4 py-3 rounded-xl bg-[#7c377f] text-white font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-              disabled={loading || !categoryId || !spId || !stockQuantity}
+              disabled={loading || !name.trim() || !basePrice}
             >
               {loading ? (
                 <span className="flex items-center justify-center gap-2">
@@ -562,7 +443,7 @@ function ProductModal({
                   Saving...
                 </span>
               ) : (
-                "Save Product"
+                "Save SP"
               )}
             </button>
           </div>

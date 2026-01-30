@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import useSWR from "swr";
 import { getSalesSummary, getLowStockProducts } from "@/lib/api/reports";
 import { Bar } from "react-chartjs-2";
@@ -42,7 +42,7 @@ export default function ReportsPage() {
 
   // Sales summary fetch
   const {
-    data: sales,
+    data: allSales,
     isLoading: salesLoading,
     error: salesError,
     mutate: mutateSales,
@@ -50,15 +50,7 @@ export default function ReportsPage() {
     getSalesSummary(from, to),
   );
 
-  // Low stock fetch
-  const {
-    data: lowStock,
-    isLoading: lowStockLoading,
-    error: lowStockError,
-    mutate: mutateLowStock,
-  } = useSWR(["/api/reports/low-stock", threshold], () =>
-    getLowStockProducts(threshold),
-  );
+  const sales = useMemo(() => allSales, [allSales]);
 
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
@@ -100,10 +92,6 @@ export default function ReportsPage() {
     }
   };
 
-  const handleLowStockSubmit = () => {
-    mutateLowStock();
-  };
-
   return (
     <div className="min-h-screen bg-[#fadadd] p-4 md:p-6">
       <div className="max-w-7xl mx-auto">
@@ -114,8 +102,8 @@ export default function ReportsPage() {
               <BarChart3 className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-black">Reports</h1>
-              <p className="text-sm text-black">
+              <h1 className="text-3xl font-bold text-[#7c377f]">Reports</h1>
+              <p className="text-sm text-black/60">
                 Sales analytics and inventory insights
               </p>
             </div>
@@ -124,13 +112,13 @@ export default function ReportsPage() {
 
         {/* Offline/Error Banner */}
         {isOffline && (
-          <div className="bg-[#fffbe6] border-l-4 border-[#ffd700] p-4 rounded-lg flex items-start gap-3 mb-6">
-            <AlertCircle className="w-5 h-5 text-[#b8860b] shrink-0 mt-0.5" />
+          <div className="bg-[#fadadd] border-l-4 border-[#7c377f] p-4 rounded-lg flex items-start gap-3 mb-6">
+            <AlertCircle className="w-5 h-5 text-[#7c377f] shrink-0 mt-0.5" />
             <div>
-              <p className="text-sm font-semibold text-[#b8860b]">
+              <p className="text-sm font-semibold text-[#7c377f]">
                 Network Issue
               </p>
-              <p className="text-sm text-[#b8860b]">
+              <p className="text-sm text-black/60">
                 You're offline. Showing last saved data.
               </p>
             </div>
@@ -144,8 +132,8 @@ export default function ReportsPage() {
             {/* Card Header */}
             <div className="bg-[#7c377f] text-white px-6 py-5">
               <div className="flex items-center gap-3">
-                <div className="bg-white/20 p-2 rounded-lg">
-                  <TrendingUp className="w-5 h-5" />
+                <div className="bg-[#fadadd] p-2 rounded-lg">
+                  <TrendingUp className="w-5 h-5 text-[#7c377f]" />
                 </div>
                 <h2 className="text-xl font-bold">Sales Summary</h2>
               </div>
@@ -164,7 +152,7 @@ export default function ReportsPage() {
                       <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         type="date"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none text-[#7c377f]"
                         value={from}
                         onChange={(e) => setFrom(e.target.value)}
                       />
@@ -178,7 +166,7 @@ export default function ReportsPage() {
                       <Calendar className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
                       <input
                         type="date"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 focus:border-blue-500 focus:ring-4 focus:ring-blue-100 transition-all outline-none"
+                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none text-[#7c377f]"
                         value={to}
                         onChange={(e) => setTo(e.target.value)}
                       />
@@ -188,7 +176,7 @@ export default function ReportsPage() {
 
                 <button
                   onClick={handleSalesSubmit}
-                  className="w-full px-4 py-3 rounded-xl bg-linear-to-r from-blue-500 to-cyan-600 text-white font-semibold hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="w-full px-4 py-3 rounded-xl bg-[#7c377f] text-white font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
                   disabled={!from || !to || salesLoading}
                 >
                   {salesLoading ? (
@@ -208,7 +196,7 @@ export default function ReportsPage() {
               {/* Error State */}
               {salesError && !isOffline && (
                 <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
+                  <AlertCircle className="w-5 h-5 text-red-600 shrink-0 mt-0.5" />
                   <p className="text-sm text-red-700">
                     Failed to load sales data. Please try again.
                   </p>
@@ -220,30 +208,30 @@ export default function ReportsPage() {
                 <div className="space-y-6">
                   {/* Summary Stats */}
                   <div className="grid grid-cols-2 gap-4">
-                    <div className="bg-[#fadadd] border-2 border-[#7c377f] rounded-xl p-4">
+                    <div className="bg-green-50 border-2 border-green-200 rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="bg-[#7c377f] p-2 rounded-lg">
+                        <div className="bg-green-500 p-2 rounded-lg">
                           <DollarSign className="w-4 h-4 text-white" />
                         </div>
-                        <p className="text-xs font-semibold text-black uppercase">
+                        <p className="text-xs font-semibold text-green-700 uppercase">
                           Total Sales
                         </p>
                       </div>
-                      <p className="text-2xl font-bold text-black">
-                        ${sales.totalSales ?? 0}
+                      <p className="text-2xl font-bold text-green-700">
+                        GH₵{sales.totalSales ?? 0}
                       </p>
                     </div>
 
                     <div className="bg-[#fadadd] border-2 border-[#7c377f] rounded-xl p-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <div className="bg-[#7c377f] p-2 rounded-lg">
+                        <div className="bg-blue-500 p-2 rounded-lg">
                           <ShoppingCart className="w-4 h-4 text-white" />
                         </div>
-                        <p className="text-xs font-semibold text-black uppercase">
+                        <p className="text-xs font-semibold text-[#7c377f] uppercase">
                           Total Orders
                         </p>
                       </div>
-                      <p className="text-2xl font-bold text-black">
+                      <p className="text-2xl font-bold text-[#7c377f]">
                         {sales.orderCount ?? 0}
                       </p>
                     </div>
@@ -252,7 +240,7 @@ export default function ReportsPage() {
                   {/* Chart */}
                   {chartData && (
                     <div className="bg-white rounded-xl p-4 border-2 border-[#fadadd]">
-                      <h3 className="text-sm font-bold text-black mb-4">
+                      <h3 className="text-sm font-bold text-[#7c377f] mb-4">
                         Daily Sales Trend
                       </h3>
                       <Bar
@@ -263,9 +251,7 @@ export default function ReportsPage() {
                           plugins: {
                             legend: { display: false },
                             tooltip: {
-                              backgroundColor: "#7c377f",
-                              titleColor: "#fadadd",
-                              bodyColor: "#fadadd",
+                              backgroundColor: "rgba(0, 0, 0, 0.8)",
                               padding: 12,
                               cornerRadius: 8,
                               titleFont: { size: 14, weight: "bold" },
@@ -275,15 +261,13 @@ export default function ReportsPage() {
                           scales: {
                             y: {
                               beginAtZero: true,
-                              grid: { color: "#fadadd" },
+                              grid: { color: "rgba(0, 0, 0, 0.05)" },
                               ticks: {
-                                color: "#7c377f",
                                 callback: (value) => "$" + value,
                               },
                             },
                             x: {
                               grid: { display: false },
-                              ticks: { color: "#7c377f" },
                             },
                           },
                         }}
@@ -298,10 +282,10 @@ export default function ReportsPage() {
                       <table className="w-full">
                         <thead>
                           <tr className="bg-[#fadadd] border-b-2 border-[#7c377f]">
-                            <th className="py-3 px-4 text-left text-sm font-bold text-black">
+                            <th className="py-3 px-4 text-left text-sm font-bold text-[#7c377f]">
                               Date
                             </th>
-                            <th className="py-3 px-4 text-right text-sm font-bold text-black">
+                            <th className="py-3 px-4 text-right text-sm font-bold text-[#7c377f]">
                               Sales
                             </th>
                           </tr>
@@ -312,13 +296,13 @@ export default function ReportsPage() {
                               key={d.date}
                               className="border-b border-[#fadadd] hover:bg-[#fadadd] transition-colors"
                             >
-                              <td className="py-3 px-4 text-sm text-black">
+                              <td className="py-3 px-4 text-sm text-[#7c377f]">
                                 {new Date(d.date).toLocaleDateString()}
                               </td>
                               <td className="py-3 px-4 text-right">
-                                <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold bg-[#7c377f] text-white">
+                                <span className="inline-flex items-center gap-1 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm font-bold">
                                   <DollarSign className="w-3 h-3" />
-                                  {d.total.toFixed(2)}
+                                  GH₵{d.total.toFixed(2)}
                                 </span>
                               </td>
                             </tr>
@@ -336,7 +320,7 @@ export default function ReportsPage() {
                   <div className="bg-[#fadadd] rounded-full p-6 mb-4">
                     <BarChart3 className="w-12 h-12 text-[#7c377f]" />
                   </div>
-                  <p className="text-sm text-black">
+                  <p className="text-sm text-black/60">
                     No sales data available for selected period
                   </p>
                 </div>
@@ -347,153 +331,9 @@ export default function ReportsPage() {
                   <div className="bg-[#fadadd] rounded-full p-6 mb-4">
                     <Calendar className="w-12 h-12 text-[#7c377f]" />
                   </div>
-                  <p className="text-sm text-black font-medium">
+                  <p className="text-sm text-[#7c377f] font-medium">
                     Select date range to view sales report
                   </p>
-                </div>
-              )}
-            </div>
-          </div>
-
-          {/* Low Stock Card */}
-          <div className="bg-white rounded-2xl shadow-lg border-2 border-[#fadadd] overflow-hidden">
-            {/* Card Header */}
-            <div className="bg-[#7c377f] text-white px-6 py-5">
-              <div className="flex items-center gap-3">
-                <div className="bg-white/20 p-2 rounded-lg">
-                  <AlertTriangle className="w-5 h-5" />
-                </div>
-                <h2 className="text-xl font-bold">Low Stock Alert</h2>
-              </div>
-            </div>
-
-            {/* Card Body */}
-            <div className="p-6 space-y-6">
-              {/* Threshold Input */}
-              <div className="space-y-4">
-                <div>
-                  <label className="block text-sm font-semibold text-black mb-2">
-                    Stock Threshold
-                  </label>
-                  <div className="flex gap-3">
-                    <div className="relative flex-1">
-                      <Package className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
-                      <input
-                        type="number"
-                        className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-[#fadadd] focus:border-[#7c377f] focus:ring-4 focus:ring-[#fadadd] transition-all outline-none text-black"
-                        value={threshold}
-                        min={1}
-                        onChange={(e) => setThreshold(Number(e.target.value))}
-                        placeholder="Enter threshold"
-                      />
-                    </div>
-                    <button
-                      onClick={handleLowStockSubmit}
-                      className="px-4 py-3 rounded-xl bg-[#7c377f] text-white font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50"
-                      disabled={lowStockLoading}
-                    >
-                      {lowStockLoading ? (
-                        <div className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      ) : (
-                        <RefreshCw className="w-5 h-5" />
-                      )}
-                    </button>
-                  </div>
-                  <p className="text-xs text-black mt-2">
-                    Show products with stock quantity below this value
-                  </p>
-                </div>
-              </div>
-
-              {/* Error State */}
-              {lowStockError && !isOffline && (
-                <div className="bg-red-50 border-l-4 border-red-500 p-3 rounded-lg flex items-start gap-2">
-                  <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-                  <p className="text-sm text-red-700">
-                    Failed to load low stock data. Please try again.
-                  </p>
-                </div>
-              )}
-
-              {/* Low Stock Results */}
-              {lowStock && (
-                <div className="overflow-x-auto">
-                  {lowStock.length > 0 ? (
-                    <>
-                      {/* Alert Banner */}
-                      <div className="bg-[#fffbe6] border-l-4 border-[#ffd700] p-3 rounded-lg mb-4 flex items-start gap-2">
-                        <AlertTriangle className="w-5 h-5 text-[#b8860b] shrink-0 mt-0.5" />
-                        <div>
-                          <p className="text-sm font-semibold text-[#b8860b]">
-                            {lowStock.length} Product
-                            {lowStock.length !== 1 ? "s" : ""} running low
-                          </p>
-                          <p className="text-xs text-[#b8860b]">
-                            Consider restocking these items soon
-                          </p>
-                        </div>
-                      </div>
-
-                      <table className="w-full">
-                        <thead>
-                          <tr className="bg-[#fadadd] border-b-2 border-[#7c377f]">
-                            <th className="py-3 px-4 text-left text-sm font-bold text-black">
-                              Product
-                            </th>
-                            <th className="py-3 px-4 text-center text-sm font-bold text-black">
-                              Stock
-                            </th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          {lowStock.map((v: any) => (
-                            <tr
-                              key={v.id}
-                              className="border-b border-[#fadadd] hover:bg-[#fadadd] transition-colors"
-                            >
-                              <td className="py-3 px-4">
-                                <span className="font-mono text-sm font-semibold text-black bg-[#fadadd] px-2 py-1 rounded">
-                                  {v.name}
-                                </span>
-                              </td>
-                              <td className="py-3 px-4 text-center">
-                                <span
-                                  className={`inline-flex items-center gap-1 px-3 py-1 rounded-full text-sm font-bold ${
-                                    v.stock_quantity === 0
-                                      ? "bg-[#ffb3b3] text-[#7c377f]"
-                                      : "bg-[#fffbe6] text-[#b8860b]"
-                                  }`}
-                                >
-                                  <Package className="w-3 h-3" />
-                                  {v.stock_quantity}
-                                </span>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    </>
-                  ) : (
-                    <div className="flex flex-col items-center justify-center py-12 text-center">
-                      <div className="bg-[#fadadd] rounded-full p-6 mb-4">
-                        <Package className="w-12 h-12 text-[#7c377f]" />
-                      </div>
-                      <h3 className="text-sm font-semibold text-black mb-1">
-                        All stock levels healthy!
-                      </h3>
-                      <p className="text-xs text-black">
-                        No products below threshold of {threshold}
-                      </p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* Loading State */}
-              {lowStockLoading && (
-                <div className="flex flex-col items-center justify-center py-12">
-                  <div className="w-10 h-10 border-4 border-[#fadadd] border-t-[#7c377f] rounded-full animate-spin mb-4"></div>
-                  <p className="text-sm text-black">Loading stock data...</p>
                 </div>
               )}
             </div>

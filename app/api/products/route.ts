@@ -1,20 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withErrorHandling } from "@/lib/interceptors/withErrorHandling";
-import { validate } from "@/lib/validators/validate";
 import { requireAuth } from "@/lib/auth/requireAuth";
 import { requireRole } from "@/lib/auth/requireRole";
+import { validate } from "@/lib/validators/validate";
 import { ProductsService } from "@/services/products.service";
 import { createProductSchema } from "@/core/validation/products.schema";
 
 const service = new ProductsService();
 
 // GET /api/products - List all products (ADMIN, SALES)
-export const GET = withErrorHandling(async (req: NextRequest) => {
+export const GET = withErrorHandling(async (_req: NextRequest) => {
   const user = await requireAuth();
   await requireRole(user, ["ADMIN", "SALES"]);
-  const includeVariants =
-    req.nextUrl.searchParams.get("includeVariants") === "true";
-  const products = await service.listProducts({ includeVariants });
+  const products = await service.listProducts();
   return NextResponse.json({ success: true, data: products, error: null });
 });
 

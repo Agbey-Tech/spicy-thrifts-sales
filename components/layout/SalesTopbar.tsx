@@ -16,9 +16,9 @@ export function SalesTopbar({ onMenuClick, onLogout }: Props) {
   const getRoleColor = (role: string) => {
     switch (role) {
       case "ADMIN":
-        return "bg-gradient-to-r from-purple-500 to-pink-600 text-white";
+        return "bg-[#7c377f] text-white";
       case "SALES":
-        return "bg-gradient-to-r from-blue-500 to-indigo-600 text-white";
+        return "bg-[#fadadd] text-[#7c377f]";
       default:
         return "bg-gray-200 text-gray-700";
     }
@@ -34,7 +34,7 @@ export function SalesTopbar({ onMenuClick, onLogout }: Props) {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 md:px-6 relative z-30">
+    <header className="h-16 bg-white border-b-2 border-[#fadadd] shadow-sm flex items-center justify-between px-4 md:px-6 relative z-30">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         {/* Mobile Menu Button */}
@@ -48,13 +48,13 @@ export function SalesTopbar({ onMenuClick, onLogout }: Props) {
 
         {/* Page Title - Hidden on mobile, shown on desktop */}
         <div className="hidden md:block">
-          <h2 className="text-lg font-bold text-gray-800">Sales Dashboard</h2>
-          <p className="text-xs text-gray-500">Manage your sales and orders</p>
+          <h2 className="text-lg font-bold text-[#7c377f]">Sales Dashboard</h2>
+          <p className="text-xs text-black/70">Manage your sales and orders</p>
         </div>
 
         {/* Mobile Logo */}
         <div className="md:hidden">
-          <h2 className="text-lg font-bold bg-linear-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent">
+          <h2 className="text-lg font-bold text-[#7c377f]">
             Spicy Thrifts
           </h2>
         </div>
@@ -86,7 +86,7 @@ export function SalesTopbar({ onMenuClick, onLogout }: Props) {
           >
             {/* Avatar */}
             <div className="relative">
-              <div className="h-10 w-10 rounded-xl bg-linear-to-br from-blue-500 to-indigo-600 flex items-center justify-center font-bold text-white shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="h-10 w-10 rounded-xl bg-[#7c377f] flex items-center justify-center font-bold text-white shadow-lg group-hover:shadow-xl transition-shadow">
                 {getInitials(user?.full_name || "")}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
@@ -108,9 +108,9 @@ export function SalesTopbar({ onMenuClick, onLogout }: Props) {
               />
 
               {/* Dropdown Content */}
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50 animate-in slide-in-from-top-2 duration-200">
+              <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border-2 border-[#fadadd] overflow-hidden z-50 animate-in slide-in-from-top-2 duration-200">
                 {/* User Info Header */}
-                <div className="bg-linear-to-r from-blue-500 to-indigo-600 p-4 text-white">
+                <div className="bg-[#7c377f] p-4 text-white">
                   <div className="flex items-center gap-3">
                     <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-bold text-lg">
                       {getInitials(user?.full_name || "")}
@@ -119,7 +119,7 @@ export function SalesTopbar({ onMenuClick, onLogout }: Props) {
                       <p className="font-semibold truncate">
                         {user?.full_name}
                       </p>
-                      <p className="text-xs text-blue-100">{user?.role}</p>
+                      <p className="text-xs text-[#fadadd]">{user?.role}</p>
                     </div>
                   </div>
                 </div>

@@ -16,9 +16,9 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
   const getRoleColor = (role: string) => {
     switch (role) {
       case "ADMIN":
-        return "bg-gradient-to-r from-purple-500 to-pink-600 text-white";
+        return "bg-[#7c377f] text-white";
       case "SALES":
-        return "bg-gradient-to-r from-blue-500 to-indigo-600 text-white";
+        return "bg-[#fadadd] text-black border border-[#7c377f]";
       default:
         return "bg-gray-200 text-gray-700";
     }
@@ -34,7 +34,7 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-gray-200 shadow-sm flex items-center justify-between px-4 md:px-6 relative z-30">
+    <header className="h-16 bg-[#fadadd] border-b border-[#7c377f] shadow-sm flex items-center justify-between px-4 md:px-6 relative z-30">
       {/* Left Section */}
       <div className="flex items-center gap-4">
         {/* Mobile Menu Button */}
@@ -48,12 +48,14 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
 
         {/* Page Title - Hidden on mobile, shown on desktop */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2 rounded-lg shadow-md">
+          <div className="bg-linear-to-br from-[#7c377f] to-[#fadadd] p-2 rounded-lg shadow-md">
             <Shield className="w-5 h-5 text-white" />
           </div>
           <div>
-            <h2 className="text-lg font-bold text-gray-800">Admin Dashboard</h2>
-            <p className="text-xs text-gray-500">
+            <h2 className="text-lg font-bold text-[#7c377f]">
+              Admin Dashboard
+            </h2>
+            <p className="text-xs text-black/70">
               Full system control & management
             </p>
           </div>
@@ -61,10 +63,8 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
 
         {/* Mobile Logo */}
         <div className="md:hidden flex items-center gap-2">
-          <Shield className="w-5 h-5 text-purple-600" />
-          <h2 className="text-lg font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
-            Spicy Thrifts
-          </h2>
+          <Shield className="w-5 h-5 text-[#7c377f]" />
+          <h2 className="text-lg font-bold text-[#7c377f]">Spicy Thrifts</h2>
         </div>
       </div>
 
@@ -77,7 +77,7 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
               <p className="text-sm font-semibold text-gray-800">
                 {user?.full_name}
               </p>
-              <Crown className="w-4 h-4 text-purple-600" />
+              <Crown className="w-4 h-4 text-[#7c377f]" />
             </div>
             <div className="flex items-center gap-2 justify-end">
               <span
@@ -97,12 +97,12 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
           >
             {/* Avatar */}
             <div className="relative">
-              <div className="h-10 w-10 rounded-xl bg-linear-to-br from-purple-500 to-pink-600 flex items-center justify-center font-bold text-white shadow-lg group-hover:shadow-xl transition-shadow">
+              <div className="h-10 w-10 rounded-xl bg-linear-to-br from-[#7c377f] to-[#fadadd] flex items-center justify-center font-bold text-white shadow-lg group-hover:shadow-xl transition-shadow">
                 {getInitials(user?.full_name || "")}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
               {/* Admin badge indicator */}
-              <div className="absolute -top-1 -right-1 bg-linear-to-br from-purple-500 to-pink-600 rounded-full p-0.5">
+              <div className="absolute -top-1 -right-1 bg-linear-to-br from-[#7c377f] to-[#fadadd] rounded-full p-0.5">
                 <Crown className="w-2.5 h-2.5 text-white" />
               </div>
             </div>
@@ -125,23 +125,23 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
               {/* Dropdown Content */}
               <div className="absolute right-0 mt-2 w-64 bg-white rounded-xl shadow-2xl border border-gray-200 overflow-hidden z-50 animate-in slide-in-from-top-2 duration-200">
                 {/* User Info Header */}
-                <div className="bg-linear-to-r from-purple-500 to-pink-600 p-4 text-white">
+                <div className="bg-linear-to-r from-[#7c377f] to-[#fadadd] p-4 text-white">
                   <div className="flex items-center gap-3">
                     <div className="relative">
                       <div className="h-12 w-12 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center font-bold text-lg">
                         {getInitials(user?.full_name || "")}
                       </div>
                       <div className="absolute -top-1 -right-1 bg-white rounded-full p-1">
-                        <Crown className="w-3 h-3 text-purple-600" />
+                        <Crown className="w-3 h-3 text-[#7c377f]" />
                       </div>
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="font-semibold truncate">
+                      <p className="font-semibold truncate text-black">
                         {user?.full_name}
                       </p>
                       <div className="flex items-center gap-1 mt-0.5">
-                        <Shield className="w-3 h-3" />
-                        <p className="text-xs text-purple-100">{user?.role}</p>
+                        <Shield className="w-3 h-3 text-white" />
+                        <p className="text-xs text-white">{user?.role}</p>
                       </div>
                     </div>
                   </div>
@@ -172,7 +172,7 @@ export function AdminTopbar({ onMenuClick, onLogout }: Props) {
           <span
             className={`text-xs font-bold px-2.5 py-1 rounded-full flex items-center gap-1 ${getRoleColor(user?.role || "")}`}
           >
-            <Crown className="w-3 h-3" />
+            <Crown className="w-3 h-3 text-[#7c377f]" />
             {user?.role}
           </span>
         </div>

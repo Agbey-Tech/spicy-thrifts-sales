@@ -14,41 +14,31 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
 
   // Group navigation items by category if needed
-  const getItemGradient = (index: number) => {
-    const gradients = [
-      "from-blue-500 to-cyan-600",
-      "from-blue-500 to-cyan-600",
-      "from-purple-500 to-pink-600",
-      "from-green-500 to-emerald-600",
-      "from-orange-500 to-red-600",
-      "from-indigo-500 to-purple-600",
-      "from-pink-500 to-rose-600",
-      "from-teal-500 to-cyan-600",
-      "from-amber-500 to-orange-600",
-    ];
-    return gradients[index % gradients.length];
+  // All gradients and accents use the new color scheme
+  const getItemGradient = () => {
+    return "from-[#7c377f] to-[#fadadd]";
   };
 
   const SidebarContent = (
-    <div className="h-full flex flex-col bg-linear-to-b from-gray-900 via-gray-900 to-gray-800">
+    <div className="h-full flex flex-col bg-linear-to-b from-[#7c377f] via-[#7c377f] to-[#fadadd]">
       {/* Brand Header */}
-      <div className="p-6 border-b border-gray-700/50">
+      <div className="p-6 border-b border-[#fadadd]">
         <div className="flex items-center gap-3">
-          <div className="bg-linear-to-br from-purple-500 to-pink-600 p-2.5 rounded-xl shadow-lg">
+          <div className="bg-linear-to-br from-[#7c377f] to-[#fadadd] p-2.5 rounded-xl shadow-lg">
             <Shield className="w-6 h-6 text-white" />
           </div>
           <div>
             <h1 className="text-xl font-bold text-white">Spicy Thrifts</h1>
-            <p className="text-xs text-gray-400">Admin Panel</p>
+            <p className="text-xs text-[#fadadd]">Admin Panel</p>
           </div>
         </div>
 
         {/* Close button for mobile */}
         <button
           onClick={onClose}
-          className="md:hidden absolute top-6 right-6 p-2 hover:bg-gray-800 rounded-lg transition-colors"
+          className="md:hidden absolute top-6 right-6 p-2 hover:bg-[#fadadd] rounded-lg transition-colors"
         >
-          <X className="w-5 h-5 text-gray-400" />
+          <X className="w-5 h-5 text-white" />
         </button>
       </div>
 
@@ -57,7 +47,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
         {navItems.map((item, index) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
-          const gradient = getItemGradient(index);
+          const gradient = getItemGradient();
 
           return (
             <Link
@@ -69,8 +59,10 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
                 transition-all duration-300 overflow-hidden
                 ${
                   isActive
-                    ? "bg-linear-to-r " + gradient + " shadow-lg scale-105"
-                    : "text-gray-300 hover:bg-gray-800/50"
+                    ? "bg-linear-to-r " +
+                      gradient +
+                      " shadow-lg scale-105 text-black"
+                    : "text-black hover:bg-[#7c377f]/30 hover:text-white"
                 }
               `}
             >
@@ -90,14 +82,14 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
                 relative z-10 p-2 rounded-lg transition-transform duration-300
                 ${
                   isActive
-                    ? "bg-white/20"
-                    : "bg-gray-800 group-hover:bg-gray-700"
+                    ? "bg-[#fadadd]/40"
+                    : "bg-[#7c377f] group-hover:bg-[#fadadd]/30"
                 }
                 ${isActive ? "scale-110" : "group-hover:scale-110"}
               `}
               >
                 <Icon
-                  className={`w-5 h-5 ${isActive ? "text-white" : "text-gray-400 group-hover:text-white"}`}
+                  className={`w-5 h-5 ${isActive ? "text-black" : "text-white group-hover:text-[#fadadd]"}`}
                 />
               </div>
 
@@ -105,7 +97,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
               <span
                 className={`
                 relative z-10 font-semibold text-sm
-                ${isActive ? "text-white" : "text-gray-300 group-hover:text-white"}
+                ${isActive ? "text-black" : "text-white group-hover:text-[#fadadd]"}
               `}
               >
                 {item.label}
@@ -113,7 +105,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
 
               {/* Active indicator */}
               {isActive && (
-                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-white rounded-l-full" />
+                <div className="absolute right-0 top-1/2 -translate-y-1/2 w-1 h-8 bg-black rounded-l-full" />
               )}
             </Link>
           );
@@ -121,10 +113,10 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
       </nav>
 
       {/* Footer */}
-      <div className="border-t border-gray-700/50 p-4">
-        <div className="bg-gray-800/50 rounded-xl p-3 text-center">
-          <p className="text-xs text-gray-400">© 2024 Spicy Thrifts</p>
-          <p className="text-xs text-gray-500 mt-1">Admin Dashboard</p>
+      <div className="border-t border-[#fadadd] p-4">
+        <div className="bg-[#fadadd]/30 rounded-xl p-3 text-center">
+          <p className="text-xs text-black">© 2024 Spicy Thrifts</p>
+          <p className="text-xs text-black mt-1">Admin Dashboard</p>
         </div>
       </div>
     </div>

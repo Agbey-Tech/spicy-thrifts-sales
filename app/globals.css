@@ -32,3 +32,41 @@ body {
   font-family: Arial, Helvetica, sans-serif;
   overflow-y: auto;
 }
+
+@media print {
+  /* Reset browser weirdness */
+  body {
+    margin: 0;
+    padding: 0;
+    background: white;
+  }
+
+  /* Kill animations, transforms, overlays */
+  * {
+    animation: none !important;
+    transition: none !important;
+    transform: none !important;
+    box-shadow: none !important;
+  }
+
+  /* Hide everything except invoice */
+  .no-print {
+    display: none !important;
+  }
+
+  /* Invoice container */
+  #print-content {
+    display: block;
+    position: static;
+    width: 80mm;
+    margin: 0 auto;
+    padding: 0;
+    background: white;
+  }
+
+  /* Page setup for thermal printers */
+  @page {
+    size: 80mm auto;
+    margin: 0;
+  }
+}
