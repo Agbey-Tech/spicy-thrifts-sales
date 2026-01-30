@@ -3,7 +3,14 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
 import { createOrder } from "@/lib/api/orders";
-import { CartItem } from "./CartPanel";
+
+import { Product, Sp } from "@/app/types/database";
+// CartItem for new schema
+type CartItem = {
+  product: Product;
+  sp: Sp;
+  quantity: number;
+};
 import { OrderType, PaymentMethod } from "@/app/types/database";
 
 interface CheckoutPanelProps {
@@ -29,9 +36,10 @@ export function CheckoutPanel({
     e.preventDefault();
     setLoading(true);
     try {
+      // Update order creation to use product_id and quantity
       const order = await createOrder({
         items: items.map((i) => ({
-          product_variant_id: i.variant.id,
+          product_id: i.product.id,
           quantity: i.quantity,
         })),
         order_type: orderType,

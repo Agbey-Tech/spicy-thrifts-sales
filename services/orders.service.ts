@@ -30,35 +30,43 @@ export class OrdersService {
   async createOrder(input: unknown, userId: string) {
     // 1. Validate input
     const data = createOrderSchema.parse(input);
-    // 2. Re-fetch variants, validate stock, calculate totals, generate invoice, reduce stock atomically
-    // Fetch all variants in the order
-    const variantIds = data.items.map((item: any) => item.product_variant_id);
-    const { data: variants, error: variantError } = await this.supabase
-      .from("product_variants")
-      .select("id, price, stock_quantity")
-      .in("id", variantIds);
-    if (variantError) throw new Error(variantError.message);
-    if (!variants || variants.length !== data.items.length)
-      throw new Error("One or more variants not found");
+
+    // 2. Re-fetch products, validate stock, calculate totals, generate invoice, reduce stock atomically
+    const productIds = data.items.map((item: any) => item.product_id);
+    // Join with sps to get base_price
+    const { data: products, error: productError } = await this.supabase
+      .from("products")
+      .select("id, stock_quantity, sp_id, sps(base_price)")
+      .in("id", productIds);
+    if (productError) throw new Error(productError.message);
+    if (!products || products.length !== data.items.length)
+      throw new Error("One or more products not found");
 
     // Validate stock and calculate totals
     let total = 0;
-    const variantMap: Record<
+    const productMap: Record<
       string,
-      { price: number; stock_quantity: number }
+      { base_price: number; stock_quantity: number }
     > = {};
-    for (const v of variants) {
-      variantMap[v.id] = {
-        price: Number(v.price),
-        stock_quantity: v.stock_quantity,
+    for (const p of products) {
+      // base_price is in p.sps.base_price (array if joined, or object if single)
+      let base_price = 0;
+      if (Array.isArray(p.sps)) {
+        base_price = Number(p.sps[0]?.base_price ?? 0);
+      } else if (p.sps && typeof p.sps === "object") {
+        base_price = Number(p.sps.base_price ?? 0);
+      }
+      productMap[p.id] = {
+        base_price,
+        stock_quantity: p.stock_quantity,
       };
     }
     for (const item of data.items) {
-      const variant = variantMap[item.product_variant_id];
-      if (!variant) throw new Error("Variant not found");
-      if (variant.stock_quantity < item.quantity)
-        throw new Error("Insufficient stock for variant");
-      total += variant.price * item.quantity;
+      const product = productMap[item.product_id];
+      if (!product) throw new Error("Product not found");
+      if (product.stock_quantity < item.quantity)
+        throw new Error("Insufficient stock for product");
+      total += product.base_price * item.quantity;
     }
 
     // Generate invoice number (simple: YYYYMMDD-XXXX)
@@ -97,27 +105,28 @@ export class OrdersService {
       throw new Error(orderError?.message || "Order creation failed");
 
     // 2. Insert order_items
+
     const orderItemsPayload = data.items.map((item: any) => ({
       order_id: order.id,
-      product_variant_id: item.product_variant_id,
+      product_id: item.product_id,
       quantity: item.quantity,
-      unit_price: variantMap[item.product_variant_id].price,
-      subtotal: variantMap[item.product_variant_id].price * item.quantity,
+      unit_price: productMap[item.product_id].base_price,
+      subtotal: productMap[item.product_id].base_price * item.quantity,
     }));
     const { error: itemsError } = await this.supabase
       .from("order_items")
       .insert(orderItemsPayload);
     if (itemsError) throw new Error(itemsError.message);
 
-    // 3. Reduce stock for each variant
+    // 3. Reduce stock for each product
     for (const item of data.items) {
       const { error: stockError } = await this.supabase
-        .from("product_variants")
+        .from("products")
         .update({
           stock_quantity:
-            variantMap[item.product_variant_id].stock_quantity - item.quantity,
+            productMap[item.product_id].stock_quantity - item.quantity,
         })
-        .eq("id", item.product_variant_id);
+        .eq("id", item.product_id);
       if (stockError) throw new Error(stockError.message);
     }
 

@@ -1,31 +1,30 @@
 "use client";
 
-import { ProductVariant } from "@/app/types/database";
+import { Product, Sp } from "@/app/types/database";
 import { Trash2, ShoppingBag, Plus, Minus, Package } from "lucide-react";
 
-interface CartItem {
-  variant: ProductVariant;
+// New CartItem type
+type CartItem = {
+  product: Product;
+  sp: Sp;
   quantity: number;
-}
+};
 
 interface CartPanelProps {
   items: CartItem[];
-  onUpdateQuantity: (variantId: string, quantity: number) => void;
-  onRemove: (variantId: string) => void;
-  onCheckout: () => void;
+  onUpdateQuantity: (productId: string, quantity: number) => void;
+  onRemove: (productId: string) => void;
 }
 
 export function CartPanel({
   items,
   onUpdateQuantity,
   onRemove,
-  onCheckout,
 }: CartPanelProps) {
   const subtotal = items.reduce(
-    (sum, item) => sum + item.variant.price * item.quantity,
+    (sum, item) => sum + item.sp.base_price * item.quantity,
     0,
   );
-
   const totalItems = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
@@ -64,67 +63,54 @@ export function CartPanel({
       {items.length > 0 && (
         <>
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
-            {items.map(({ variant, quantity }) => (
+            {items.map(({ product, sp, quantity }) => (
               <div
-                key={variant.id}
+                key={product.id}
                 className="bg-linear-to-br from-white to-gray-50 border-2 border-gray-200 rounded-xl p-4 hover:border-blue-300 hover:shadow-md transition-all duration-300 group"
               >
                 <div className="flex gap-4">
-                  {/* Image */}
-                  <div className="w-20 h-20 shrink-0 bg-white rounded-lg border-2 border-gray-200 overflow-hidden">
-                    {variant.images && variant.images.length > 0 ? (
-                      <img
-                        src={variant.images[0]}
-                        alt={variant.sku}
-                        className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                      />
-                    ) : (
-                      <div className="w-full h-full flex items-center justify-center bg-linear-to-br from-gray-100 to-gray-200">
-                        <Package className="w-8 h-8 text-gray-400" />
-                      </div>
-                    )}
+                  {/* Icon */}
+                  <div className="w-20 h-20 shrink-0 bg-white rounded-lg border-2 border-gray-200 overflow-hidden flex items-center justify-center">
+                    <Package className="w-8 h-8 text-gray-400" />
                   </div>
 
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="font-bold text-gray-800 mb-1 truncate">
-                      {variant.sku}
+                      {product.name}
                     </div>
                     <div className="flex items-center gap-2 mb-2">
                       <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-                        {variant.size || "-"}
-                      </span>
-                      <span className="text-xs bg-gray-100 px-2 py-1 rounded-md text-gray-600">
-                        {variant.primary_color || "-"}
+                        SP: {sp.name}
                       </span>
                     </div>
                     <div className="flex items-center gap-2 text-xs">
                       <span
                         className={`inline-flex items-center gap-1 ${
-                          variant.stock_quantity > 10
+                          product.stock_quantity > 10
                             ? "text-green-600"
-                            : variant.stock_quantity > 0
+                            : product.stock_quantity > 0
                               ? "text-yellow-600"
                               : "text-red-600"
                         }`}
                       >
                         <div
                           className={`w-2 h-2 rounded-full ${
-                            variant.stock_quantity > 10
+                            product.stock_quantity > 10
                               ? "bg-green-500"
-                              : variant.stock_quantity > 0
+                              : product.stock_quantity > 0
                                 ? "bg-yellow-500"
                                 : "bg-red-500"
                           }`}
                         ></div>
-                        Stock: {variant.stock_quantity}
+                        Stock: {product.stock_quantity}
                       </span>
                     </div>
                   </div>
 
                   {/* Remove Button */}
                   <button
-                    onClick={() => onRemove(variant.id)}
+                    onClick={() => onRemove(product.id)}
                     className="self-start p-2 rounded-lg hover:bg-red-50 text-gray-400 hover:text-red-500 transition-colors"
                     title="Remove from cart"
                   >
@@ -140,7 +126,7 @@ export function CartPanel({
                       onClick={() => {
                         const newQty = quantity - 1;
                         if (newQty >= 1) {
-                          onUpdateQuantity(variant.id, newQty);
+                          onUpdateQuantity(product.id, newQty);
                         }
                       }}
                       disabled={quantity <= 1}
@@ -152,14 +138,14 @@ export function CartPanel({
                     <input
                       type="number"
                       min={1}
-                      max={variant.stock_quantity}
+                      max={product.stock_quantity}
                       value={quantity}
                       onChange={(e) => {
                         let val = Number(e.target.value);
-                        if (val > variant.stock_quantity)
-                          val = variant.stock_quantity;
+                        if (val > product.stock_quantity)
+                          val = product.stock_quantity;
                         if (val < 1) val = 1;
-                        onUpdateQuantity(variant.id, val);
+                        onUpdateQuantity(product.id, val);
                       }}
                       className="w-16 text-center rounded-lg bg-white border-2 border-gray-200 px-2 py-1.5 font-semibold text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     />
@@ -167,11 +153,11 @@ export function CartPanel({
                     <button
                       onClick={() => {
                         const newQty = quantity + 1;
-                        if (newQty <= variant.stock_quantity) {
-                          onUpdateQuantity(variant.id, newQty);
+                        if (newQty <= product.stock_quantity) {
+                          onUpdateQuantity(product.id, newQty);
                         }
                       }}
-                      disabled={quantity >= variant.stock_quantity}
+                      disabled={quantity >= product.stock_quantity}
                       className="w-8 h-8 rounded-lg bg-gray-100 hover:bg-gray-200 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                     >
                       <Plus className="w-4 h-4" />
@@ -181,10 +167,10 @@ export function CartPanel({
                   {/* Price */}
                   <div className="text-right">
                     <div className="text-xs text-gray-500">
-                      ${variant.price.toFixed(2)} × {quantity}
+                      GH₵{sp.base_price.toLocaleString()} × {quantity}
                     </div>
                     <div className="text-lg font-bold text-blue-600">
-                      ${(variant.price * quantity).toFixed(2)}
+                      GH₵{(sp.base_price * quantity).toLocaleString()}
                     </div>
                   </div>
                 </div>
@@ -204,7 +190,7 @@ export function CartPanel({
                   Subtotal
                 </span>
                 <span className="text-2xl font-bold text-blue-600">
-                  ${subtotal.toFixed(2)}
+                  GH₵{subtotal.toLocaleString()}
                 </span>
               </div>
             </div>
@@ -214,5 +200,3 @@ export function CartPanel({
     </section>
   );
 }
-
-export type { CartItem };

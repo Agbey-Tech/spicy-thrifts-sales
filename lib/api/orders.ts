@@ -23,7 +23,7 @@ export async function createOrder(input: {
   customer_name?: string;
   customer_phone?: string;
   delivery_address?: string;
-  items: { product_variant_id: string; quantity: number }[];
+  items: { product_id: string; quantity: number }[];
 }): Promise<Order> {
   const res = await fetch("/api/orders", {
     method: "POST",

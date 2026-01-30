@@ -59,7 +59,7 @@ export interface Order {
 export interface OrderItem {
   id: string;
   order_id: string;
-  product_variant_id: string;
+  product_id: string;
   quantity: number;
   unit_price: number;
   subtotal: number;

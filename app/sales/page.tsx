@@ -2,11 +2,22 @@
 
 import { useState } from "react";
 import { ProductSearchPanel } from "@/components/pos/ProductSearchPanel";
-import { CartPanel, CartItem } from "@/components/pos/CartPanel";
+
+import { CartPanel } from "@/components/pos/CartPanel";
 import { CheckoutPanel } from "@/components/pos/CheckoutPanel";
 import toast from "react-hot-toast";
-import { ProductVariant } from "@/app/types/database";
+import { Product, Sp } from "@/app/types/database";
 import { ShoppingCart, X, CheckCircle, ArrowLeft } from "lucide-react";
+import useSWR from "swr";
+import { getProducts } from "@/lib/api/products";
+import { getSps } from "@/lib/api/sp";
+
+// CartItem for new schema
+type CartItem = {
+  product: Product;
+  sp: Sp;
+  quantity: number;
+};
 
 export default function SalesPOSPage() {
   const [cart, setCart] = useState<CartItem[]>([]);
@@ -16,14 +27,29 @@ export default function SalesPOSPage() {
   const [invoiceId, setInvoiceId] = useState<string | null>(null);
   const [showMobileCart, setShowMobileCart] = useState(false);
 
-  const handleAddToCart = (variant: ProductVariant) => {
+  // Fetch products and SPs
+  const { data: products } = useSWR("/api/products", getProducts);
+  const { data: sps } = useSWR("/api/sp", getSps);
+
+  // Helper to get SP for a product
+  const getSpForProduct = (product: Product): Sp | undefined => {
+    return sps?.find((sp: Sp) => sp.id === product.sp_id);
+  };
+
+  // Add to cart for product
+  const handleAddToCart = (product: Product) => {
+    const sp = getSpForProduct(product);
+    if (!sp) {
+      toast.error("SP not found for product");
+      return;
+    }
     setCart((prev) => {
-      const existing = prev.find((i) => i.variant.id === variant.id);
+      const existing = prev.find((i) => i.product.id === product.id);
       if (existing) {
-        if (existing.quantity < variant.stock_quantity) {
+        if (existing.quantity < product.stock_quantity) {
           toast.success("Quantity updated", { duration: 2000 });
           return prev.map((i) =>
-            i.variant.id === variant.id
+            i.product.id === product.id
               ? { ...i, quantity: i.quantity + 1 }
               : i,
           );
@@ -32,18 +58,18 @@ export default function SalesPOSPage() {
         return prev;
       }
       toast.success("Added to cart", { duration: 2000 });
-      return [...prev, { variant, quantity: 1 }];
+      return [...prev, { product, sp, quantity: 1 }];
     });
   };
 
-  const handleUpdateQuantity = (variantId: string, quantity: number) => {
+  const handleUpdateQuantity = (productId: string, quantity: number) => {
     setCart((prev) =>
-      prev.map((i) => (i.variant.id === variantId ? { ...i, quantity } : i)),
+      prev.map((i) => (i.product.id === productId ? { ...i, quantity } : i)),
     );
   };
 
-  const handleRemove = (variantId: string) => {
-    setCart((prev) => prev.filter((i) => i.variant.id !== variantId));
+  const handleRemove = (productId: string) => {
+    setCart((prev) => prev.filter((i) => i.product.id !== productId));
     toast.success("Removed from cart", { duration: 2000 });
   };
 
@@ -73,6 +99,8 @@ export default function SalesPOSPage() {
               <ProductSearchPanel
                 onAddToCart={handleAddToCart}
                 refreshKey={refreshKey}
+                products={products}
+                sps={sps}
               />
             </div>
 
@@ -84,7 +112,6 @@ export default function SalesPOSPage() {
                     items={cart}
                     onUpdateQuantity={handleUpdateQuantity}
                     onRemove={handleRemove}
-                    onCheckout={() => {}}
                   />
                 </div>
                 {cart.length > 0 && (
@@ -106,6 +133,8 @@ export default function SalesPOSPage() {
             <ProductSearchPanel
               onAddToCart={handleAddToCart}
               refreshKey={refreshKey}
+              products={products}
+              sps={sps}
             />
           </div>
 
@@ -155,7 +184,6 @@ export default function SalesPOSPage() {
                     items={cart}
                     onUpdateQuantity={handleUpdateQuantity}
                     onRemove={handleRemove}
-                    onCheckout={() => {}}
                   />
                 </div>
 
