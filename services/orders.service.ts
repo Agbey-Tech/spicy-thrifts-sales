@@ -34,10 +34,17 @@ export class OrdersService {
     // 2. Re-fetch products, validate stock, calculate totals, generate invoice, reduce stock atomically
     const productIds = data.items.map((item: any) => item.product_id);
     // Join with sps to get base_price
-    const { data: products, error: productError } = await this.supabase
+    type ProductWithSps = {
+      id: string;
+      stock_quantity: number;
+      sp_id: string;
+      sps: { base_price: number }[] | { base_price: number } | null;
+    };
+
+    const { data: products, error: productError } = (await this.supabase
       .from("products")
       .select("id, stock_quantity, sp_id, sps(base_price)")
-      .in("id", productIds);
+      .in("id", productIds)) as { data: ProductWithSps[]; error: any };
     if (productError) throw new Error(productError.message);
     if (!products || products.length !== data.items.length)
       throw new Error("One or more products not found");
