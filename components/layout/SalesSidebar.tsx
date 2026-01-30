@@ -28,6 +28,12 @@ export function SalesSidebar({ isOpen, onClose }: Props) {
       icon: Receipt,
       gradient: "from-blue-500 to-blue-500",
     },
+    {
+      label: "Reports",
+      href: "/sales/reports",
+      icon: Receipt,
+      gradient: "from-blue-500 to-blue-500",
+    },
   ];
 
   const handleLogout = async () => {
