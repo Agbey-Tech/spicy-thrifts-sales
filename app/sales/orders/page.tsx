@@ -18,6 +18,7 @@ import {
 import toast from "react-hot-toast";
 import type { Order } from "@/app/types/database";
 import { SalesOrderInvoiceOverlay } from "@/app/sales/orders/SalesOrderInvoiceOverlay";
+import { set } from "zod";
 
 const PAGE_SIZE = 10;
 
@@ -64,11 +65,6 @@ export default function SalesOrdersPage() {
     : 1;
 
   const closeOverlay = () => setSelectedOrder(null);
-
-  const handlePrint = (order: Order) => {
-    toast.success("Preparing invoice for printing...");
-    // TODO: Implement PDF generation/print
-  };
 
   // Use distinct colors for payment status
   const getPaymentMethodColor = (method: string) => {
@@ -285,7 +281,7 @@ export default function SalesOrdersPage() {
                               title="Print Invoice"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                handlePrint(order);
+                                setSelectedOrder(order);
                               }}
                             >
                               <Printer className="w-4 h-4 text-[#7c377f] group-hover/btn:text-[#7c377f]" />
@@ -391,7 +387,7 @@ export default function SalesOrdersPage() {
                         className="flex-1 py-2 px-4 bg-[#7c377f] text-white rounded-lg font-semibold hover:bg-[#fadadd] hover:text-[#7c377f] transition-colors flex items-center justify-center gap-2"
                         onClick={(e) => {
                           e.stopPropagation();
-                          handlePrint(order);
+                          setSelectedOrder(order);
                         }}
                       >
                         <Printer className="w-4 h-4" />
@@ -460,7 +456,6 @@ export default function SalesOrdersPage() {
         <SalesOrderInvoiceOverlay
           orderId={selectedOrder.id}
           onClose={closeOverlay}
-          onPrint={handlePrint}
         />
       )}
     </div>

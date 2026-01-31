@@ -11,6 +11,7 @@ import { ShoppingCart, X, CheckCircle, ArrowLeft } from "lucide-react";
 import useSWR from "swr";
 import { getProducts } from "@/lib/api/products";
 import { getSps } from "@/lib/api/sp";
+import { SalesOrderInvoiceOverlay } from "./orders/SalesOrderInvoiceOverlay";
 
 // CartItem for new schema
 type CartItem = {
@@ -26,6 +27,7 @@ export default function SalesPOSPage() {
   const [showInvoice, setShowInvoice] = useState(false);
   const [invoiceId, setInvoiceId] = useState<string | null>(null);
   const [showMobileCart, setShowMobileCart] = useState(false);
+  const [viewInvoice, setViewInvoice] = useState(false);
 
   // Fetch products and SPs
   const { data: products } = useSWR("/api/products", getProducts);
@@ -235,14 +237,21 @@ export default function SalesPOSPage() {
                 Start New Sale
               </button>
               <button
-                onClick={() => alert("Open Orders to print invoice")}
+                onClick={() => setViewInvoice(true)}
                 className="w-full bg-[#7c377f] text-white py-4 rounded-xl font-bold text-lg hover:bg-[#fadadd] hover:text-[#7c377f] transition-all duration-300 hover:shadow-xl active:scale-95 flex items-center justify-center gap-2"
               >
-                Print Invoice
+                View Invoice
               </button>
             </div>
           </div>
         </div>
+      )}
+
+      {viewInvoice && invoiceId && (
+        <SalesOrderInvoiceOverlay
+          orderId={invoiceId}
+          onClose={() => setViewInvoice(false)}
+        />
       )}
     </div>
   );
