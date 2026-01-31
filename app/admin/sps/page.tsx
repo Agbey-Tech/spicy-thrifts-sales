@@ -4,6 +4,7 @@ import useSWR from "swr";
 import { getSps, createSp, updateSp, deleteSp } from "@/lib/api/sp";
 import { Package, Plus, Pencil, Trash2, X, AlertCircle } from "lucide-react";
 import toast from "react-hot-toast";
+import { Sp } from "@/app/types/database";
 
 export default function SpsPage() {
   const {
@@ -295,37 +296,11 @@ export default function SpsPage() {
 
       {/* Custom Confirm Delete Modal */}
       {confirmDelete && (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
-          <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-[#fadadd]">
-            <div className="px-6 py-6 flex flex-col items-center">
-              <div className="bg-red-100 rounded-full p-4 mb-4">
-                <Trash2 className="w-8 h-8 text-red-500" />
-              </div>
-              <h2 className="text-xl font-bold text-[#7c377f] mb-2">
-                Delete SP?
-              </h2>
-              <p className="text-black/70 mb-6 text-center">
-                Are you sure you want to delete{" "}
-                <span className="font-semibold">{confirmDelete.name}</span>?
-                This action cannot be undone.
-              </p>
-              <div className="flex gap-3 w-full">
-                <button
-                  className="flex-1 px-4 py-3 rounded-xl bg-[#fadadd] text-black font-semibold hover:bg-[#7c377f] hover:text-white transition-colors"
-                  onClick={() => setConfirmDelete(null)}
-                >
-                  Cancel
-                </button>
-                <button
-                  className="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
-                  onClick={confirmDeleteSp}
-                >
-                  Delete
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
+        <DeleteConfirmModal
+          sp={confirmDelete}
+          onClose={() => setConfirmDelete(null)}
+          onConfirm={confirmDeleteSp}
+        />
       )}
     </div>
   );
@@ -445,6 +420,60 @@ function SpModal({
               ) : (
                 "Save SP"
               )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function DeleteConfirmModal({
+  sp,
+  onClose,
+  onConfirm,
+}: {
+  sp: { id: string; name: string };
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      await onConfirm();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-[#fadadd]">
+        <div className="px-6 py-6 flex flex-col items-center">
+          <div className="bg-red-100 rounded-full p-4 mb-4">
+            <Trash2 className="w-8 h-8 text-red-500" />
+          </div>
+          <h2 className="text-xl font-bold text-[#7c377f] mb-2">Delete SP?</h2>
+          <p className="text-black/70 mb-6 text-center">
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{sp.name}</span>? Deleting an SP
+            will remove all products associated with it. This action cannot be
+            undone.
+          </p>
+          <div className="flex gap-3 w-full">
+            <button
+              className="flex-1 px-4 py-3 rounded-xl bg-[#fadadd] text-black font-semibold hover:bg-[#7c377f] hover:text-white transition-colors"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              className="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
+              onClick={handleConfirm}
+            >
+              {loading ? "Deleting..." : "Delete"}
             </button>
           </div>
         </div>
