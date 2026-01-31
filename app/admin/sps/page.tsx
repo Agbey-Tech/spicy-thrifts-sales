@@ -307,7 +307,8 @@ export default function SpsPage() {
               <p className="text-black/70 mb-6 text-center">
                 Are you sure you want to delete{" "}
                 <span className="font-semibold">{confirmDelete.name}</span>?
-                This action cannot be undone.
+                Deleting an SP will remove all products associated with it. This
+                action cannot be undone.
               </p>
               <div className="flex gap-3 w-full">
                 <button

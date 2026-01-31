@@ -1,11 +1,12 @@
 "use client";
 
 import { useState } from "react";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import {
   getCategories,
   createCategory,
   updateCategory,
+  deleteCategory,
 } from "@/lib/api/categories";
 import {
   Plus,
@@ -16,6 +17,7 @@ import {
   AlertCircle,
   Folder,
   X,
+  Trash2,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import { generateCategoryCode } from "@/lib/generators/categories";
@@ -41,6 +43,7 @@ export default function CategoriesPage() {
   const [showModal, setShowModal] = useState(false);
   const [editCategory, setEditCategory] = useState<Category | null>(null);
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [deleteConfirm, setDeleteConfirm] = useState<Category | null>(null);
 
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
@@ -58,6 +61,17 @@ export default function CategoriesPage() {
       mutate();
     } catch (e: any) {
       toast.error(e?.message || "Failed to save category");
+    }
+  };
+
+  const handleDelete = async (categoryId: string) => {
+    try {
+      await deleteCategory(categoryId);
+      toast.success("Category deleted successfully");
+      setDeleteConfirm(null);
+      mutate();
+    } catch (e: any) {
+      toast.error(e?.message || "Failed to delete category");
     }
   };
 
@@ -160,16 +174,25 @@ export default function CategoriesPage() {
                           <div className="bg-linear-to-br from-[#7c377f] to-[#fadadd] p-3 rounded-lg shadow-md group-hover:scale-110 transition-transform duration-300">
                             <Folder className="w-5 h-5 text-white" />
                           </div>
-                          <button
-                            className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
-                            onClick={() => {
-                              setEditCategory(cat);
-                              setShowModal(true);
-                            }}
-                            title="Edit category"
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </button>
+                          <div className="flex gap-1">
+                            <button
+                              className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
+                              onClick={() => {
+                                setEditCategory(cat);
+                                setShowModal(true);
+                              }}
+                              title="Edit category"
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              className="p-2 hover:bg-red-100 rounded-lg transition-colors text-black hover:text-red-600"
+                              onClick={() => setDeleteConfirm(cat)}
+                              title="Delete category"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
 
                         {/* Content */}
@@ -216,7 +239,7 @@ export default function CategoriesPage() {
                           <th className="py-4 px-6 text-left text-sm font-bold text-gray-700">
                             Code
                           </th>
-                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-24">
+                          <th className="py-4 px-6 text-center text-sm font-bold text-gray-700 w-32">
                             Actions
                           </th>
                         </tr>
@@ -243,17 +266,26 @@ export default function CategoriesPage() {
                                 {cat.code}
                               </span>
                             </td>
-                            <td className="py-4 px-6 text-center">
-                              <button
-                                className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
-                                onClick={() => {
-                                  setEditCategory(cat);
-                                  setShowModal(true);
-                                }}
-                                title="Edit category"
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </button>
+                            <td className="py-4 px-6">
+                              <div className="flex items-center justify-center gap-2">
+                                <button
+                                  className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
+                                  onClick={() => {
+                                    setEditCategory(cat);
+                                    setShowModal(true);
+                                  }}
+                                  title="Edit category"
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  className="p-2 hover:bg-red-100 rounded-lg transition-colors text-black hover:text-red-600"
+                                  onClick={() => setDeleteConfirm(cat)}
+                                  title="Delete category"
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
                             </td>
                           </tr>
                         ))}
@@ -301,15 +333,23 @@ export default function CategoriesPage() {
                               </span>
                             </div>
                           </div>
-                          <button
-                            className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
-                            onClick={() => {
-                              setEditCategory(cat);
-                              setShowModal(true);
-                            }}
-                          >
-                            <Pencil className="w-4 h-4" />
-                          </button>
+                          <div className="flex gap-1">
+                            <button
+                              className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors text-black hover:text-[#7c377f]"
+                              onClick={() => {
+                                setEditCategory(cat);
+                                setShowModal(true);
+                              }}
+                            >
+                              <Pencil className="w-4 h-4" />
+                            </button>
+                            <button
+                              className="p-2 hover:bg-red-100 rounded-lg transition-colors text-black hover:text-red-600"
+                              onClick={() => setDeleteConfirm(cat)}
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </div>
                         </div>
                       </div>
                     ))}
@@ -335,7 +375,7 @@ export default function CategoriesPage() {
         </div>
       </div>
 
-      {/* Modal */}
+      {/* Category Modal */}
       {showModal && (
         <CategoryModal
           initial={editCategory}
@@ -346,12 +386,21 @@ export default function CategoriesPage() {
           onSave={handleSave}
         />
       )}
+
+      {/* Delete Confirmation Modal */}
+      {deleteConfirm && (
+        <DeleteConfirmModal
+          category={deleteConfirm}
+          onClose={() => setDeleteConfirm(null)}
+          onConfirm={() => handleDelete(deleteConfirm.id)}
+        />
+      )}
     </div>
   );
 }
 
 /* ===========================
-   Modal
+   Category Modal
 =========================== */
 
 function CategoryModal({
@@ -476,6 +525,66 @@ function CategoryModal({
               ) : (
                 "Save"
               )}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ===========================
+   Delete Confirmation Modal
+=========================== */
+
+function DeleteConfirmModal({
+  category,
+  onClose,
+  onConfirm,
+}: {
+  category: Category;
+  onClose: () => void;
+  onConfirm: () => Promise<void>;
+}) {
+  const [loading, setLoading] = useState(false);
+
+  const handleConfirm = async () => {
+    setLoading(true);
+    try {
+      await onConfirm();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center z-50 p-4 animate-in fade-in duration-200">
+      <div className="bg-white rounded-2xl shadow-2xl w-full max-w-sm overflow-hidden animate-in zoom-in-95 duration-200 border-2 border-[#fadadd]">
+        <div className="px-6 py-6 flex flex-col items-center">
+          <div className="bg-red-100 rounded-full p-4 mb-4">
+            <Trash2 className="w-8 h-8 text-red-500" />
+          </div>
+          <h2 className="text-xl font-bold text-[#7c377f] mb-2">
+            Delete Category?
+          </h2>
+          <p className="text-black/70 mb-6 text-center">
+            Are you sure you want to delete{" "}
+            <span className="font-semibold">{category.name}</span>? Deleting a
+            category will remove all products associated with it. This action
+            cannot be undone.
+          </p>
+          <div className="flex gap-3 w-full">
+            <button
+              className="flex-1 px-4 py-3 rounded-xl bg-[#fadadd] text-black font-semibold hover:bg-[#7c377f] hover:text-white transition-colors"
+              onClick={onClose}
+            >
+              Cancel
+            </button>
+            <button
+              className="flex-1 px-4 py-3 rounded-xl bg-red-600 text-white font-semibold hover:bg-red-700 transition-colors"
+              onClick={handleConfirm}
+            >
+              {loading ? "Deleting..." : "Delete"}
             </button>
           </div>
         </div>

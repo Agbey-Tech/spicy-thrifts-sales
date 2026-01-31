@@ -39,3 +39,15 @@ export async function updateCategory(
   if (!success) throw new Error(error || "Failed to update category");
   return data;
 }
+
+// Delete a category (ADMIN only)
+export async function deleteCategory(categoryId: string): Promise<Category> {
+  const res = await fetch(`/api/categories/${categoryId}`, {
+    method: "DELETE",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include",
+  });
+  const { success, data, error } = await res.json();
+  if (!success) throw new Error(error || "Failed to update category");
+  return data;
+}

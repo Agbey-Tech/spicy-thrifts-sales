@@ -41,4 +41,15 @@ export class CategoriesService {
     if (error) throw new Error(error.message);
     return updated;
   }
+
+  async deleteCategory(categoryId: string) {
+    const { data: updated, error } = await this.supabase
+      .from("categories")
+      .delete()
+      .eq("id", categoryId)
+      .select()
+      .single();
+    if (error) throw new Error(error.message);
+    return updated;
+  }
 }

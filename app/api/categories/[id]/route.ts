@@ -20,3 +20,14 @@ export const PATCH = withErrorHandling(
     return NextResponse.json({ success: true, data: updated, error: null });
   },
 );
+
+// DEKETE /api/categories/:id - Delete category (ADMIN only)
+export const DELETE = withErrorHandling(
+  async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+    const user = await requireAuth();
+    await requireRole(user, ["ADMIN"]);
+    const { id } = await params;
+    const updated = await service.deleteCategory(id);
+    return NextResponse.json({ success: true, data: updated, error: null });
+  },
+);
