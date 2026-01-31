@@ -115,7 +115,7 @@ export function AdminSidebar({ isOpen, onClose }: SidebarProps) {
       {/* Footer */}
       <div className="border-t border-[#fadadd] p-4">
         <div className="bg-[#fadadd]/30 rounded-xl p-3 text-center">
-          <p className="text-xs text-black">© 2024 Spicy Thrifts</p>
+          <p className="text-xs text-black">© 2026 Spicy Thrifts</p>
           <p className="text-xs text-black mt-1">Admin Dashboard</p>
         </div>
       </div>
