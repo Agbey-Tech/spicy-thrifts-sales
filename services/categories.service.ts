@@ -49,7 +49,19 @@ export class CategoriesService {
       .eq("id", categoryId)
       .select()
       .single();
-    if (error) throw new Error(error.message);
+    if (error) {
+      const msg = error.message?.toLowerCase() || "";
+      if (
+        msg.includes("duplicate") ||
+        msg.includes("pk") ||
+        msg.includes("primary key")
+      ) {
+        throw new Error(
+          "Deleting this category would delete all products and orders referencing it. Hence, category cannot be deleted.",
+        );
+      }
+      throw new Error(error.message);
+    }
     return updated;
   }
 }

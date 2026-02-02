@@ -87,7 +87,20 @@ export class ProductsService {
       .from("products")
       .delete()
       .eq("id", productId);
-    if (error) throw new Error(error.message);
+    if (error) {
+      const msg = error.message?.toLowerCase() || "";
+
+      if (
+        msg.includes("duplicate") ||
+        msg.includes("pk") ||
+        msg.includes("primary key")
+      ) {
+        throw new Error(
+          "Deleting this product will delete all orders with this reference. Hence, product cannot be deleted.",
+        );
+      }
+      throw new Error(error.message);
+    }
     return true;
   }
 
