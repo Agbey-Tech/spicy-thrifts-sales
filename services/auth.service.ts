@@ -11,6 +11,8 @@ export class AuthService {
       .eq("id", userId)
       .single();
     if (error || !data) throw new Error("Profile not found");
+    if (data.is_active === false)
+      throw new Error("User account is deactivated");
     return data;
   }
 
@@ -19,13 +21,31 @@ export class AuthService {
     updates: { full_name?: string; role?: string; is_active?: boolean },
   ) {
     // Only allow updating full_name, role, is_active
+    const updateData: {
+      full_name?: string;
+      role?: string;
+      is_active?: boolean;
+    } = {};
+    if (updates.full_name) updateData["full_name"] = updates.full_name;
+    if (updates.role) updateData["role"] = updates.role;
+    if (typeof updates.is_active === "boolean")
+      updateData["is_active"] = updates.is_active;
     const { data, error } = await this.supabase
       .from("profiles")
-      .update(updates)
+      .update(updateData)
       .eq("id", userId)
       .select("id, full_name, role, is_active")
       .single();
     if (error || !data) throw new Error("Failed to update user");
+    if (typeof updates.is_active === "boolean")
+      this.supabase.auth.admin.updateUserById(userId, {
+        user_metadata: { is_active: updates.is_active },
+      });
+    if (updateData.role) {
+      this.supabase.auth.admin.updateUserById(userId, {
+        user_metadata: { role: updateData.role },
+      });
+    }
     return data;
   }
 
