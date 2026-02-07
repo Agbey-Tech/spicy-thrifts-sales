@@ -14,8 +14,9 @@ export const GET = withErrorHandling(async (req: NextRequest) => {
   await requireRole(user, ["ADMIN", "SALES"]);
   const from = req.nextUrl.searchParams.get("from");
   const to = req.nextUrl.searchParams.get("to");
-  const userId = req.nextUrl.searchParams.get("userId");
-  const input = validate(salesReportQuerySchema, { from, to, userId });
-  const summary = await service.getSalesSummary(input);
+  const userId = req.nextUrl.searchParams.get("userId") || undefined;
+
+  // const input = validate(salesReportQuerySchema, { from, to, userId });
+  const summary = await service.getSalesSummary({ from, to, userId });
   return NextResponse.json({ success: true, data: summary, error: null });
 });
