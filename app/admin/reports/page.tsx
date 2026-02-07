@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { UserSelectModal } from "@/components/reports/UserSelectModal";
 import useSWR from "swr";
 import { getSalesSummary, getLowStockProducts } from "@/lib/api/reports";
 import { Bar } from "react-chartjs-2";
@@ -39,6 +40,8 @@ export default function ReportsPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [threshold, setThreshold] = useState(3);
+  const [userId, setUserId] = useState<string | null>(null);
+  const [showUserModal, setShowUserModal] = useState(false);
 
   // Sales summary fetch
   const {
@@ -46,9 +49,11 @@ export default function ReportsPage() {
     isLoading: salesLoading,
     error: salesError,
     mutate: mutateSales,
-  } = useSWR(from && to ? ["/api/reports/sales-summary", from, to] : null, () =>
-    getSalesSummary(from, to),
+  } = useSWR(
+    from && to ? ["/api/reports/sales-summary", from, to, userId] : null,
+    () => getSalesSummary(from, to, userId || undefined),
   );
+  console.log("selected userId:", userId, sales);
 
   // Low stock fetch
   const {
@@ -98,6 +103,11 @@ export default function ReportsPage() {
     if (from && to) {
       mutateSales();
     }
+  };
+  const handleUserSelect = (id: string | null) => {
+    setUserId(id);
+    setShowUserModal(false);
+    if (from && to) mutateSales();
   };
 
   const handleLowStockSubmit = () => {
@@ -185,25 +195,39 @@ export default function ReportsPage() {
                     </div>
                   </div>
                 </div>
-
-                <button
-                  onClick={handleSalesSubmit}
-                  className="w-full px-4 py-3 rounded-xl bg-linear-to-r from-blue-500 to-cyan-600 text-white font-semibold hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
-                  disabled={!from || !to || salesLoading}
-                >
-                  {salesLoading ? (
-                    <span className="flex items-center justify-center gap-2">
-                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                      Loading...
-                    </span>
-                  ) : (
-                    <span className="flex items-center justify-center gap-2">
-                      <BarChart3 className="w-5 h-5" />
-                      View Report
-                    </span>
-                  )}
-                </button>
+                <div className="flex gap-2 mt-2">
+                  <button
+                    className="flex-1 px-4 py-3 rounded-xl bg-[#fadadd] text-[#7c377f] font-semibold border border-[#7c377f] hover:bg-[#7c377f] hover:text-white transition-all"
+                    onClick={() => setShowUserModal(true)}
+                  >
+                    {userId ? "Filter: User" : "Filter by User"}
+                  </button>
+                  <button
+                    onClick={handleSalesSubmit}
+                    className="flex-1 px-4 py-3 rounded-xl bg-linear-to-r from-blue-500 to-cyan-600 text-white font-semibold hover:from-blue-600 hover:to-cyan-700 transition-all duration-300 hover:shadow-lg active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={!from || !to || salesLoading}
+                  >
+                    {salesLoading ? (
+                      <span className="flex items-center justify-center gap-2">
+                        <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        Loading...
+                      </span>
+                    ) : (
+                      <span className="flex items-center justify-center gap-2">
+                        <BarChart3 className="w-5 h-5" />
+                        View Report
+                      </span>
+                    )}
+                  </button>
+                </div>
               </div>
+              {/* User Select Modal */}
+              {showUserModal && (
+                <UserSelectModal
+                  onSelect={handleUserSelect}
+                  onClose={() => setShowUserModal(false)}
+                />
+              )}
 
               {/* Error State */}
               {salesError && !isOffline && (

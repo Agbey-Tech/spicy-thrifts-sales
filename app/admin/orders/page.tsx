@@ -14,20 +14,28 @@ import {
   Package,
   Filter,
   Search,
+  RotateCcw,
 } from "lucide-react";
 import toast from "react-hot-toast";
 import type { Order } from "@/app/types/database";
 import { SalesOrderInvoiceOverlay } from "@/app/sales/orders/SalesOrderInvoiceOverlay";
+import { ReverseOrderModal } from "@/components/orders/ReverseOrderModal";
 
 const PAGE_SIZE = 10;
 
 export default function AdminOrdersPage() {
   const user = useUserStore((s) => s.user);
-  const { data: orders, isLoading, error } = useSWR("/api/orders", getOrders);
+  const {
+    data: orders,
+    isLoading,
+    error,
+    mutate,
+  } = useSWR("/api/orders", getOrders);
   const [page, setPage] = useState(1);
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterPayment, setFilterPayment] = useState("");
+  const [reverseOrderId, setReverseOrderId] = useState<string | null>(null);
   const isOffline = typeof navigator !== "undefined" && !navigator.onLine;
 
   // Only show orders for current sales user
@@ -285,6 +293,16 @@ export default function AdminOrdersPage() {
                             >
                               <Printer className="w-4 h-4 text-[#7c377f] group-hover/btn:text-[#7c377f]" />
                             </button>
+                            <button
+                              className="p-2 hover:bg-[#fadadd] rounded-lg transition-colors group/btn"
+                              title="Reverse Order"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setReverseOrderId(order.id);
+                              }}
+                            >
+                              <RotateCcw className="w-4 h-4 text-[#7c377f] group-hover/btn:text-[#7c377f]" />
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -392,6 +410,16 @@ export default function AdminOrdersPage() {
                         <Printer className="w-4 h-4" />
                         Print
                       </button>
+                      <button
+                        className="flex-1 py-2 px-4 bg-[#fadadd] text-[#7c377f] rounded-lg font-semibold border-2 border-[#7c377f] hover:bg-[#7c377f] hover:text-white transition-colors flex items-center justify-center gap-2"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setReverseOrderId(order.id);
+                        }}
+                      >
+                        <RotateCcw className="w-4 h-4" />
+                        Reverse
+                      </button>
                     </div>
                   </div>
                 ))}
@@ -455,6 +483,18 @@ export default function AdminOrdersPage() {
         <SalesOrderInvoiceOverlay
           orderId={selectedOrder.id}
           onClose={closeOverlay}
+        />
+      )}
+      {/* Reverse Order Modal */}
+      {reverseOrderId && (
+        <ReverseOrderModal
+          orderId={reverseOrderId}
+          onClose={() => setReverseOrderId(null)}
+          onSuccess={() => {
+            setReverseOrderId(null);
+            mutate();
+            toast.success("Order reversed successfully.");
+          }}
         />
       )}
     </div>

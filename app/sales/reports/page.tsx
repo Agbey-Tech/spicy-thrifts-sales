@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import useSWR from "swr";
 import { getSalesSummary, getLowStockProducts } from "@/lib/api/reports";
+import { useUserStore } from "@/lib/auth/userStore";
 import { Bar } from "react-chartjs-2";
 import {
   Chart as ChartJS,
@@ -39,6 +40,7 @@ export default function ReportsPage() {
   const [from, setFrom] = useState("");
   const [to, setTo] = useState("");
   const [threshold, setThreshold] = useState(3);
+  const userId = useUserStore((state) => state.user?.id);
 
   // Sales summary fetch
   const {
@@ -46,8 +48,9 @@ export default function ReportsPage() {
     isLoading: salesLoading,
     error: salesError,
     mutate: mutateSales,
-  } = useSWR(from && to ? ["/api/reports/sales-summary", from, to] : null, () =>
-    getSalesSummary(from, to),
+  } = useSWR(
+    from && to ? ["/api/reports/sales-summary", from, to, userId] : null,
+    () => getSalesSummary(from, to, userId || undefined),
   );
 
   const sales = useMemo(() => allSales, [allSales]);
