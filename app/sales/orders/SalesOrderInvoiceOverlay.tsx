@@ -138,9 +138,9 @@ export function SalesOrderInvoiceOverlay({
                   <h1 className="text-2xl font-bold tracking-tight mb-1">
                     SPICY THRIFTS
                   </h1>
-                  <p className="text-xs">Fashion & Accessories</p>
+                  <p className="text-xs">Fashion</p>
                   <p className="text-xs">Accra, Ghana</p>
-                  <p className="text-xs">Tel: +233 XX XXX XXXX</p>
+                  <p className="text-xs">Tel: +233 20 899 2013</p>
                 </div>
 
                 {/* Invoice Details */}
@@ -177,21 +177,21 @@ export function SalesOrderInvoiceOverlay({
                       <div className="flex justify-between">
                         <span>Name:</span>
                         <span className="text-right">
-                          {order.customer_name}
+                          {order.customer_name ?? "N/A"}
                         </span>
                       </div>
                     )}
                     {order.customer_phone && (
                       <div className="flex justify-between">
                         <span>Phone:</span>
-                        <span>{order.customer_phone}</span>
+                        <span>{order.customer_phone ?? "N/A"}</span>
                       </div>
                     )}
                     {order.delivery_address && (
                       <div>
                         <span className="font-semibold">Address:</span>
                         <div className="text-right">
-                          {order.delivery_address}
+                          {order.delivery_address ?? "N/A"}
                         </div>
                       </div>
                     )}
