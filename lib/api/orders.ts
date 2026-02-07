@@ -35,3 +35,14 @@ export async function createOrder(input: {
   if (!success) throw new Error(error || "Failed to create order");
   return data;
 }
+
+// Reverse (delete) an order (ADMIN only)
+export async function reverseOrder(orderId: string): Promise<any> {
+  const res = await fetch(`/api/orders/${orderId}`, {
+    method: "DELETE",
+    credentials: "include",
+  });
+  const { success, data, error } = await res.json();
+  if (!success) throw new Error(error || "Failed to reverse order");
+  return data;
+}

@@ -16,3 +16,14 @@ export const GET = withErrorHandling(
     return NextResponse.json({ success: true, data: order, error: null });
   },
 );
+
+// DELETE /api/orders/:id - Reverse (delete) order (ADMIN only)
+export const DELETE = withErrorHandling(
+  async (req: NextRequest, { params }: { params: Promise<{ id: string }> }) => {
+    const user = await requireAuth();
+    const { id } = await params;
+    await requireRole(user, ["ADMIN"]);
+    const result = await service.reverseOrder(id);
+    return NextResponse.json({ success: true, data: result, error: null });
+  },
+);

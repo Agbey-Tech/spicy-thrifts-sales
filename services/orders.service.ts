@@ -142,4 +142,50 @@ export class OrdersService {
   }
 
   // (Optional) Add more methods for reporting, payments, etc.
+  // Reverse an order (ADMIN only)
+  async reverseOrder(orderId: string) {
+    // 1. Fetch order and its items
+    const { data: order, error: orderError } = await this.supabase
+      .from("orders")
+      .select("id, order_items(id, product_id, quantity)")
+      .eq("id", orderId)
+      .single();
+    if (orderError || !order) throw new Error("Order not found");
+    const items = order.order_items || [];
+    if (!items.length) throw new Error("No order items found");
+
+    // 2. Update product quantities (restore stock)
+    for (const item of items) {
+      // Fetch current stock
+      const { data: product, error: productError } = await this.supabase
+        .from("products")
+        .select("stock_quantity")
+        .eq("id", item.product_id)
+        .single();
+      if (productError || !product) throw new Error("Product not found");
+      const newStock = product.stock_quantity + item.quantity;
+      const { error: updateError } = await this.supabase
+        .from("products")
+        .update({ stock_quantity: newStock })
+        .eq("id", item.product_id);
+      if (updateError) throw new Error(updateError.message);
+    }
+
+    // 3. Delete order_items
+    const itemIds = items.map((i: any) => i.id);
+    const { error: deleteItemsError } = await this.supabase
+      .from("order_items")
+      .delete()
+      .in("id", itemIds);
+    if (deleteItemsError) throw new Error(deleteItemsError.message);
+
+    // 4. Delete order
+    const { error: deleteOrderError } = await this.supabase
+      .from("orders")
+      .delete()
+      .eq("id", orderId);
+    if (deleteOrderError) throw new Error(deleteOrderError.message);
+
+    return { success: true };
+  }
 }
