@@ -2,16 +2,21 @@
 export async function getSalesSummary(
   from: string,
   to: string,
+  userId?: string,
 ): Promise<{
   totalSales: number;
   orderCount: number;
   from: string;
   to: string;
-  orders: [{ created_at: string; total_amount: number }];
+  userId?: string;
+  orders: [
+    { created_at: string; total_amount: number; sales_person_id?: string },
+  ];
 }> {
   const url = new URL("/api/reports/sales-summary", window.location.origin);
   url.searchParams.set("from", from);
   url.searchParams.set("to", to);
+  if (userId) url.searchParams.set("userId", userId);
   const res = await fetch(url.toString(), { credentials: "include" });
   const { success, data, error } = await res.json();
   if (!success) throw new Error(error || "Failed to fetch sales summary");

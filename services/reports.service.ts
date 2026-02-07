@@ -6,13 +6,17 @@ export class ReportsService {
 
   // Get sales summary for a date range (ADMIN)
   async getSalesSummary(input: unknown) {
-    const { from, to } = salesReportQuerySchema.parse(input);
-    // Query total sales and order count in the range
-    const { data, error } = await this.supabase
+    const { from, to, userId } = salesReportQuerySchema.parse(input);
+    let query = this.supabase
       .from("orders")
-      .select("total_amount, created_at")
+      .select("total_amount, created_at, sales_person_id")
       .gte("created_at", from)
       .lte("created_at", to);
+    console.log("Querying sales summary with:", { from, to, userId });
+    if (userId) {
+      query = query.eq("sales_person_id", userId);
+    }
+    const { data, error } = await query;
     if (error) throw new Error(error.message);
     const totalSales = data.reduce((sum, o) => sum + Number(o.total_amount), 0);
     return {
@@ -20,6 +24,7 @@ export class ReportsService {
       orderCount: data.length,
       from,
       to,
+      userId: userId || null,
       orders: data,
     };
   }
